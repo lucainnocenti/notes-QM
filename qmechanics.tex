@@ -83,6 +83,8 @@
 \usepackage{multirow,tabularx,booktabs}
 \setlength{\columnsep}{1cm}
 
+\usepackage{parskip} % suppress indenting new paragraphs
+
 \usepackage[printonlyused,withpage,nohyperlinks,smaller]{acronym}
 \input{fix_acronym.tex}
 
@@ -117,11 +119,28 @@
 \renewcommand{\S}{\mathcal{S}}
 \newcommand{\I}{\mathcal{I}}
 \renewcommand{\L}{\mathcal{L}}
-\newcommand{\X}{\mathcal{X}}
+
+\newcommand{\calA}{{\mathcal{A}}}
+\newcommand{\calC}{{\mathcal{C}}}
+\newcommand{\calE}{{\mathcal{E}}}
+\newcommand{\calF}{{\mathcal{F}}}
+\newcommand{\calG}{{\mathcal{G}}}
+\newcommand{\calH}{{\mathcal{H}}}
+\newcommand{\calI}{{\mathcal{I}}}
+\newcommand{\calM}{{\mathcal{M}}}
+\newcommand{\calO}{{\mathcal{O}}}
+\newcommand{\calP}{{\mathcal{P}}}
+\newcommand{\calS}{{\mathcal{S}}}
+\newcommand{\calU}{{\mathcal{U}}}
+\newcommand{\calV}{{\mathcal{V}}}
+\newcommand{\calW}{{\mathcal{W}}}
+\newcommand{\calX}{{\mathcal{X}}}
 
 \newcommand{\uncertain}[1]{{\color{red}\bfseries (#1)}}
 \newcommand{\nice}[1]{{\color{green!50!black} #1}}
 \newcommand{\bad}[1]{{\color{red!60!black} #1}}
+
+\newcommand{\heading}[1]{\textbf{\color{orange}\textit{(#1)}}}
 
 \DeclareMathOperator{\Ker}{Ker}
 \DeclareMathOperator{\Imag}{Imag}
@@ -324,7 +343,7 @@ Note that in the above the single density matrices $\rho_k^{(j)}$ are in general
 \end{prop}
 
 \begin{prop}[a]
-	The set of linear operators on an Euclidean space $\X$ is spanned by the set of density matrices on $\X$:
+	The set of linear operators on an Euclidean space $\calX$ is spanned by the set of density matrices on $\calX$:
 	\begin{equation}
 		\on{span}\{\rho_{a,b}\,:\,\,(a,b)\in\Sigma\times\Sigma\}
 		= \L(\CC^\Sigma).
@@ -857,15 +876,6 @@ One can show that $\mathcal L\subset \NS\subset \mathcal P$.
     asd
 \end{prop}
 
-\chapter{Fundations}
-
-\begin{question}
-	Does it make sense to say that the result of measuring a state $\ket0+\ket1$ is a coherent superposition of the form $\ket{0,M_0}+\ket{1,M_1}$, with $\ket{M_i}$ ``macroscopic'' states of the measurement apparatus?
-\end{question}
-
-\begin{question}
-	Why does the structure of tensor product fit so well with QM?
-\end{question}
 
 \chapter{Quantum resources}
 
@@ -876,7 +886,7 @@ Among these \emph{entanglement}, \emph{quantum discord}, and \emph{quantum coher
 Quantum resources can be formally classified in the framework of resource theories,
 where the state space is divided into free states and resource states.
 
-\subsection{Resource theory of quantum coherence}
+\section{Resource theory of quantum coherence}
 \newcommand{\setIncoherentStates}{\mathcal{I}}
 Sources: \cite{aberg2006quantifying,baumgratz2014quantifying,winter2016operational,marvian2016how,streltsov2016quantum}.
 
@@ -927,7 +937,9 @@ While it is reasonable to believe that this maximization is out of reach, it tur
 	$\mathcal C_{\on{max}} = \mathcal C(\rho_{\on{max}}) = D(\rho, \mathds{1} / d)$.
 \end{thm}
 
-\subsection{Coherence VS Multipartite entanglement~\parencite{regula2017converting,killoran2016converting}}
+\subsection{Coherence VS multipartite entanglement}
+\parencite{regula2017converting,killoran2016converting}
+
 In~\cite{regula2017converting} is presented a general formalism for the conversion of nonclassicality into multipartite entanglement.
 They show that a faithful reversible transformation between the two resources is always possible, within a precise resource-theoretic framework.
 
@@ -968,8 +980,48 @@ A 1-producible state $\rho$ has $D_E(\rho)=1$ and is fully separable.
 	and $V\rho V^\dagger$ is fully separable iff $\rho$ is classical ($k=1$).
 \end{thm}
 
-\printbibliography
+\chapter{Making sense of things}
 
+\section{Mach-Zender setup}
+
+\heading{The setting}
+Consider the simple Mach-Zender setup, with a single photon passing through two BSs, with the inputs of the second equal to the inputs of the first one. We can write the corresponding evolution as
+$a_1^\dagger\to a_1^\dagger + a_2^\dagger \to a_1^\dagger$, or equivalently $\ket0\to H\ket0\to H^2\ket0=\ket0$.
+
+\heading{The paradox}
+Measuring between the two BSs, the photon can be found in one of the two possible positions with equal probability. We can therefore meaningfully talk of the corresponding probability distribution $p(\on{left})=p(\on{right})=1/2$.
+We can also talk about \emph{conditional} probabilities of observing the photon in, say, the first output of the second BS, when the photon has previously been (measured and) found in the $i$-th branch of the apparatus.
+This will read $p(\text{out}_1|\text{left})=p(\text{out}_1|\text{right})=1/2$.
+Classically, we should expect from these two facts that the final probability is given by
+\begin{equation}
+	p(\text{out}_1) =
+	p(\text{out}_1|\text{left}) p(\text{left})
+	+ p(\text{out}_1|\text{right}) p(\text{right}) = 1/2.
+	\label{MZ:eq:conditional_probabilities_classical_law}
+\end{equation}
+This is \emph{not} what is observed, nor what QM predicts, which is $p(\text{out}_1)=1$.
+Why is this so? What went wrong in the above argument?
+
+\heading{The underlying wrong assumption}
+The misguided assumptions in the above argument is the existence of a global probability distribution $p(x,y)$, with $x$ ``final position of the photon'' and $y$ ``position the photon is found in between the BSs''.
+If there is such a probability distribution, then we can always write
+\begin{equation}
+	p(x) = p(x|Y=0) p(Y=0) + p(x|Y=1) p(Y=1).
+\end{equation}
+Note that the above is nothing but a rewriting of the very definition of marginal and conditional probabilities.
+That this basic property of probability distributions fails in our MZ, means that it was wrong of us to assume the well-definedness of an underlying $p(x,y)$.
+The existence of such an object, physically, means the possibility to, at least in principle, predict the value of $x$ and $y$.
+
+\heading{``Measuring'' is itself an event to take into account}
+The next natural question is ``why should $p(x,y)$ be ill-defined?''.
+The answer lies in the observation that the \emph{act of measuring itself}, in this context, affects the possible outcomes of the apparatus. If no measurement is performed $p(\text{out}_1)=1$, but if a measurement is performed in between the BSs, we have $p(\text{out}_1)=1/2$ instead.
+In other words, in~\cref{MZ:eq:conditional_probabilities_classical_law}, we did not account for the third possibility of no measurement performed between the BSs.
+Doing that, we realise that the correct statement is quite trivial, because $p(\text{out}_1)=1$ only when no measurement is performed, which is an event incompatible with measuring the photon left or right (which are both sub-cases of the "measuring" instance).
+
+
+
+
+\printbibliography
 
 \section*{List of Acronyms}
 \begin{acronym}
