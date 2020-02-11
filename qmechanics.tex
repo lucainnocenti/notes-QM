@@ -1,0 +1,989 @@
+\documentclass[a4paper]{report}
+
+% =============== bibliography  ========================
+\usepackage[
+    backend=biber,
+    style=authoryear-comp,
+    maxcitenames=1,
+    url=true,
+    doi=true,
+    sorting=ynt
+]{biblatex}
+\DeclareNameAlias{author}{first-last}
+% use the following to print URL only if no DOI is defined
+\DeclareSourcemap{
+  \maps[datatype=bibtex]{
+    \map[overwrite]{
+      \step[fieldsource=doi, final]
+      \step[fieldset=url, null]
+      % \step[fieldset=eprint, null]
+    }  
+  }
+}
+% ================ packages to use Italian characters ================
+% Note that the utf8 encoding only works if the file is saved in UTF-8 encoding
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+
+\usepackage{csquotes}
+\usepackage[italian,english]{babel}
+
+% \usepackage[T1]{fontenc}
+% ================ general page layout ================
+\usepackage{fontspec}
+\usepackage{microtype}
+\usepackage{fullpage}
+% ================ mathematics and fonts ================
+\usepackage{bm} % provides more bold symbols
+
+% bbold provides \mathbb{1}, but ruins letters, and \mathbb{1} itself is pixelated.
+% \usepackage{bbold}
+
+\usepackage{dsfont} % provides more \mathbb \smallskipymbols
+\usepackage{amsmath,amssymb,amsthm,thmtools}
+\usepackage{mathtools}
+\usepackage{cases}
+\usepackage{calc}
+\usepackage{mathrsfs} % provides the nice \matchsrc font
+% \usepackage{soulutf8} % provides \st and \ul
+\usepackage[normalem]{ulem} %provides \sout command for striking through text
+% =========== HYPERREF AND CO. =============
+\usepackage{nameref, hyperref, cleveref}
+\crefname{appsec}{Appendix}{Appendices}
+\hypersetup{
+  colorlinks   = true, %Colours links instead of ugly boxes
+  urlcolor     = green!80!black, %Colour for external hyperlinks
+  linkcolor    = blue, %Colour of internal links
+  citecolor    = red!80!black %Colour of citations
+}
+
+\usepackage{physics} % provides Dirac notation and lots of other things
+
+\usepackage{float} % provides the option H for includegraphics
+
+\usepackage{graphicx}
+
+\usepackage[usenames,dvipsnames,table]{xcolor}
+\usepackage[skins]{tcolorbox}
+\tcbuselibrary{breakable}
+
+\newtcolorbox[auto counter]{depthbox}[2][]{%
+    enhanced, breakable, title=Box~\thetcbcounter: #2 #1%
+}
+
+\usepackage[font=small,justification=centering]{caption} % tweak fonts in labels
+\usepackage{subcaption}
+% \newenvironment{Figure}
+%   {\par\medskip\noindent\minipage{\linewidth}}
+%   {\endminipage\par\medskip}
+
+% placeins provides \FloatBarrier command. Also, with the section option it automatically puts a \FloatBarrier before each section (same with subsection option ecc.)
+\usepackage{placeins}
+\usepackage{multicol}
+\usepackage{multirow,tabularx,booktabs}
+\setlength{\columnsep}{1cm}
+
+\usepackage[printonlyused,withpage,nohyperlinks,smaller]{acronym}
+\input{fix_acronym.tex}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{shapes.geometric}
+
+\graphicspath{{./figures/}}
+\addbibresource{bibliography.bib}
+\input{fix_authoryear_style}
+
+%=================== CUSTOM MACROS ==============================
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\EE}{\mathbb{E}}
+
+\newcommand{\mxm}{{m \!\times\! m}}
+\newcommand{\NxN}{{N \!\times\! N}}
+\newcommand{\xxy}[2]{{#1 \! \times \! #2}}
+\newcommand{\dimens}[2]{{#1$\!\times\!$#2}}
+\newcommand{\on}[1]{\operatorname{#1}}
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+
+\renewcommand{\H}{{\mathcal H}}
+\newcommand{\B}{\mathcal{B}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+\renewcommand{\S}{\mathcal{S}}
+\newcommand{\I}{\mathcal{I}}
+\renewcommand{\L}{\mathcal{L}}
+\newcommand{\X}{\mathcal{X}}
+
+\newcommand{\uncertain}[1]{{\color{red}\bfseries (#1)}}
+\newcommand{\nice}[1]{{\color{green!50!black} #1}}
+\newcommand{\bad}[1]{{\color{red!60!black} #1}}
+
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\Imag}{Imag}
+\DeclareMathOperator{\Var}{Var}
+
+
+% ========== EXTERNAL FILES ==============================
+\input{theorems.tex}
+
+\date{\today}
+
+\begin{document}
+
+\title{Quantum mechanics}
+\author{Luca Innocenti}
+\maketitle
+
+\tableofcontents
+
+\chapter{Schr\"{o}dinger equation and stuff}
+
+\begin{prop}
+	The Hamiltonian is by definition the infinitesimal generator of the propagator:
+	\begin{equation}
+		\frac{d}{dt}\mathcal U(t,t_0) = (-iH(t))\mathcal U(t,t_0).
+	\end{equation}
+\end{prop}
+
+\begin{thm}[Schr\"{o}dinger-Robertson uncertainty relations]
+	Let $A$ and $B$ be Hermitian operators, and let us denote their variances on some state $\ket\psi$ as
+	\[ \sigma_A^2\equiv\Var[A]=\EE[(A-\EE[A])^2] = \expval{A^2}-\expval{A}^2, \]
+	and similarly for $\sigma_B^2$.
+	Then the following holds:
+	\begin{equation}
+		\sigma_A^2 \sigma_B^2 \ge
+		\abs{\expval{\{A,B\}}-\frac{1}{2}\expval A\expval B}^2
+		+ \abs{\frac{1}{2i} \expval{[A,B]}}^2,
+	\end{equation}
+	and thus, in particular,
+	\begin{equation}
+		\sigma_A\sigma_B\ge\frac{1}{2}\abs{\expval{[A,B]}}.
+	\end{equation}
+\end{thm}
+\begin{proof}
+	The main observation is that $\sigma_A^2\equiv\Var(A)=\|A-\EE[A]\|^2$.
+\end{proof}
+
+\begin{prop}
+	Let $\ket n,\ket m$ be (time-dependent) eigenvectors of the time-dependent Hamiltonian $H$, with
+	$H\ket n=E_n\ket n$ and $H\ket m=E_m\ket m$, $E_n\neq E_m$. Then,
+	\[
+		\mel{m}{\partial_t H}{n}=(E_n-E_m)\braket{m}{\dot n}
+		+ \delta_{nm} \dot E_n.
+	\]
+	\label{prop:components_dotH}
+\end{prop}
+
+\begin{remark}
+	If two eigenstates orthonormal $\ket m, \ket n$ are degenerate,~\cref{prop:components_dotH} says that $\mel{m}{\dot H}{n}=0$. While this is true, it should be noted that it only holds if the eigenstates are chosen to be \emph{differentiable} at all times. This is a nontrivial point when there is a degeneracy: consider for example the case $H(t)=t\sigma_x$. If we choose $\ket0, \ket1$ as initial eigenstates, we get a discontinuity because the eigenstates for $t>0$ are $\ket\pm$.
+\end{remark}
+
+\begin{prop}
+	Let $\ket\psi=\ket{\psi(t)}$ be the state at time $t$, evolving with a time-dependent Hamiltonian $H=H(t)$, whose instantaneous eigenvalues and eigenvectors are $E_n=E_n(t)$ and $\ket n=\ket{n(t)}$, respectively.
+	Then,
+	\begin{equation}
+		\frac{d}{dt}\braket{n}{\psi} = -i\mel{n}{H}{\psi} + \braket{\dot n}{\psi}.
+	\end{equation}
+	Using~\cref{prop:components_dotH} this translates into
+	\begin{equation}
+		\frac{d}{dt}\braket{n}{\psi} =
+		- i \mel{n}{H}{\psi}
+		+ \sum_k' \braket{k}{\psi} \frac{\dot H_{nk}}{E_k - E_n}
+		+ \sum_k'' \braket{\dot n}{k}\braket{k}{\psi},
+	\end{equation}
+	where the primed sum is over all eigenstates $E_k$ with $E_k\neq E_n$, while the doubly primed sum is over all eigenstates $E_k$ with $E_k=E_n$.
+	\label{prop:derivative_expectation_values}
+\end{prop}
+
+\begin{prop}
+	For any instantaneous eigenstate $\ket n\equiv\ket{n(t)}$, $\braket{\dot n}{n}$ is purely imaginary.
+	\label{prop:ndotn_is_purely_imag}
+\end{prop}
+\begin{proof}
+	Follows immediately by differentiating $\braket{n(t)}{n(t)}=1$.
+\end{proof}
+
+\begin{prop}
+	If $\ket{\psi(t_0)}=\ket{n(t_0)}$, then~\cref{prop:derivative_expectation_values} becomes
+	\begin{align}
+		\left. \frac{d}{dt}\braket{n}{\psi}\right\rvert_{t=t_0} &= 
+		-i E_n(t_0) + \braket{\dot n(t_0)}{n(t_0)}, \\
+		\left. \frac{d}{dt}\braket{k}{\psi}\right\rvert_{t=t_0} &= 
+		\braket{\dot k(t_0)}{n(t_0)} = \frac{\dot H_{kn}(t_0)}{E_k(t_0)-E_n(t_0)},\quad E_k(t_0)\neq E_n(t_0).
+	\end{align}
+\end{prop}
+
+\begin{prop}
+	Let $H(t)$ be a time-dependent Hamiltonian, and
+	$\ket{\Psi}\equiv \sum_n c_n(t)e^{i\theta_n(t)}\ket{\psi_n(t)}$ with
+	$\theta_n(t)\equiv-\int_0^t d\tau\,E_n(\tau)$.
+	Then, assuming $E_n\neq E_m$ for all $n,m$, the Schr\"{o}dinger equation for $\ket{\Psi(t)}$ is equivalent to the following equations for the coefficients:
+	\begin{equation}
+	\begin{aligned}
+		\dot c_n &= -c_n \braket{\psi_n}{\dot n}
+		- \sum_m c_m e^{i(\theta_m-\theta_n)} \braket{ n}{\dot m} \\
+		&= -c_n \braket{ n}{\dot n}
+		- \sum_m c_m e^{i(\theta_m-\theta_n)} \frac{\mel{n}{\partial_t H}{ m}}{E_m-E_n}.
+	\end{aligned}
+	\end{equation}
+\end{prop}
+
+\begin{question}
+	What about the degenerate case? Also, more precise statements about precision of this approximation? What is the probability of excited states being occupied?
+\end{question}
+
+Integrability of time-dependent Hamiltonian~\autocite{sinitsyn2018integrable}.
+
+\begin{prop}
+	Consider a state $\ket{\psi_0}=\sum_n c_n \ket n$ evolving according to a time-independent Hamiltonian $H$, with $H\ket n=E_n \ket n$. Let us denote with $\ket{\psi_t}=e^{-iHt}\ket{\psi_0}$ the state evolved at time $t$, and with $S(t)=\braket{\psi_0}{\psi_t}$ the associated overlap.
+	We then have $S(t)=\sum_n \abs{c_n}^2 e^{-iE_n t}=\expval{\exp(-iHt)}$, and
+	\begin{equation}
+		\arccos\abs{S(t)} = \Delta H\, t + \mathcal O(t^3).
+	\end{equation}
+\end{prop}
+
+\chapter{States}
+
+\section{States}
+\begin{defn}[State]
+	Let $\H$ be a complex Hilbert space, $\B(\H)$ the set of bounded operators on $\H$,
+	and $\B_1(\H)\subset\B(\H)$ the set of \emph{trace-class} operators on $\H$,
+	and $\S(\H)\subset\B_1(\H)$ be the set of positive trace-class operators with \textbf{unit trace}.
+	The elements $\rho\in\S(\H)$ are called \textbf{states}.
+	In other words, a state $\rho$ is a bounded, trace-class operator such that
+	$\Tr(\rho)=1$ and $\rho\ge0$.
+\end{defn}
+
+\begin{prop}
+	The space of trace-class operators $\B_1(\H)$ is a two-sided $*$-ideal of $\B(\H)$, and the set of states $\S(\H)$ is a convex, bounded subset of $\B_1(\H)$.
+\end{prop}
+
+\begin{defn}
+	A state $\rho$ is \emph{pure} if $\rho^2=\rho$.
+\end{defn}
+
+\begin{defn}[Separable states]
+	Let $\rho$ be a density matrix for a bipartite system $\mathcal H^A \otimes \mathcal H^B$.
+	We say that $\rho$ is a \emph{product state} if there exist states $\rho^A$ and $\rho^B$ such that
+	\begin{equation}
+		\rho = \rho^A \otimes \rho^B.
+	\end{equation}
+	The state is called \emph{separable} if it can be written as a convex sum of product states, that is, if there are weights $p_i\in\RR, \sum_i p_i=1$, and product states $\rho_i^A \otimes \rho_i^B$, such that
+	\begin{equation}
+		\rho = \sum_i p_i \rho_i^A \otimes \rho_i^B.
+	\end{equation}
+	Otherwise, the state is said to be \emph{entangled}.
+\end{defn}
+Note that here $\rho_i^A$ and $\rho_i^B$ need not be pure here.
+
+\begin{defn}[Separable and entangled multipartite states]
+	An $N$-partite state is said to be \emph{fully separable} if its density matrix $\rho$ can be written as a convex sum of product states:
+	\begin{equation}
+		\rho = \sum_k p_k \rho_k^{(1)} \otimes \rho_k^{(2)} \otimes \cdots \otimes \rho_k^{(N)},
+		\quad \text{with} \quad
+		\sum_k p_k = 1
+		\quad \text{and}\quad
+		p_k > 0.
+	\end{equation}
+	Otherwise, the state is \emph{entangled}.
+	A state is said to be \emph{genuine multipartite entangled} if all the subsystems are entangled with each other, not only some of them.
+	This means in particular that there must be no way to write the state as tensor product of two different states, acting on some pair of subsystems.
+\end{defn}
+Note that in the above the single density matrices $\rho_k^{(j)}$ are in general mixed states (that is, not necessarily pure).
+
+\begin{prop}
+	Given a complete basis of Hermitian, traceless, orthogonal, operators, with normalisation $\Tr(\Lambda_i\Lambda_j)=d\delta_{ij}$, any state $\rho$ can be represented in terms of its expectation values over this basis as
+	\begin{equation}
+		\rho = \frac{1}{d}\left[ I + \sum_k \Tr(\rho\Lambda_k)\Lambda_k \right].
+	\end{equation}
+	This is the so-called \emph{Bloch space} representation of $\rho$.
+\end{prop}
+
+\begin{prop}
+	The set of states $\S(\H)$, with $\H$ $d$-dimensional, is homeomorphic to the \emph{Bloch space} $B(\RR^{d^2-1})$, which is defined as the set of expectation values of all states $\rho$ over a complete set of traceless, orthogonal observables:
+	\begin{equation}
+		B(\RR^{d^2-1})\equiv\left\{
+			(\tr(\rho\Lambda_k))_{k=1}^{d^2-1}:\,\,\rho\in\S(\H)
+		\right\} \subset \RR^{d^2-1}.
+	\end{equation}
+\end{prop}
+
+\begin{prop}[\cite{lidar2013quantum} and \href{https://physics.stackexchange.com/a/425101/58382}{physics.SE answer}]
+	The \emph{Bloch space} $B(\RR^{d^2-1})$ can be written as
+	\begin{equation}
+		B(\RR^{d^2-1}) \equiv \left\{
+			\bs b\in\RR^{d^2-1}\,:\,\,\|\bs b\|\le\frac{1}{\abs{m(\Lambda_{\hat{\bs b}})}}
+		\right\},
+	\end{equation}
+	where $\hat{\bs b}\equiv\bs b/\|\bs b\|$, $\Lambda_{\hat{\bs b}}\equiv\sum_k \hat{\bs b}_k \Lambda_k$, and $m(\Lambda_{\hat{\bs b}})$ denotes the smallest eigenvalue of $\Lambda_{\hat{\bs b}}$.
+\end{prop}
+
+\begin{prop}[a]
+	The set of linear operators on an Euclidean space $\X$ is spanned by the set of density matrices on $\X$:
+	\begin{equation}
+		\on{span}\{\rho_{a,b}\,:\,\,(a,b)\in\Sigma\times\Sigma\}
+		= \L(\CC^\Sigma).
+	\end{equation}
+\end{prop}
+
+\begin{defn}[Positive and completely positive maps, \emph{\cite{horodecki1996separability}}]
+	Let $\mathcal H_1$ and $\mathcal H_2$ be 2 finite dimensional Hilbert spaces,
+	and let $\mathcal A_1$ and $\mathcal A_2$ denote the set of operators acting on $\mathcal H_1$ and $\mathcal H_2$, respectively.
+	Recall that $\mathcal A_i$ constitutes a Hilbert space (also called Hilbert-Schmidt space) with scalar product $\langle A, B\rangle = \Tr B^\dagger A$.
+	The space of linear maps between $\mathcal A_1$ and $\mathcal A_2$ is denoted with
+	$\mathcal L(\mathcal A_1, \mathcal A_2)$.
+	We say that a map $\Lambda \in \mathcal L(\mathcal A_1, \mathcal A_2)$ is \emph{positive}
+	if it maps positive operators in $\mathcal A_1$ into positive operators in $\mathcal A_2$,
+	that is,
+	if $A \ge 0$ implies $\Lambda(A) \ge 0$.
+	Finally, we say that a map $\Lambda \in \mathcal L(\mathcal A_1, \mathcal A_2)$ is \ac{CP} if the induced map
+	\begin{equation}
+		\Lambda_n = \Lambda \otimes \mathds1 \, : \,\,
+		\mathcal A_1 \otimes \mathcal M_n \to \mathcal A_2 \otimes \mathcal M_n
+	\end{equation}
+	is positive for all $n$.
+	Here $\mathcal M_n$ stands for the set of complex $n\times n$ matrices,
+	and $\mathds 1$ is the identity map.
+	\label{def:positive_maps}
+\end{defn}
+
+Thus, from the above definition, a tensor product of a completely positive map with the identity maps positive operators into positive operators.
+It is remarkable that there are at all positive maps that do not possess this 
+property.
+
+\section{Entropy and stuff}
+Holevo's theorem~(\href{Watrous notes, chapter 12}{https://cs.uwaterloo.ca/~watrous/LectureNotes/CS766.Fall2011/12.pdf}).
+
+\section{Purification of states}
+
+\begin{defn}
+	Let $\rho$ be a state acting on $\H_A$.
+	A state $\tilde\rho$ acting on $\H_A\otimes\H_B$ is said to be an \emph{extension} of $\rho$ if $\tr_B\tilde\rho=\rho$.
+	A \emph{pure} state $\ket\psi\in\H_A\otimes\H_B$ is said to be a \emph{purification} of $\rho$ if $\tr_B\ketbra\psi=\rho$.
+\end{defn}
+
+\begin{prop}
+	Let $\ket\psi$ be a purification of $\rho$: $\tr_1\ketbra\psi=\rho$. Then there are unitaries $U, V$ such that
+	\begin{equation}
+		\ket\psi=(U\otimes \sqrt\rho\,V)\sum_k \ket{kk}.
+	\end{equation}
+\end{prop}
+\begin{proof}
+	If $\ket\psi$ is a purification of $\rho$, then $\tr_1\ketbra\psi=\rho$.
+	The components of the vector $\ket\psi$ can be expressed using two indices as $\psi_{ij}$. This means that we think of $\psi$ as a matrix, and thus apply the \ac{SVD} to it:
+	\begin{equation}
+		\psi_{ij} = \sum_k \lambda_k u_{ik} v_{jk},\quad
+		\lambda_k\in\RR,
+	\end{equation}
+	where $u_{ik}, v_{jk}$ are elements of the unitary matrices $U$ and $V$, respectively. In vector notation, this reads
+	\begin{equation}
+		\ket\psi=\sum_k\lambda_k\ket{u_k}\otimes\ket{v_k}.
+	\end{equation}
+	Note that this is nothing but the Schmidt decomposition of $\ket\psi$.
+	Imposing $\braket\psi=1$ gives $\sum_k \lambda_k=1$.
+	The condition of the partial trace gives
+	\begin{equation}
+		\sum_k \lambda_k^2 \ketbra{v_k}=\rho
+		\Longrightarrow \rho\ket{v_k}=\lambda_k^2\ket{v_k}.
+	\end{equation}
+	The result is then obtained by noticing that $U\ket k=\ket{u_k}$ and $V\ket k=\ket{v_k}$. Note how this also shows us that while the choice of $U$ does not matter, $V$ has to be the unitary sending $\ket k$ into the eigenbase of $\rho$.
+\end{proof}
+
+\begin{prop}
+	Let $\rho$ be a state. Then, $\ket\psi$ is a purification of $\rho$ if and only if
+	$\ket\psi=\sum_k\sqrt{p_k}\ket{u_k}\otimes\ket{v_k}$,
+	for some orthonormal basis $\{\ket{u_k}\}_k$, and some eigenbasis $\{\ket{v_k}\}_k$ of $\rho$ with $\rho\ket{v_k}=p_k\ket{v_k}$.
+\end{prop}
+Note that in the above the choice of $\ket{v_k}$ is unique if and only if $\rho$ is nondegenerate.
+
+\section{Fidelity}
+
+\begin{defn}
+	The \emph{fidelity} between two states $\rho$ and $\sigma$ is the quantity:
+	\begin{equation}
+		\F(\rho,\sigma) \equiv \tr(\sqrt{\rho^{1/2}\sigma\rho^{1/2}}).
+	\end{equation}
+	\label{def:fidelity}
+\end{defn}
+
+\begin{prop}
+	\Cref{def:fidelity} is equivalent to $\F(\rho,\sigma)=\tr\lvert\sqrt\rho\sqrt\sigma\rvert$, where $|A|\equiv\sqrt{A^\dagger A}$.
+	\label{def:fidelity_with_abs}
+\end{prop}
+\begin{proof}
+	$(\sqrt\rho\sqrt\sigma)^\dagger (\sqrt\rho\sqrt\sigma) = \sqrt\sigma\rho\sqrt\sigma$.
+\end{proof}
+
+\begin{prop}
+	The fidelity is \emph{symmetric}: $\F(\rho,\sigma)=\F(\sigma,\rho)$.
+\end{prop}
+\begin{proof}
+	This is more easily shown from~\cref{def:fidelity_with_abs}, and follows from the more general fact that for any matrix $A$, $\tr|A^\dagger|=\tr|A|$.
+	To see this, consider the \ac{SVD} of $A$:
+	\begin{equation}
+		A = \sum_k |\lambda_k| \ketbra{v_k}{w_k},
+		\label{eq:svd_decomposition_for_A}
+	\end{equation}
+	with $|\lambda_k|^2\in\RR$ the eigenvalues of $A^\dagger A$, and $\{\ket{v_k}\}_k,\{\ket{w_k}\}_k$ the eigenbases of $AA^\dagger$ and $A^\dagger A$, respectively.
+	Then, $|A|\equiv\sqrt{A^\dagger A}$ is written as
+	\begin{equation}
+		|A| = \sum_k |\lambda_k| \ketbra{w_k}{w_k},
+		\label{eq:svd_decomposition_with_wk}
+	\end{equation}
+	so that the trace gives $\tr|A| = \sum_k |\lambda_k|$.
+	Note that if we had defined $|A|$ as $|A|=\sqrt{AA^\dagger}$, we would have had $\ket{v_k}$ instead of $\ket{w_k}$ in~\cref{eq:svd_decomposition_with_wk}, but taking the trace we would have arrived to the same final result.
+	The expression of $A^\dagger$ is equal to~\cref{eq:svd_decomposition_for_A}, except for $v_k$ and $w_k$ being switched. Using similar reasoning as above, we thus conclude that $\tr|A^\dagger|=\tr|A|$.
+\end{proof}
+
+\begin{prop}
+	If $\rho$ is pure, with $\rho=\ketbra\psi$, then
+	$\F(\rho,\sigma)=\mel{\psi}{\sigma}{\psi}^{1/2}$.
+\end{prop}
+
+\begin{prop}
+	If both $\rho=\ketbra{\psi_\rho}$ and $\sigma=\ketbra{\psi_\sigma}$ are pure, then
+	$\F(\rho,\sigma)=\lvert\braket{\psi_\rho}{\psi_\sigma}\rvert$.
+\end{prop}
+
+\begin{prop}
+	If $[\rho,\sigma]=0$, then $\rho$ and $\sigma$ share an eigenbase. Denoting with $p_k, q_k$ their eigenvalues, we have $\F(\rho,\sigma)=\sum_k\sqrt{p_k q_k}$.
+	In other words, for commuting states, the fidelity is equal to the \emph{Bhattacharyya distance} between the corresponding probability distribution.
+\end{prop}
+
+\begin{thm}[Uhlmann's theorem]
+	Let us denote with $\ket{\psi_\rho}$ a \emph{purification} of the state $\rho$. Then,
+	\begin{equation}
+		\F(\rho,\sigma)=\max_{\ket{\psi_\rho},\ket{\psi_\sigma}}\lvert\braket{\psi_\rho}{\psi_\sigma}\rvert.
+	\end{equation}
+\end{thm}
+
+\begin{prop}
+	Let $\{E_k\}_k$ be a POVM. The fidelity can be written as
+	\begin{equation}
+		F(\rho,\sigma)=\min_{\{E_k\}_k} F(\bs p,\bs q),
+	\end{equation}
+	where the minimum is taken over all possible POVMs, and $\bs p,\bs q$ are the probability distributions given by $\rho,\sigma$ for a given POVM:
+	\begin{equation}
+		p_k=\tr(E_k \rho),\quad q_k=\tr(E_k \sigma).
+	\end{equation}
+\end{prop}
+
+\section{Convexity and other stuff}
+The natural structure of the set $H_N$ of Hermitian $N\times N$ matrices is that of a real Hilbert space of dimension $N^2$ with the scalar product
+$(X, Y) \equiv \Tr(XY^\dagger) = \Tr(XY)$.
+The set $\mathcal D$ of density matrices is a subspace of $H_N$ defined as
+\begin{equation}
+	\mathcal D = \mathcal D_N = \{ \rho \in H_N \,:\,\, \rho \ge 0, \,\Tr\rho=1 \}.
+\end{equation}
+A density matrix $\rho$ has a spectral representation in terms of a complete set of orthonormal eigenvectors $\ket i \in \mathbb C^N$ with eigenvalues $\lambda_i \ge 0$:
+\begin{equation}
+	\rho = \sum_{i=1}^N \lambda_i \ketbra{i}{i},
+	\qquad
+	\braket{i}{j} = \delta_{ij},
+	\qquad
+	\sum_{i=1}^N \ketbra{i}{i} = \mathds1.
+\end{equation}
+The spectral representation is one particular ensemble representation of $\rho$.
+The \emph{rank} $\Imag\rho$ of a density matrix $\rho$ is the number of eigenvalues $\lambda_i > 0$.
+The \emph{kernel} (or null space) of $\rho$ is the set $\Ker(\rho)$ of states $\ket\psi$ such that $\rho\ket\psi = 0$.
+Defining the operators $P$ and $Q$ as
+\begin{equation}
+	P \equiv \sum_{\mathclap{i\,:\,\lambda_i > 0}}\,\, \ketbra{i}{i}
+	\qquad\text{and}\qquad
+	Q \equiv 1 - P = \sum_{\mathclap{i\,:\,\lambda_i=0}}\,\, \ketbra{i}{i},
+\end{equation}
+we can see that they are Hermitian and project orthogonally onto the two complementary orthogonal subspaces $\Imag\rho$ and $\Ker\rho$.
+
+A general Hermitian matrix $A$ is said to be \emph{positive}, or positive semidefinite,
+if all of its eigenvalues are non-negative.
+When this is the case, we write that $A\ge0$.
+An equivalent way to state the positivity condition is to say that
+$\mel{\psi}{A}{\psi} \ge 0$ for all $\ket\psi\in \mathbb C^N$.
+The above condition, together with the spectral representation of a state $\rho$,
+directly imply that $\mel{\psi}{\rho}{\psi} = 0 \Longleftrightarrow \rho\ket\psi=0$.
+
+The fact that the positivity conditions $\mel\psi\rho\psi$ are linear in $\rho$ implies that $\mathcal D$ is a convex set, so that if $\rho$ is a proper convex combination of $\rho_1, \rho_2\in \mathcal D$, it is itself in $\mathcal D$.
+Moreover, if $\rho=p \rho_1 + (1-p)\rho_2$ with $0<p<1$, then
+$\Ker\rho = \Ker\rho_1 \cap \Ker\rho_2$.
+
+A compact (closed and bounded) convex set is determined by its extremal points,
+those points that are not convex combinations of other points in the set.
+The extremal points of $\mathcal D$ are the pure states of the form
+$\rho=\ketbra\psi$ with $\ket\psi\in\mathbb C^N$ and $\braket\psi=1$.
+Thus, the spectral representation is an expansion of $\rho$ as a convex combination of $m$ extremal points in $\mathcal D$, where $m$ is the rank of $\rho$.
+
+There are several equivalent ways to formulate the extremality condition of $\rho \in\mathcal D$.
+The state $\rho$ is extremal in $\mathcal D$ if and only if
+\begin{itemize}
+	\item $\rho = \ketbra\psi$ with $\braket\psi=1$.
+	\item The exists no $A\neq 0$ with $\Tr A=0$ and $PAP=A$.
+	\item $PAP=A$ with $A$ Hermitian implies that $A=\rho$.
+	\item There exists no $\rho'\in\mathcal D$ with $\rho'\neq\rho$ and $\Imag\rho'\neq\Imag\rho$.
+\end{itemize}
+
+\section{Necessary and sufficient characterizations of entanglement}
+\Cref{def:positive_maps} states that if $\Lambda$ is \ac{CP},
+then for any state $\rho$ we have $(\Lambda \otimes \mathds1)\rho \ge 0$.
+On the other hand, if $\Lambda$ is a positive, non-\ac{CP} operator, there may be states $\rho$ such that
+$(\Lambda \otimes \mathds1)\rho < 0$.
+But if $\rho$ is a product state, $\rho = \rho_1 \otimes \rho_2$, then
+$(\Lambda \otimes \mathds1)\rho = (\Lambda \rho_1) \otimes \rho_2$ is always positive,
+even if $\Lambda$ is not \ac{CP}.
+This simple observation suggest that whether a state remains positive when a non-\ac{CP} map acts on it may tell us something about its entanglement structure.
+
+A first important result is that any entangled state can be linearly separated from the set of all separable states.
+This follows from basic theorems in convex analysis.
+The proof invokes the existence of a separating hyperplane between the compact convex set of separable density matrices on $\mathcal H_1 \otimes \mathcal H_2$ and a point,
+the entangled density matrix $\rho$,
+that does not belong to it.
+This separating hyperplane can be characterized by a vector (in this case, an operator $A$),
+that is normal to it.
+The hyperplane is then defined as the set of density matrices $\sigma$ such that
+$\Tr(A\rho) = 0$.
+\begin{thm}[\emph{\cite{horodecki1996separability}}]
+	For any \uline{inseparable} state $\rho \in \mathcal A_1 \otimes \mathcal A_2$,
+	there exists an Hermitian operator $A$ such that
+	\begin{equation}
+		\Tr(A\rho) < 0
+		\quad \text{and} \quad
+		\Tr(A\sigma) \ge 0
+		\,\, \text{ for any separable }\sigma.
+	\end{equation}
+\end{thm}
+
+\begin{remark}
+	The choice of ``origin'' in the above theorem is clearly irrelevant.
+	We could have stated the result with $\Tr(A\rho) < c$ and
+	$\Tr(A\sigma) \ge c$ for any $c \in \mathbb R$.
+\end{remark}
+
+\begin{lemma}[\emph{\cite{horodecki1996separability}}]
+	A state $\rho \in \mathcal A_1 \otimes \mathcal A_2$ is \uline{separable} iff
+	$\Tr(A\rho) \ge 0$
+	for any Hermitian operator $A$ such that
+	$\Tr(A P\otimes Q) \ge 0$, where $P$ and $Q$ are projections acting on
+	$\mathcal H_1$ and $\mathcal H_2$, respectively.
+	\label{lemma:horodecki96_separable_iff_TrArhoPositive}
+\end{lemma}
+
+\begin{remark}
+	If an operator $A$ satisfies the condition $\Tr\big( A(P \otimes Q) \big) \ge 0$
+	for any projectors $P$ and $Q$ then it is Hermitian.
+\end{remark}
+
+\begin{remark}
+	\Cref{lemma:horodecki96_separable_iff_TrArhoPositive} can be generilized for infinitely dimensional Hilbert spaces.
+	Namely, the condition becomes $\Tr(A\rho) \ge 0$ for any bounded $A$ such that
+	$\Tr\big( A(P\otimes Q) \big) \ge 0$ for any projectors $P$ and $Q$.
+\end{remark}
+
+\begin{thm}[\emph{\cite{horodecki1996separability}}]
+	Let $\rho$ be a state in the Hilbert space $\mathcal H_1 \otimes \mathcal H_2$.
+	Then $\rho$ is separable iff for any positive map
+	$\Lambda : \mathcal A_2 \to \mathcal A_1$,
+	the operator $(\mathds1 \otimes \Lambda)\rho$ is positive.
+\end{thm}
+
+In the special case of bipartite states of 2 qubits, or 1 qubit and 1 qutrit,
+the partial transposition criterion completely characterizes entanglement:
+\begin{thm}[\emph{\cite{horodecki1996separability}}]
+	A state $\rho$ acting on $\mathbb C^2 \otimes \mathbb C^2$
+	or $\mathbb C^2 \otimes \mathbb C^3$ is separable iff
+	its partial transposition is a positive operator: $\rho^{T_1} \ge 0$.
+\end{thm}
+
+\section{General structure of multipartite entanglement}
+
+Higher dimensional entanglement without correlations~\autocite{klobus2018higher}.
+\begin{lemma}[\emph{\cite{dr2000three}}]
+	Let $\ket\psi, \ket\phi \in \mathbb{C}^n \otimes \mathbb{C}^m$ be 2 bipartite vectors, and suppose that for some local operator $A$ we have
+	$\ket\phi = A\otimes \mathds1_B \ket\psi$.
+	Then, the ranks of the corresponding reduced density matrices satisfy
+	$r(\rho_A^\psi) \ge r(\rho_A^\phi)$ and
+	$r(\rho_B^\psi) \ge r(\rho_B^\phi)$.
+\end{lemma}
+\begin{proof}
+	Consider the Schmidt decomposition of $\ket\psi$:
+	\begin{equation}
+		\ket\psi = \sum_{1=1}^{n_\psi} \sqrt{\lambda_i^\psi} \ket{i} \ket{i},
+		\quad \text{with } \lambda_i^\psi > 0
+		\quad\text{ and }\quad n_\psi \le \min(n,m),
+	\end{equation}
+	and write the operator $A$  as
+	$A = \sum_{i=1}^n \ketbra{\mu_i}{i}$,
+	where the vectors $\ket{\mu_i} \in \mathbb{C}^n$ do not need to be normalized nor linearly independent.
+	The reduced density matrices can therefore be written as
+	\begin{equation}
+		\rho_A^\psi = 
+		\sum_{i=1}^{n_\psi} \lambda_i^\psi \ketbra{i}{i},
+		\qquad
+		\rho_A^\phi = 
+		\sum_{i=1}^{n_\psi} \lambda_i^\psi \ketbra{\mu_i}{\mu_i}.
+	\end{equation}
+	If follows that $r(\rho_A^\phi) \le r(\rho_A^\psi)$, because $\rho_A^\phi$ can be written as a convex sum of \emph{at most} $n_\psi$ terms,
+	and $n_\psi$ is the rank of $\rho_A^\psi$.
+	Moreover, for an bipartite vector $r(\rho_A) = r(\rho_B)$, so that the second inequality of the lemma follows.
+\end{proof}
+Using the above lemma, we can prove the more general statement:
+\begin{lemma}[\cite{dr2000three}]
+	If two vectors $\ket\psi, \ket\phi \in \H_1 \otimes \cdots \otimes \H_N$
+	are connected by local operators as
+	$\ket\phi = A_1 \otimes \cdots \otimes A_N \ket\psi$, then the local ranks satisfy
+	$r(\rho^\psi_k) \ge r(\rho^\phi_k)$ for all $k=1,...,N$.
+\end{lemma}
+\begin{thm}
+	Two pure states of a multipartite system are equivalent under \ac{SLOCC}
+	if they are related by a local invertible operator.
+\end{thm}
+
+\section{Entanglement criteria}
+\subsection{Entanglement witnesses}
+
+\begin{defn}[Noise tolerance, \cite{tth2009practical}]
+	Let $\mathcal W$ be a witness detecting the pure quantum state $\rho$.
+	In a real experiment the realised state will be mixed with some noise, so that the actual state will be of the form
+	\begin{equation}
+		\rho_{\text{noisy}}(p) = (1-p) \rho + p \rho_{\text{noise}},
+	\end{equation}
+	for some modeling of the noise encoded in $\rho_{\text{noise}}$.
+	The \emph{noise tolerance} of the witness $\mathcal W$ is then defined as the largest $p$ such that we still have $\Tr{\mathcal W \rho_{\text{noisy}}}$.
+\end{defn}
+
+\begin{thm}
+	
+\end{thm}
+
+\begin{thm}[\cite{tth2005detection}]
+	For biseparable quantum states $\rho$ of $N$ qubits,
+	denoting with $D_N^{(N/2)}$ the $N$-qubit Dicke state with $N/2$ excitations,
+	the following inequality holds:
+	\begin{equation}
+		\Tr(\rho \ketbra*{D_{N/2,N}}{D_{N/2,N}})
+		\le C_{N/2, N},
+		\quad\text{with}\quad
+		C_{N/2,N} \equiv \frac{1}{2}\frac{N}{N-1}.
+	\end{equation}
+	If follows that a projective witness for $\ket{D_{N/2,N}}$ is
+	\begin{equation}
+		\mathcal W = \frac{1}{2} \frac{N}{N - 1} \mathds 1 -
+			\ketbra*{D_{N/2,N}}{D_{N/2,N}}.
+	\end{equation}
+\end{thm}
+
+\begin{thm}[\cite{hffner2005scalable}]
+	A projective witness for $\ket{D_{1, N}}$ is
+	\begin{equation}
+		\mathcal W = \frac{1}{2} \frac{N}{N - 1} \mathds 1 -
+			\ketbra*{D_{N/2,N}}{D_{N/2,N}}.
+	\end{equation}
+\end{thm}
+
+\begin{thm}[\cite{bergmann2013entanglement}]
+	A projective witness for $\ket{D_{k, N}}$, $1 < k < N/2$, is given by
+	\begin{equation}
+		\mathcal W = \frac{N - k}{N} \mathds 1 - \ketbra*{D_{k,N}}{D_{k,N}}.
+	\end{equation}
+\end{thm}
+
+\subsection{Schmidt number}
+For a bipartite pure state that we write in its Schmidt decomposition:
+$\ket\psi = \sum_{i=1}^k \sqrt{\lambda_k} \ket{a_i} \otimes \ket{b_i}$,
+the number $k$ is the \emph{Schmidt rank} of the pure state.
+This number is equal to the tank of the reduced density matrix (regardless of which space is traced).
+A necessary condition for a pure state to be convertible by \ac{LOCC} to another pure state is that the Schmidt rank of the first pure state is larger than or equal to the Schmidt rank of the second pure state.
+A generalization of the Schmidt rank to density matrices is the so-called \emph{Schmidt number}~\parencite{terhal2000schmidt}:
+\begin{defn}[Schmidt number, \cite{terhal2000schmidt}]
+	Let $\rho$ be a bipartite state.
+	We say that $\rho$ has Schmidt number $k$ if
+	i) for any decomposition of $\rho$, $\{p_i \ge 0, \ket{\psi_i}\}$ with $\rho = \sum_i p_i \ketbra{\psi}$, at least one of the vectors $\ket{\psi_i}$ has Schmidt rank at least $k$,
+	and ii) there exists a decomposition of $\rho$ with all vectors $\ket{\psi_i}$ having Schmidt rank \emph{at most} $k$.
+\end{defn}
+For a pure state, the Schmidt number is simply equal to the Schmidt rank.
+This immediately follows from remembering that a pure state $\rho$ only admits a single decomposition, of the form $\rho=\ketbra{\psi}$, and this decomposition clearly satisfies both (i) and (ii) with Schmidt rank $k$.
+\begin{lemma}
+	The set of separable density matrices $S_1$ is equal to the set of density matrices with Schmidt number equal to 1.
+	In other words, the separable states are all and only the states with unitary Schmidt number.
+\end{lemma}
+
+\begin{thm}[\cite{terhal2000schmidt}]
+	The Schmidt number of a density matrix cannot increase under \ac{LOCC}.
+\end{thm}
+
+\begin{defn}[$k$-positive maps, \cite{terhal2000schmidt}]
+	Let $S_k$ denote the set of density matrices on $\H_n\otimes\H_n$ that have Schmidt number $k$ or less.
+	The set $S_k$ is a convex compact subset of the set of density matrices, denotes by $S$,
+	and $S_{k-1} \subset S_k$.
+	A linear Hermiticity-preserving map $\Lambda$ is $k$-positive if and only if
+	$(\mathds1 \otimes \Lambda)\ketbra\psi \ge 0$ for all $\ketbra\psi \in S_k$.
+\end{defn}
+
+\begin{thm}[\cite{terhal2000schmidt}]
+	A density matrix $\rho$ has Schmidt number at least $k+1$ if and only if there exists a $k$-positive linear map $\Lambda_k: \mathcal M_n(\mathbb C)\rightarrow \mathcal M_n(\mathbb C)$ such that 
+	$(\mathds1\otimes \Lambda_k)\rho < 0$.
+\end{thm}
+
+\chapter{Bell nonlocality}
+
+Review on Bell nonlocality~\autocite{brunner2014bell}.
+Kochen-Specker theorem~\autocite{kochen1967problem}.
+Fine's theorem~\autocite{fine1982joint,fine1982hidden}.
+
+Consider a standard Bell's inequalities scenario: two parties, $A$ and $B$, sharing a bipartite state $\ket\Psi$. $A$ and $B$ can perform measurements on their respective parts of $\ket\Psi$. We will denote with $A$ and $B$ the random variables corresponding to their outcomes, and with $X$ and $Y$ the random variables corresponding to their choices of measurements.
+The most general type of correlations that can be observed is of the form $p(ab|xy)$.
+
+We want to understand whether the correlations between the measurements performed by $A$ and $B$ are compatible with a hidden variable theory.
+By \emph{hidden variable theory} we mean a theory which tries to explain the correlations $p(ab|xy)$ under the assumptions of \emph{locality} and \emph{realism}.
+Mathematically, this is expressed in the following assumption over $p$:
+\begin{equation}
+    p(ab|xy) = \sum_\lambda p(\lambda) p(a|x\lambda)p(b|y\lambda).
+    \label{eq:prob_lhv_decomposition}
+\end{equation}
+The gist of Bell's theorem, in the CHSH form, is that~\cref{eq:prob_lhv_decomposition} is not compatible with \ac{QM}. In other words, the correlations produced by quantum mechanics cannot be explained via a probability $p(ab|xy)$ which satisfies~\cref{eq:prob_lhv_decomposition}.
+The reason is that if~\cref{eq:prob_lhv_decomposition} is verified, then the outcome probabilities are a convex combination of \emph{factorised} outcome probabilities,
+meaning that the expectation value of factorized functions $f(A,B)=f_1(A)f_2(B)$ over the outcomes gives
+\begin{equation}
+    \expval{f(A,B)}_{x,y} =
+    \sum_\lambda p(\lambda) \expval{f(A,B)}_{x,y,\lambda} =
+    \sum_\lambda p(\lambda) \expval{f_1(A)}_{x,\lambda} \expval{f_2(B)}_{y,\lambda}.
+\end{equation}
+A way to find a Bell inequality is then to find coefficients $\alpha_{x,y}\in\RR$ such that $\lvert \S_\lambda\rvert\le C$ for all $\lambda$, with
+\begin{equation}
+    \S_\lambda \equiv \Big\lvert
+        \sum_{x,y} \alpha_{x,y} \expval{f(A,B)}_{x,y,\lambda}
+    \Big\rvert.
+\end{equation}
+for this would directly imply that $\S\equiv\sum_\lambda p_\lambda \S_\lambda$ satisfies $|\S|\le C$.
+
+
+\begin{depthbox}[]{CHSH inequalities}
+    Assume that $A$ and $B$ have two measurement choices, and two measaurement outcomes. We will conventionally denote with $x,y=\pm1$ and $a,b=\pm1$ the two possible measurement choices and outcomes, respectively.
+    Let us define $E(x,y)$ as the expectation value of the product of the measurement outcomes measured by $A$ and $B$, when the measurement choices are $x$ and $y$:
+    \begin{equation}
+        E(x,y) \equiv \sum_{a,b} ab \, p(ab|xy).
+    \end{equation}
+    If the correlations satisfy~\cref{eq:prob_lhv_decomposition}, then we can expand this to
+    \begin{equation}
+    \begin{gathered}
+        E(x,y) = \sum_\lambda p(\lambda) E_\lambda(x,y), \\
+        E_\lambda(x,y) = \sum_a a\,p(a|x\lambda)\sum_b b\,p(b|y\lambda).
+    \end{gathered}
+    \end{equation}
+    This means that $E(x,y)$ is really a convex combination of the expectation values $E_\lambda(x, y)$, each one of which is the expectation value of $AB$ \emph{for $A$ and $B$ uncorrelated with each other}:
+    \begin{equation}
+        E_\lambda(x,y) = \expval{A}_{x,\lambda} \expval{B}_{y,\lambda}.
+    \end{equation}
+    If $y,y'$ are two different measurement choices, then $E_\lambda(x,y)+E_\lambda(x,y')$ becomes
+    \begin{equation}
+        E_\lambda(x,y) + E_\lambda(x,y') =
+        \sum_a a\,p(a|x\lambda) \sum_b b[p(b|y\lambda) + p(b|y'\lambda)].
+    \end{equation}
+    We will write this using the shorthand notation:
+    \begin{equation}
+        \expval{a_0 b_0}_\lambda + \expval{a_0 b_1}_\lambda =
+        \expval{a_0}_\lambda (\expval{b_0}_\lambda + \expval{b_1}_\lambda).
+    \end{equation}
+    Let us now define the quantity $S_\lambda$, defined as
+    \begin{equation}
+    \begin{aligned}
+        S_\lambda &\equiv
+            E_\lambda(x,y) + E_\lambda(x,y') + E_\lambda(x',y) - E_\lambda(x',y') \\
+        &= \expval{a_0}_\lambda (\expval{b_0}_\lambda + \expval{b_1}_\lambda)
+        + \expval{a_1}_\lambda (\expval{b_0}_\lambda - \expval{b_1}_\lambda).
+    \end{aligned}
+    \end{equation}
+    We then have
+    \begin{equation}
+        |S_\lambda| \le \lvert\expval{b_0} + \expval{b_1}\rvert
+                      + \lvert\expval{b_0} - \expval{b_1}\rvert.
+    \end{equation}
+    Remembering that $\expval{a_i},\expval{b_i}$ are reals and lesser than $2$ in modulus, it easily follows that
+    \begin{equation}
+        \lvert S_\lambda\rvert \le 2.
+    \end{equation}
+    This is for example immediate in the case $\expval{a_i},\expval{b_i}\ge 0$.
+\end{depthbox}
+
+\section{Space of behaviors}
+\newcommand{\NS}{\mathcal{N}\mathcal{S}}
+
+Consider the set of all possible Bell correlation scenarios $\{p(ab|xy)\}_{abxy}$.
+Let $\mathcal P$ denote the set of all such vectors.
+If there are $m$ possible measurement choices, and $\Delta$ possible measurement outcomes, then $\mathcal P$ is the subspace of $\RR^{\Delta^2 m^2}$ containing all vectors $\mathbf p=\{p(ab|xy)\}_{abxy}$ such that
+\begin{equation}
+    p(ab|xy)\ge0\quad\text{ and }\quad \sum_{ab}p(ab|xy)=1.
+\end{equation}
+It follows that $\dim\mathcal P=(\Delta^2-1)m^2$.
+
+A first limitation to $\mathcal P$ is to restrict to only the set of \emph{no-signaling} behaviors, which we will denote with $\NS$.
+$\NS\subset\mathcal P$ is the set of behaviors whose marginals are independent of the other party's measurement settings:
+\begin{equation}
+    p(a|x)\equiv p(a|xy)\equiv\sum_b p(ab|xy),
+\end{equation}
+and similarly for $p(b|y)$.
+It is shown in~\autocite{pironio2005lifting} that $\dim\NS=2(\Delta-1)m+(\Delta-1)^2m^2$.
+
+A more restrictive constraint is represented by the set $\mathcal L$ of \emph{local behaviors}, defined as the element of $\mathcal P$ such that
+\begin{equation}
+    p(ab|xy)=\sum_\lambda q(\lambda) p(a|x,\lambda)p(b|y,\lambda).
+\end{equation}
+One can show that $\mathcal L\subset \NS\subset \mathcal P$.
+\begin{prop}
+    Nonlocal correlations $\mathbf p\notin \mathcal L$ can only exist if $\Delta\ge2$ \emph{and} $m\ge2$.
+\end{prop}
+\begin{proof}
+    See~\href{https://physics.stackexchange.com/a/421622/58382}{physics.stackexchange.com/a/421622}.
+    The $\Delta=1$ case is trivial. For the $m=1$ case, we want to prove that any probability distribution $p(a,b)$ can be written as
+    \begin{equation}
+        p(a,b)=\sum_\lambda q(\lambda)p(a|\lambda)p(b|\lambda).
+    \end{equation}
+    Consider a hidden variable $\lambda_{a,b}$ with $\Delta^2$ possible values, and a probability distribution $q(\lambda_{a,b})=p(a,b)$.
+    Then we have the thesis if $p(a'|\lambda_{a,b})=\delta_{a,a'}$ and $p(b'|\lambda_{a,b})=\delta_{b,b'}$.
+    Indeed, this proves not only that any $p(a,b)$ can be thought of as ``induced'' by a hidden variable, but that such hidden variable can always be chosen to \emph{deterministically} explain the probability distribution.
+\end{proof}
+
+\begin{prop}[\cite{fine1982hidden,brunner2014bell}]
+    The set $\mathcal L$ of local correlations can always be expressed in terms of \emph{deterministic} local hidden-variable models.
+\end{prop}
+\begin{proof}
+    \large{\color{red}Why?}
+\end{proof}
+
+\begin{prop}[\cite{brunner2014bell}]
+    asd
+\end{prop}
+
+\chapter{Fundations}
+
+\begin{question}
+	Does it make sense to say that the result of measuring a state $\ket0+\ket1$ is a coherent superposition of the form $\ket{0,M_0}+\ket{1,M_1}$, with $\ket{M_i}$ ``macroscopic'' states of the measurement apparatus?
+\end{question}
+
+\begin{question}
+	Why does the structure of tensor product fit so well with QM?
+\end{question}
+
+\chapter{Quantum resources}
+
+Main sources: \cite{streltsov2016maximal}.
+
+A number of different quantum features are considered as important resources for applications of quantum information theory.
+Among these \emph{entanglement}, \emph{quantum discord}, and \emph{quantum coherence} have been identified as necessary ingredients for the successful implemntation of tasks such as quantum cryptography, quantum algorithms, and quantum metrology.
+Quantum resources can be formally classified in the framework of resource theories,
+where the state space is divided into free states and resource states.
+
+\subsection{Resource theory of quantum coherence}
+\newcommand{\setIncoherentStates}{\mathcal{I}}
+Sources: \cite{aberg2006quantifying,baumgratz2014quantifying,winter2016operational,marvian2016how,streltsov2016quantum}.
+
+The free states of this resource theory are called \emph{incoherent states},
+that is, states which are diagonal in a fixed basis $\{\ket i\}$, like $\sigma = \sum_i p_i \ketbra{i}$.
+Let us denote the set of such states with $\setIncoherentStates{}$.
+The \emph{free operations} are the operations that cannot turn a free state into a resource state, so in this case the operations which cannot turn a mixed state into a coherent state.
+There are several approaches to define free operations for mixed states:
+\begin{enumerate}
+	\item The historically first and most general approach, suggested in \cite{aberg2006quantifying}, is to define the set of \acp{MIO}: operations which cannot create coherence:
+	\begin{equation}
+	 	\Lambda_{\on{MIO}}(\sigma) \in \setIncoherentStates{}, \quad \forall \sigma \in \setIncoherentStates{}.
+	 \end{equation}
+	 \item Another important family is the set of \acp{IO}~\cite{baumgratz2014quantifying}.
+	 These are operations which admit a Kraus decomposition $\Lambda_{\on{IO}}(\rho) = \sum_i K_i \rho K_i^\dagger$ with incoherent Kraus operators $K_i$, that is, $K_i \ket m \sim \ket n$.
+	 \item See~\cite{streltsov2016maximal} for other definitions and extensions to multipartite systems.
+\end{enumerate}
+The \emph{amount of coherence} in a given state can be quantified via \emph{coherence monotones}.
+These are nonnegative functions $\mathcal C$ which do not increase under the corresponding set of free operations.
+A \ac{MIO} monotone is a nonnegative function $\mathcal C$ which does not increase under $\ac{MIO}$ operations:
+$\mathcal C(\Lambda_{\on{MIO}}(\rho)) \le \mathcal C(\rho)$.
+An important example are distance-based coherence monotones:
+$\mathcal C(\rho) \equiv \inf_{\sigma\in\setIncoherentStates{}} D(\rho,\sigma)$,
+with $D$ a suitable distance on the space of quantum states.
+The most prominent example of distance-based measure is the \emph{relative entropy of coherence}
+$\mathcal C_r(\rho) \equiv \min_{\sigma\in\setIncoherentStates{}} S(\rho \| \sigma)$
+with the relative entropy
+$S(\rho \| \sigma) \equiv \Tr(\rho \log_2\rho) - \Tr(\sigma\log_2\sigma)$.
+
+\paragraph{Maximally coherent mixed states~\cite{streltsov2016maximal}}
+Since coherence is a basis-dependent concept, a unitary operation will in general change the amount of coherence in a given state.
+It is therefore natural to ask the question: \emph{which unitary maximizes the coherence of a given state $\rho$?}.
+We therefore define the corresponding figure of merit
+$\mathcal C_{\on{max}}(\rho) \equiv \max_U \mathcal C(U\rho U^\dagger)$.
+While it is reasonable to believe that this maximization is out of reach, it turns out that the maximum can be evaluated in a large number of relevant scenarios, and that there exists a \emph{universal} maximally coherent mixed state, which does not depend on the particular choice of coherence monotone.
+\begin{thm}[\cite{streltsov2016maximal}]
+	For a fixed spectrum $\{ p_n \}$, the state
+	\begin{equation}
+		\rho_{\on{max}} = \sum_{n=1}^d p_n \ketbra{n_+},
+	\end{equation}
+	is a maximally coherent mixed state with respect to any \ac{MIO} monotone.
+	Here $\{ \ket{n_+} \}$ denotes a \ac{MUB} with respect to the incoherent basis $\{ \ket{i} \}$,
+	that is, $\lvert \braket{i}{n_+}\rvert^2 = 1/d$, where $d$ is the dimension of the Hilbert space.
+\end{thm}
+\begin{thm}[\cite{streltsov2016maximal}]
+	For any distance-based coherence monotone with a contractive distance $D$,
+	the following equality holds:
+	$\mathcal C_{\on{max}} = \mathcal C(\rho_{\on{max}}) = D(\rho, \mathds{1} / d)$.
+\end{thm}
+
+\subsection{Coherence VS Multipartite entanglement~\parencite{regula2017converting,killoran2016converting}}
+In~\cite{regula2017converting} is presented a general formalism for the conversion of nonclassicality into multipartite entanglement.
+They show that a faithful reversible transformation between the two resources is always possible, within a precise resource-theoretic framework.
+
+Despite the common origin, entanglement and superposition can be formalized according to different resource theories:
+the former being tied to the paradigm of spatially separated laboratories which can only implement local operations and classical communication for free,
+while the second specified by the inability to create superpositions of the classical states for free.
+Consequently, these two resources, like two currencies, enjoy different uses in quantum technologies.
+
+\cite{regula2017converting} show that the presence of $k$-level nonclassicality in the state of a single $d$-level system is necessary and sufficient to create $(k+1)$-partite entanglement between the system and $k$ ancillas.
+This builds on the result of \cite{killoran2016converting} that there always exists an isometry, consisting of adding an ancilla and applying a global unitary, which maps each pure state of nonclassical rank $k$ into a bipartite entangled pure state of Schmidt rank $k$.
+
+\begin{thm}[\cite{regula2017converting}]
+	\renewcommand{\H}{\mathcal{H}}
+	\renewcommand{\DH}{\mathcal D(\H{})}
+	\newcommand{\Hanc}{\mathcal H_{\on{anc}}}
+	Let $\H{}$ be a $d$-dimensional Hilbert space, $\DH{}$ the corresponding set of density operators,
+	and $\Hanc{} \cong \H{}$ the Hilbert space of an ancillary system.
+	Then if the classical pure states $\{ \ket{\chi_i} \}_{i=1}^d$ form a linearly independent set spanning $\H{}$,
+	there exists an isometry $W: \H{} \to \H{} \otimes \Hanc{}$ such that for any state $\rho \in \DH{}$ we have
+	$N_N(\rho) = N_S(W \rho W^\dagger)$.
+\end{thm}
+ 
+Following~\cite{ghne2005multipartite}, we define a pure state to be $k$-producible if it can be written as
+$\ket\psi = \ket{\psi_1} \otimes ... \otimes \ket{\psi_m}$ with each $\ket{\psi_j}$ pertaining to at most $k$ parties,
+and a mixed state $\rho$ to be $k$-producible if it can be written as a convex combination of $k$-producible pure states.
+We call a state $\rho$ \emph{genuinely $k$-partite entangled} if it is $k$-producible but not $(k-1)$-producible.
+Equivalently, under such conditions, we say that $\rho$ has \emph{entanglement depth} $D_E(\rho) = k$.
+A 1-producible state $\rho$ has $D_E(\rho)=1$ and is fully separable.
+
+\begin{thm}
+	\renewcommand{\H}{\mathcal{H}}
+	\renewcommand{\DH}{\mathcal D(\H{})}
+	\newcommand{\Hanc}{\mathcal H_{\on{anc}}}
+	Let $\H$ be a $d$-dimensional Hilbert space, and $\Hanc$ the Hilbert space of an ancillary system.
+	Then if the classical pure states $\{ \ket{\chi_i} \}_{i=1}^d \in \H$ form a linearly independent set spanning $\H$, there exists an isometry $V: \H\to\H\otimes\Hanc^{\otimes d}$
+	such that for any state $\rho\in\DH$ with nonclassical number $N_N(\rho)=k$,
+	$V \rho V^\dagger$ is genuinely $(k+1)$-partite entangled iff $\rho$ is nonclassical ($2\le k\le d$)
+	and $V\rho V^\dagger$ is fully separable iff $\rho$ is classical ($k=1$).
+\end{thm}
+
+\printbibliography
+
+
+\section*{List of Acronyms}
+\begin{acronym}
+	\acro{QM}{Quantum Mechanics}
+	\acro{CP}{Completely Positive}
+	\acro{LOCC}{Local Operations and Classical Communication}
+	\acro{SLOCC}{Stochastic Local Operations and Classical Communication}
+    \acro{SLM}{Spatial Light Modulator}
+    \acro{OAM}{Orbital Angular Momentum}
+    \acro{HOM}{Hong-Ou-Mandel}
+    \acro{MUB}{Mutually Unbiased Basis}
+    \acro{MIO}{Maximally Incoherent Operations}
+    \acro{IO}{Incoherent Operations}
+    \acro{SVD}{Singular Value Decomposition}
+\end{acronym}
+
+\end{document}

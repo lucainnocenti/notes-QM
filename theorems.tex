@@ -1,0 +1,147 @@
+%!TEX root = main.tex
+
+\makeatletter
+\def\thmt@refnamewithcomma #1#2#3,#4,#5\@nil{%
+  \@xa\def\csname\thmt@envname #1utorefname\endcsname{#3}%
+  \ifcsname #2refname\endcsname
+    \csname #2refname\expandafter\endcsname\expandafter{\thmt@envname}{#3}{#4}%
+  \fi
+}
+\makeatother
+
+%\declaretheorem[name=Theorem,Refname={Theorem,Theorems}]{theorem}
+\declaretheorem[name=Conjecture,Refname={Conjecture,Conjectures}]{conjecture}
+\declaretheorem[name=Lemma,Refname={Lemma,Lemmas}]{lemma}
+\declaretheorem[name=Remark,style=remark,Refname={Remark,Remarks}]{remark}
+
+% =============== definition =======================
+\declaretheoremstyle[
+	headfont=\normalfont\bfseries,
+	notefont=\mdseries, notebraces={(}{)},
+	bodyfont=\normalfont,
+	postheadspace=0.5em,
+	mdframed={
+        default,
+		skipabove		= \topsep,
+		skipbelow		= \topsep,
+		leftmargin		= 0,
+		rightmargin		= 0,
+		innerleftmargin	= 4pt,
+		innerrightmargin= 4pt,
+		%hidealllines	= true,
+		backgroundcolor	= orange!2,
+		linewidth		= 1,
+		linecolor		= orange!20,
+		roundcorner		= 2pt,
+	}
+]{definitionstyle}
+\declaretheorem[
+	style		= definitionstyle,
+	name		= Definition,
+	Refname		= {Definition, Definitions}
+]{defn}
+
+% ============= question =====================
+\declaretheoremstyle[
+	headfont=\normalfont\bfseries,
+	notefont=\mdseries, notebraces={(}{)},
+	bodyfont=\normalfont,
+	postheadspace=0.5em,
+	mdframed={
+        default,
+		skipabove		= \topsep,
+		skipbelow		= \topsep,
+		leftmargin		= 0,
+		rightmargin		= 0,
+		innerleftmargin	= 4pt,
+		innerrightmargin= 4pt,
+		%hidealllines	= true,
+		backgroundcolor	= red!8,
+		linewidth		= 1,
+		linecolor		= red!20,
+		roundcorner		= 2pt,
+	}
+]{questionstyle}
+\declaretheorem[
+	style		= questionstyle,
+	name		= Question,
+	Refname		= {Question, Questions}
+]{question}
+
+% =============== example =======================
+\declaretheoremstyle[
+	headfont=\normalfont\bfseries,
+	notefont=\mdseries, notebraces={(}{)},
+	bodyfont=\normalfont,
+	postheadspace=0.5em,
+	mdframed={
+        default,
+		skipabove		= \topsep,
+		skipbelow		= \topsep,
+		leftmargin		= 6,
+		rightmargin		= 6,
+		innerleftmargin	= 4pt,
+		innerrightmargin= 4pt,
+		%hidealllines	= true,
+		backgroundcolor	= gray!5,
+		linewidth		= 1,
+		linecolor		= blue!20,
+		roundcorner		= 2pt,
+	}
+]{examplestyle}
+\declaretheorem[
+	style=examplestyle,
+	name=Example
+]{example}
+
+% =============== theorem =======================
+\declaretheoremstyle[
+	headfont=\normalfont\bfseries,
+	notefont=\mdseries, notebraces={(}{)},
+	bodyfont=\normalfont,
+	postheadspace=0.5em,
+	mdframed={
+        default,
+		skipabove		= \topsep,
+		skipbelow		= \topsep,
+		leftmargin		= 0,
+		rightmargin		= 0,
+		innerleftmargin	= 4pt,
+		innerrightmargin= 4pt,
+		%hidealllines	= true,
+		backgroundcolor	= green!5,
+		linewidth		= 1,
+		linecolor		= green!20,
+		roundcorner		= 2pt,
+	}
+]{theoremstyle}
+\declaretheorem[
+	style=theoremstyle,
+	name=Theorem
+]{thm}
+
+
+\declaretheoremstyle[
+	headfont=\normalfont\bfseries,
+	notefont=\mdseries, notebraces={(}{)},
+	bodyfont=\normalfont,
+	postheadspace=0.5em,
+	mdframed={
+        default,
+		skipabove		= \topsep,
+		skipbelow		= \topsep,
+		leftmargin		= 0,
+		rightmargin		= 0,
+		innerleftmargin	= 4pt,
+		innerrightmargin= 4pt,
+		%hidealllines	= true,
+		backgroundcolor	= blue!3,
+		linewidth		= 1,
+		linecolor		= blue!10,
+		roundcorner		= 2pt,
+	}
+]{propositionstyle}
+\declaretheorem[
+	style=propositionstyle,
+	name=Proposition
+]{prop}
