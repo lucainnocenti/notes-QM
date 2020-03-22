@@ -98,12 +98,13 @@
 \input{fix_authoryear_style}
 
 %=================== CUSTOM MACROS ==============================
-\newcommand{\RR}{\mathbb{R}}
 \newcommand{\CC}{\mathbb{C}}
+\newcommand{\EE}{\mathbb{E}}
 \newcommand{\NN}{\mathbb{N}}
 \newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\PP}{\mathbb{P}}
 \newcommand{\QQ}{\mathbb{Q}}
-\newcommand{\EE}{\mathbb{E}}
+\newcommand{\RR}{\mathbb{R}}
 
 \newcommand{\mxm}{{m \!\times\! m}}
 \newcommand{\NxN}{{N \!\times\! N}}
@@ -112,21 +113,23 @@
 \newcommand{\on}[1]{\operatorname{#1}}
 \newcommand{\bs}[1]{\boldsymbol{#1}}
 
-\renewcommand{\H}{{\mathcal H}}
-\newcommand{\B}{\mathcal{B}}
-\newcommand{\F}{\mathcal{F}}
-\newcommand{\D}{\mathcal{D}}
-\renewcommand{\S}{\mathcal{S}}
-\newcommand{\I}{\mathcal{I}}
-\renewcommand{\L}{\mathcal{L}}
+
+% \newcommand{\F}{\mathcal{F}}
+% \newcommand{\D}{\mathcal{D}}
+% \renewcommand{\calS}{\mathcal{S}}
+% \newcommand{\I}{\mathcal{I}}
+% \renewcommand{\L}{\mathcal{L}}
 
 \newcommand{\calA}{{\mathcal{A}}}
+\newcommand{\calB}{{\mathcal{B}}}
 \newcommand{\calC}{{\mathcal{C}}}
 \newcommand{\calE}{{\mathcal{E}}}
 \newcommand{\calF}{{\mathcal{F}}}
 \newcommand{\calG}{{\mathcal{G}}}
 \newcommand{\calH}{{\mathcal{H}}}
 \newcommand{\calI}{{\mathcal{I}}}
+\newcommand{\calY}{{\mathcal{Y}}}
+\newcommand{\calL}{{\mathcal{L}}}
 \newcommand{\calM}{{\mathcal{M}}}
 \newcommand{\calO}{{\mathcal{O}}}
 \newcommand{\calP}{{\mathcal{P}}}
@@ -135,6 +138,8 @@
 \newcommand{\calV}{{\mathcal{V}}}
 \newcommand{\calW}{{\mathcal{W}}}
 \newcommand{\calX}{{\mathcal{X}}}
+
+\newcommand{\rmL}{{\mathrm{L}}}
 
 \newcommand{\uncertain}[1]{{\color{red}\bfseries (#1)}}
 \newcommand{\nice}[1]{{\color{green!50!black} #1}}
@@ -270,16 +275,16 @@ Integrability of time-dependent Hamiltonian~\autocite{sinitsyn2018integrable}.
 
 \section{States}
 \begin{defn}[State]
-	Let $\H$ be a complex Hilbert space, $\B(\H)$ the set of bounded operators on $\H$,
-	and $\B_1(\H)\subset\B(\H)$ the set of \emph{trace-class} operators on $\H$,
-	and $\S(\H)\subset\B_1(\H)$ be the set of positive trace-class operators with \textbf{unit trace}.
-	The elements $\rho\in\S(\H)$ are called \textbf{states}.
+	Let $\calH$ be a complex Hilbert space, $\calB(\calH)$ the set of bounded operators on $\calH$,
+	and $\calB_1(\calH)\subset\calB(\calH)$ the set of \emph{trace-class} operators on $\calH$,
+	and $\calS(\calH)\subset\calB_1(\calH)$ be the set of positive trace-class operators with \textbf{unit trace}.
+	The elements $\rho\in\calS(\calH)$ are called \textbf{states}.
 	In other words, a state $\rho$ is a bounded, trace-class operator such that
 	$\Tr(\rho)=1$ and $\rho\ge0$.
 \end{defn}
 
 \begin{prop}
-	The space of trace-class operators $\B_1(\H)$ is a two-sided $*$-ideal of $\B(\H)$, and the set of states $\S(\H)$ is a convex, bounded subset of $\B_1(\H)$.
+	The space of trace-class operators $\calB_1(\calH)$ is a two-sided $*$-ideal of $\calB(\calH)$, and the set of states $\calS(\calH)$ is a convex, bounded subset of $\calB_1(\calH)$.
 \end{prop}
 
 \begin{defn}
@@ -324,10 +329,10 @@ Note that in the above the single density matrices $\rho_k^{(j)}$ are in general
 \end{prop}
 
 \begin{prop}
-	The set of states $\S(\H)$, with $\H$ $d$-dimensional, is homeomorphic to the \emph{Bloch space} $B(\RR^{d^2-1})$, which is defined as the set of expectation values of all states $\rho$ over a complete set of traceless, orthogonal observables:
+	The set of states $\calS(\calH)$, with $\calH$ $d$-dimensional, is homeomorphic to the \emph{Bloch space} $B(\RR^{d^2-1})$, which is defined as the set of expectation values of all states $\rho$ over a complete set of traceless, orthogonal observables:
 	\begin{equation}
 		B(\RR^{d^2-1})\equiv\left\{
-			(\tr(\rho\Lambda_k))_{k=1}^{d^2-1}:\,\,\rho\in\S(\H)
+			(\tr(\rho\Lambda_k))_{k=1}^{d^2-1}:\,\,\rho\in\calS(\calH)
 		\right\} \subset \RR^{d^2-1}.
 	\end{equation}
 \end{prop}
@@ -346,7 +351,7 @@ Note that in the above the single density matrices $\rho_k^{(j)}$ are in general
 	The set of linear operators on an Euclidean space $\calX$ is spanned by the set of density matrices on $\calX$:
 	\begin{equation}
 		\on{span}\{\rho_{a,b}\,:\,\,(a,b)\in\Sigma\times\Sigma\}
-		= \L(\CC^\Sigma).
+		= \calL(\CC^\Sigma).
 	\end{equation}
 \end{prop}
 
@@ -381,9 +386,9 @@ Holevo's theorem~(\href{Watrous notes, chapter 12}{https://cs.uwaterloo.ca/~watr
 \section{Purification of states}
 
 \begin{defn}
-	Let $\rho$ be a state acting on $\H_A$.
-	A state $\tilde\rho$ acting on $\H_A\otimes\H_B$ is said to be an \emph{extension} of $\rho$ if $\tr_B\tilde\rho=\rho$.
-	A \emph{pure} state $\ket\psi\in\H_A\otimes\H_B$ is said to be a \emph{purification} of $\rho$ if $\tr_B\ketbra\psi=\rho$.
+	Let $\rho$ be a state acting on $\calH_A$.
+	A state $\tilde\rho$ acting on $\calH_A\otimes\calH_B$ is said to be an \emph{extension} of $\rho$ if $\tr_B\tilde\rho=\rho$.
+	A \emph{pure} state $\ket\psi\in\calH_A\otimes\calH_B$ is said to be a \emph{purification} of $\rho$ if $\tr_B\ketbra\psi=\rho$.
 \end{defn}
 
 \begin{prop}
@@ -425,13 +430,13 @@ Note that in the above the choice of $\ket{v_k}$ is unique if and only if $\rho$
 \begin{defn}
 	The \emph{fidelity} between two states $\rho$ and $\sigma$ is the quantity:
 	\begin{equation}
-		\F(\rho,\sigma) \equiv \tr(\sqrt{\rho^{1/2}\sigma\rho^{1/2}}).
+		\calF(\rho,\sigma) \equiv \tr(\sqrt{\rho^{1/2}\sigma\rho^{1/2}}).
 	\end{equation}
 	\label{def:fidelity}
 \end{defn}
 
 \begin{prop}
-	\Cref{def:fidelity} is equivalent to $\F(\rho,\sigma)=\tr\lvert\sqrt\rho\sqrt\sigma\rvert$, where $|A|\equiv\sqrt{A^\dagger A}$.
+	\Cref{def:fidelity} is equivalent to $\calF(\rho,\sigma)=\tr\lvert\sqrt\rho\sqrt\sigma\rvert$, where $|A|\equiv\sqrt{A^\dagger A}$.
 	\label{def:fidelity_with_abs}
 \end{prop}
 \begin{proof}
@@ -439,7 +444,7 @@ Note that in the above the choice of $\ket{v_k}$ is unique if and only if $\rho$
 \end{proof}
 
 \begin{prop}
-	The fidelity is \emph{symmetric}: $\F(\rho,\sigma)=\F(\sigma,\rho)$.
+	The fidelity is \emph{symmetric}: $\calF(\rho,\sigma)=\calF(\sigma,\rho)$.
 \end{prop}
 \begin{proof}
 	This is more easily shown from~\cref{def:fidelity_with_abs}, and follows from the more general fact that for any matrix $A$, $\tr|A^\dagger|=\tr|A|$.
@@ -461,23 +466,23 @@ Note that in the above the choice of $\ket{v_k}$ is unique if and only if $\rho$
 
 \begin{prop}
 	If $\rho$ is pure, with $\rho=\ketbra\psi$, then
-	$\F(\rho,\sigma)=\mel{\psi}{\sigma}{\psi}^{1/2}$.
+	$\calF(\rho,\sigma)=\mel{\psi}{\sigma}{\psi}^{1/2}$.
 \end{prop}
 
 \begin{prop}
 	If both $\rho=\ketbra{\psi_\rho}$ and $\sigma=\ketbra{\psi_\sigma}$ are pure, then
-	$\F(\rho,\sigma)=\lvert\braket{\psi_\rho}{\psi_\sigma}\rvert$.
+	$\calF(\rho,\sigma)=\lvert\braket{\psi_\rho}{\psi_\sigma}\rvert$.
 \end{prop}
 
 \begin{prop}
-	If $[\rho,\sigma]=0$, then $\rho$ and $\sigma$ share an eigenbase. Denoting with $p_k, q_k$ their eigenvalues, we have $\F(\rho,\sigma)=\sum_k\sqrt{p_k q_k}$.
+	If $[\rho,\sigma]=0$, then $\rho$ and $\sigma$ share an eigenbasis. Denoting with $p_k, q_k$ their eigenvalues, we have $\calF(\rho,\sigma)=\sum_k\sqrt{p_k q_k}$.
 	In other words, for commuting states, the fidelity is equal to the \emph{Bhattacharyya distance} between the corresponding probability distribution.
 \end{prop}
 
 \begin{thm}[Uhlmann's theorem]
 	Let us denote with $\ket{\psi_\rho}$ a \emph{purification} of the state $\rho$. Then,
 	\begin{equation}
-		\F(\rho,\sigma)=\max_{\ket{\psi_\rho},\ket{\psi_\sigma}}\lvert\braket{\psi_\rho}{\psi_\sigma}\rvert.
+		\calF(\rho,\sigma)=\max_{\ket{\psi_\rho},\ket{\psi_\sigma}}\lvert\braket{\psi_\rho}{\psi_\sigma}\rvert.
 	\end{equation}
 \end{thm}
 
@@ -650,7 +655,7 @@ Higher dimensional entanglement without correlations~\autocite{klobus2018higher}
 \end{proof}
 Using the above lemma, we can prove the more general statement:
 \begin{lemma}[\cite{dr2000three}]
-	If two vectors $\ket\psi, \ket\phi \in \H_1 \otimes \cdots \otimes \H_N$
+	If two vectors $\ket\psi, \ket\phi \in \calH_1 \otimes \cdots \otimes \calH_N$
 	are connected by local operators as
 	$\ket\phi = A_1 \otimes \cdots \otimes A_N \ket\psi$, then the local ranks satisfy
 	$r(\rho^\psi_k) \ge r(\rho^\phi_k)$ for all $k=1,...,N$.
@@ -734,7 +739,7 @@ This immediately follows from remembering that a pure state $\rho$ only admits a
 \end{thm}
 
 \begin{defn}[$k$-positive maps, \cite{terhal2000schmidt}]
-	Let $S_k$ denote the set of density matrices on $\H_n\otimes\H_n$ that have Schmidt number $k$ or less.
+	Let $S_k$ denote the set of density matrices on $\calH_n\otimes\calH_n$ that have Schmidt number $k$ or less.
 	The set $S_k$ is a convex compact subset of the set of density matrices, denotes by $S$,
 	and $S_{k-1} \subset S_k$.
 	A linear Hermiticity-preserving map $\Lambda$ is $k$-positive if and only if
@@ -745,6 +750,74 @@ This immediately follows from remembering that a pure state $\rho$ only admits a
 	A density matrix $\rho$ has Schmidt number at least $k+1$ if and only if there exists a $k$-positive linear map $\Lambda_k: \mathcal M_n(\mathbb C)\rightarrow \mathcal M_n(\mathbb C)$ such that 
 	$(\mathds1\otimes \Lambda_k)\rho < 0$.
 \end{thm}
+
+\chapter{Maps}
+Let $\rho\in\rmL(\calX)\simeq\calX\otimes\calX^*$ be a state.
+A \emph{map} acting on $\rho$ is a linear operator $\Phi\in\rmL(\rmL(\calX),\rmL(\calY))$, sending states in $\calX$ into states in $\calY$.
+Explicitly, we can write the action of $\Phi$ on $\rho$ in terms of their matrix components as
+$\Phi(\rho)_{12}=K(\Phi)_{12,34}\rho_{34}$. The object $K(\Phi)$ is often referred to as the \emph{natural representation} of $\Phi$.
+We can think of $K(\Phi)$ as an operator in $\rmL(\calX\otimes\calX^*,\calY\otimes\calY^*)$ mapping $\on{vec}(\rho)$ to $\on{vec}[\Phi(\rho)]$.
+
+\section{Standard notation}
+
+\begin{equation}
+	[K(\Phi)\on{vec}(\rho)]_{12} = K(\Phi)_{12,34}\rho_{34}
+\end{equation}
+
+\begin{equation}
+	K(\Phi)
+	= K(\Phi)_{12,34} \ketbra{12}{34}
+	= K(\Phi)_{12,34} \ketbra{13}\otimes\ketbra{24}
+	\equiv K(\Phi)_{12,34} E_{13}\otimes E_{24}
+\end{equation}
+
+\begin{equation}
+	K_{12,34} = \mel{12}{K(\Phi)}{34}
+	= \mel{1}{\Phi(E_{34})}{2}
+	\equiv \mel{1}{\Phi(\ketbra{3}{4})}{2}
+\end{equation}
+
+The Choi operator of $\Phi$ is $J(\Phi)\equiv (\Phi\otimes I)(\PP_m)$, where $\ket m\equiv\sum_k \ket{kk}$ is the (unnormalised) maximally entangled state.
+As an operator, we thus have $J(\Phi)\in\rmL(??)$.
+Explicitly,
+\begin{equation}
+	J(\Phi) = (\Phi\otimes I)(\ketbra{12}\otimes\ketbra{12})
+	= \Phi(\ketbra{1}{2})\otimes \ketbra{1}{2}
+\end{equation}
+\begin{equation}
+	J(\Phi)_{12,34}
+	\equiv \mel{12}{J(\Phi)}{34}
+	= \mel{1}{\Phi(\ketbra{2}{4})}{3}
+	= \mel{13}{K(\Phi)}{24}
+	\equiv K(\Phi)_{13,24}.
+\end{equation}
+
+\section{Up-down notation for maps and states}
+
+Another way to write maps is writing ``input indices'' low and ``output indices'' as high. For example:
+\begin{equation}
+	K(\Phi)_{12}^{34}\equiv K(\Phi)_{1|2}^{3|4} \equiv \mel{12}{K(\Phi)}{34}.
+\end{equation}
+In this notation, indices belonging to the same space are ``separated'' by vertical bars.
+Note that this is not a separation between different \emph{parties}, but between different copies of the same space.
+This notation has advantages when dealing with multipartite states.
+
+A similar divider between the two copies of the space is to be used for states:
+$\rho \equiv \rho_{12}\ketbra{1}{2}$ becomes $\rho_{1|2}\ketbra{1}{2}$.
+If $\rho$ is bipartite, we have
+\begin{equation}
+	\rho \equiv \rho_{12,34} \ketbra{12}{34} \equiv \rho_{13|24} E_{13}\otimes E_{24},
+	\qquad
+	\rho_{12,34} \equiv \rho_{13|24}.
+\end{equation}
+
+
+Given a bipartite $\rho$, we then write the action of $\Phi$ on it as
+\begin{equation}
+	\Phi(\rho)_{12|34} =
+	K(\Phi)_{12|34}^{56|78} \rho_{56|78}
+\end{equation}
+
 
 \chapter{Bell nonlocality}
 
@@ -770,13 +843,13 @@ meaning that the expectation value of factorized functions $f(A,B)=f_1(A)f_2(B)$
     \sum_\lambda p(\lambda) \expval{f(A,B)}_{x,y,\lambda} =
     \sum_\lambda p(\lambda) \expval{f_1(A)}_{x,\lambda} \expval{f_2(B)}_{y,\lambda}.
 \end{equation}
-A way to find a Bell inequality is then to find coefficients $\alpha_{x,y}\in\RR$ such that $\lvert \S_\lambda\rvert\le C$ for all $\lambda$, with
+A way to find a Bell inequality is then to find coefficients $\alpha_{x,y}\in\RR$ such that $\lvert \calS_\lambda\rvert\le C$ for all $\lambda$, with
 \begin{equation}
-    \S_\lambda \equiv \Big\lvert
+    \calS_\lambda \equiv \Big\lvert
         \sum_{x,y} \alpha_{x,y} \expval{f(A,B)}_{x,y,\lambda}
     \Big\rvert.
 \end{equation}
-for this would directly imply that $\S\equiv\sum_\lambda p_\lambda \S_\lambda$ satisfies $|\S|\le C$.
+for this would directly imply that $\calS\equiv\sum_\lambda p_\lambda \calS_\lambda$ satisfies $|\calS|\le C$.
 
 
 \begin{depthbox}[]{CHSH inequalities}
@@ -952,13 +1025,12 @@ Consequently, these two resources, like two currencies, enjoy different uses in 
 This builds on the result of \cite{killoran2016converting} that there always exists an isometry, consisting of adding an ancilla and applying a global unitary, which maps each pure state of nonclassical rank $k$ into a bipartite entangled pure state of Schmidt rank $k$.
 
 \begin{thm}[\cite{regula2017converting}]
-	\renewcommand{\H}{\mathcal{H}}
-	\renewcommand{\DH}{\mathcal D(\H{})}
-	\newcommand{\Hanc}{\mathcal H_{\on{anc}}}
-	Let $\H{}$ be a $d$-dimensional Hilbert space, $\DH{}$ the corresponding set of density operators,
-	and $\Hanc{} \cong \H{}$ the Hilbert space of an ancillary system.
-	Then if the classical pure states $\{ \ket{\chi_i} \}_{i=1}^d$ form a linearly independent set spanning $\H{}$,
-	there exists an isometry $W: \H{} \to \H{} \otimes \Hanc{}$ such that for any state $\rho \in \DH{}$ we have
+	\renewcommand{\DH}{\mathcal D(\calH{})}
+	\newcommand{\calHanc}{\calH_{\on{anc}}}
+	Let $\calH$ be a $d$-dimensional Hilbert space, $\DH{}$ the corresponding set of density operators,
+	and $\calHanc{} \cong \calH{}$ the Hilbert space of an ancillary system.
+	Then if the classical pure states $\{ \ket{\chi_i} \}_{i=1}^d$ form a linearly independent set spanning $\calH{}$,
+	there exists an isometry $W: \calH{} \to \calH{} \otimes \calHanc{}$ such that for any state $\rho \in \DH{}$ we have
 	$N_N(\rho) = N_S(W \rho W^\dagger)$.
 \end{thm}
  
@@ -970,11 +1042,10 @@ Equivalently, under such conditions, we say that $\rho$ has \emph{entanglement d
 A 1-producible state $\rho$ has $D_E(\rho)=1$ and is fully separable.
 
 \begin{thm}
-	\renewcommand{\H}{\mathcal{H}}
-	\renewcommand{\DH}{\mathcal D(\H{})}
-	\newcommand{\Hanc}{\mathcal H_{\on{anc}}}
-	Let $\H$ be a $d$-dimensional Hilbert space, and $\Hanc$ the Hilbert space of an ancillary system.
-	Then if the classical pure states $\{ \ket{\chi_i} \}_{i=1}^d \in \H$ form a linearly independent set spanning $\H$, there exists an isometry $V: \H\to\H\otimes\Hanc^{\otimes d}$
+	\renewcommand{\DH}{\mathcal D(\calH{})}
+	\newcommand{\aHanc}{\mathcal H_{\on{anc}}}
+	Let $\calH$ be a $d$-dimensional Hilbert space, and $\aHanc$ the Hilbert space of an ancillary system.
+	Then if the classical pure states $\{ \ket{\chi_i} \}_{i=1}^d \in \calH$ form a linearly independent set spanning $\calH$, there exists an isometry $V: \calH\to\H\otimes\aHanc^{\otimes d}$
 	such that for any state $\rho\in\DH$ with nonclassical number $N_N(\rho)=k$,
 	$V \rho V^\dagger$ is genuinely $(k+1)$-partite entangled iff $\rho$ is nonclassical ($2\le k\le d$)
 	and $V\rho V^\dagger$ is fully separable iff $\rho$ is classical ($k=1$).
@@ -983,6 +1054,10 @@ A 1-producible state $\rho$ has $D_E(\rho)=1$ and is fully separable.
 \chapter{Making sense of things}
 
 \section{Mach-Zender setup}
+
+\heading{Summary of section}
+In this section we revisit the standard Mach-Zender setup, but focusing on the relation between different probabilities.
+Can everything be described exclusively in terms of probabilities?
 
 \heading{The setting}
 Consider the simple Mach-Zender setup, with a single photon passing through two BSs, with the inputs of the second equal to the inputs of the first one. We can write the corresponding evolution as
