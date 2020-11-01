@@ -1053,6 +1053,62 @@ A 1-producible state $\rho$ has $D_E(\rho)=1$ and is fully separable.
 
 \chapter{Making sense of things}
 
+\section{What does it mean to \emph{observe}?}
+
+An \emph{observation} is the process of determining which one of a series of possible outcomes is realised. By definition, this entails a choice of \emph{measurement setting}, that is, a choice of interaction used to probe the unknown system.
+Once a measurement has been chosen (say, \emph{look at the coin after flipping it}), the set of all possible states the system could be in is partitioned according to the possible outcomes. This is the distinction between \emph{macro} and \emph{micro} states.
+But a system is not fully characterised by the way it behaves upon a given measurement: multiple different states might behave identically with respect to a fixed measurement. Therefore, knowledge of the outcomes in different measurement setups might be required for a full characterisation.
+A question that follows naturally is then: \emph{are there relations between the outcomes in these possible choices of measurement?}
+More specifically, we wonder whether the \emph{uncertainties} associated to such different measurements need to be somehow related.
+
+QM teaches us that this is the case: there cannot be an arbitrary number of \emph{independent} measurements for a fixed system.
+With ``\emph{independent}'' we mean here that the output probabilities corresponding to different measurement setups have zero mutual information, \emph{i.e.} knowing the outcome of one measurement gives us zero information about the outcome of another.
+In reality, the situation in QM is even stronger: not only the measurement outcomes are independent, but they are also \emph{incompatible}, meaning that knowledge of an outcome in one measurement \emph{destroys} all knowledge we might have had regarding the outcomes in the other measurement.
+
+From the QM formalism we know that such \emph{maximally incompatible} measurements produce probabilities satisfying $\sum_i p_i (1-p_i)\ge1/2$, where $i=1,2,3$ for a qubit system.
+``Statistically unbiased'' means here that $p_i q_i=0$ implies full uncertainty with respect to the other measurement choices. The big question is: \textcolor{RedOrange}{\emph{\textbf{why not more than three unbiased measurements?}}}
+
+Suppose knowing the outcome of $M_1$, we have full uncertainty on the outcome of $M_2$. This means the measurements correspond to ``incompatible quantities''.
+One could try to understand this in terms of macro- and micro-states, but this approach misses the point. In particular, it makes the mistake of assuming that it makes sense to list faithfully the full set of states a system can be found in.
+This is not the case when we consider situations in which the act of measurement itself perturbs the system.
+In such scenario, it is not possible to make a list of all possible ``states'' of a system. Instead, it becomes necessary to identify the state by the way it behaves under several different measurement setups.
+
+It must be stressed that such setup inherently assumes a separation between the system that is being probe and the rest of the universe.
+
+\section{Decomplexifying QM}
+A pure \emph{quantum state} $\psi$ is an element of a projective space $\mathbb{CP}^n\simeq S^{2n-1}/U(1)$.
+Equivalently, it is an equivalence class of vectors in $\CC^{n}$ under the equivalence relation $\psi\sim\phi\Longleftrightarrow \psi=\lambda\phi$ for some $\lambda\in\CC$.
+Using only real numbers, we can describe states as equivalence classes of vectors of $\psi\in\RR^{2n}\simeq \RR^n\otimes\RR^2$: $\psi\in\RR^{2n}\!/\!\sim$ where $\psi\sim\phi\Longleftrightarrow \psi=\alpha(I\otimes R)\phi$ for some $\alpha\in\RR$ and $R\in SO(2)$.
+Equivalently, these are characterisable as orbits in the hypersphere $S^{2n-1}$.
+
+In this notation, a linear map acting on a complex state, $A^c\psi^c$, translates into the action
+\begin{equation}
+	\psi\equiv \begin{pmatrix}
+		\psi_R \\ \psi_I
+	\end{pmatrix}
+	\mapsto
+	\begin{pmatrix}
+		A_R \psi_R - A_I \psi_I \\
+		A_R \psi_I + A_I \psi_R
+	\end{pmatrix} \equiv A\psi \in \RR^n\otimes\RR^2.
+\end{equation}
+In other words, the linear transformation $A^c$ is represented as
+\begin{equation}
+	A \doteq \begin{pmatrix}
+		A_R & -A_I \\ A_I & A_R
+	\end{pmatrix}.
+\end{equation}
+If $A$ is unitary, $A^\dagger A=AA^\dagger=I$, then $A_R^T A_R+A_I^T A_I = A_R A_R^T+A_I A_I^T = I$ and $A_R^T A_I = A_I^T A_R$.
+This implies that $A_R$ and $A_I$ have the same left and right singular vectors, and with singular values summing to $1$:
+\begin{equation}
+	A_R = \sum_k \sqrt{s_k} \ketbra{u_k}{v_k},
+	\qquad
+	A_I = \sum_k \sqrt{1-s_k} \ketbra{u_k}{v_k}.
+\end{equation}
+Note that different between these operators and unitary matrices: unitary matrices' singular values are all equal to $1$, and therefore unitaries send any orthonormal basis into another orthonormal basis. In contrast, here, different vectors $\ket{v_k}$ are treated differently, in that they correspond to different singular values.
+
+\section{What is this ``\emph{QM}'' you keep blabbering about?}
+
 \section{Mach-Zender setup}
 
 \heading{Summary of section}
