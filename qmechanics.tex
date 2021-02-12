@@ -139,7 +139,10 @@
 \newcommand{\calW}{{\mathcal{W}}}
 \newcommand{\calX}{{\mathcal{X}}}
 
+\newcommand{\rmC}{{\mathrm{C}}}
+\newcommand{\rmD}{{\mathrm{D}}}
 \newcommand{\rmL}{{\mathrm{L}}}
+\newcommand{\rmT}{{\mathrm{T}}}
 
 \newcommand{\uncertain}[1]{{\color{red}\bfseries (#1)}}
 \newcommand{\nice}[1]{{\color{green!50!black} #1}}
@@ -150,6 +153,9 @@
 \DeclareMathOperator{\Ker}{Ker}
 \DeclareMathOperator{\Imag}{Imag}
 \DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Pos}{Pos}
+\DeclareMathOperator{\Herm}{Herm}
+\DeclareMathOperator{\Id}{Id}
 
 
 % ========== EXTERNAL FILES ==============================
@@ -751,14 +757,71 @@ This immediately follows from remembering that a pure state $\rho$ only admits a
 	$(\mathds1\otimes \Lambda_k)\rho < 0$.
 \end{thm}
 
-\chapter{Maps}
-Let $\rho\in\rmL(\calX)\simeq\calX\otimes\calX^*$ be a state.
-A \emph{map} acting on $\rho$ is a linear operator $\Phi\in\rmL(\rmL(\calX),\rmL(\calY))$, sending states in $\calX$ into states in $\calY$.
-Explicitly, we can write the action of $\Phi$ on $\rho$ in terms of their matrix components as
-$\Phi(\rho)_{12}=K(\Phi)_{12,34}\rho_{34}$. The object $K(\Phi)$ is often referred to as the \emph{natural representation} of $\Phi$.
-We can think of $K(\Phi)$ as an operator in $\rmL(\calX\otimes\calX^*,\calY\otimes\calY^*)$ mapping $\on{vec}(\rho)$ to $\on{vec}[\Phi(\rho)]$.
+\chapter{Channels}
+% Let $\rho\in\rmD(\calX)$ be a state.
+A \emph{map} acting on an operator $X\in\rmL(\calX)$ is an operator $\Phi\in\rmL(\rmL(\calX),\rmL(\calY))$. We denote the set of such maps with $\rmT(\calX,\calY)$.
 
-\section{Standard notation}
+A given $\Phi\in\rmT(\calX,\calY)$ is said to be
+\begin{itemize}
+	\item \emph{unital} if $\Phi(I_{\calX})=I_{\calY}$, where $I_{\calX},I_{\calY}$ are the identities in $\calX,\calY$, respectively;
+	\item \emph{trace-preserving} if $\Tr(\Phi(X))=\Tr(X)$;
+	\item \emph{Hermitian preserving} if $\Phi(X^\dagger)=\Phi(X)^\dagger$, for all $X\in\rmL(\calX)$;
+	\item \emph{positive} if $\Phi(X)\ge0$ for all $X\ge0$;
+	\item \emph{completely positive} if $(\Phi\otimes I_n)\ge0$ for any $n\ge0$.
+\end{itemize}
+
+A map is said to be CPTP if it is trace-preserving and completely positive. CPTP maps are also referred to as \emph{channels}. We denote the set of channels with $\rmC(\calX,\calY)$.
+
+
+\section{Representations}
+
+\subsection{Natural representation}
+
+Any operator $X\in\rmL(\CC^n)$ can also be understood as a vector, being $\rmL(\CC^n)$ itself a vector space with $\dim\rmL(\CC^n)=n^2$. A standard way of doing this involves choosing a basis $\{\sigma_k\}_k\subset\rmL(\CC^n)$ and performing the decomposition $X=\sum_k c_k\sigma_k$. We can then identify $X$ with the corresponding vector of coefficients $\bs c\equiv (c_k)_k$.
+One such basis is $\{E_{ij}\}_{i,j=1}^n\subset\rmL(\CC^n)$, where $E_{ij}\equiv \ketbra{i}{j}$.
+The corresponding coefficients of $X$ in such basis are simply its matrix elements. We denote such set of coefficients with $\on{vec}(X)\in\CC^{n^2}$, which is thus defined as
+% \begin{equation}
+	$\on{vec}(X)_{ij} \equiv X_{ij} \equiv \mel{i}{X}{j}$.
+% \end{equation}
+More formally, if $X\in\rmL(\calX,\calY)$, then $\on{vec}(X)\in\calY\otimes\calX$.
+
+A map $\Phi\in\rmT(\CC^n,\CC^m)$ can then be represented as the matrix sending $\on{vec}(X)$ to $\on{vec}(\Phi(X))$. We denote this operator with $K(\Phi)\in\rmL(\CC^m\otimes\CC^m,\CC^n\otimes\CC^n)$, and refer to $K(\Phi)$ as the \emph{natural representation} of $\Phi$.
+We thus have
+\begin{equation}
+	K(\Phi)_{ij,k\ell}
+	\equiv \mel{i,j}{K(\Phi)}{k,\ell}
+	= \mel{i}{\Phi(E_{k\ell})}{j}.
+\end{equation}
+More formally, if $\Phi\in\rmT(\calX,\calY)$, then $K(\Phi)\in\rmL(\calY\otimes\calY,\calX\otimes\calX)$.
+
+\subsection{Choi representation}
+
+\subsection{Stinespring representation}
+
+\subsection{Kraus representation}
+
+\section{Notable examples}
+
+\begin{itemize}
+	\item Isometric channels: $\Phi(X)=UXU^\dagger$ for some isometry $U$.
+	\item Replacement channels;
+	\item Entanglement-breaking channels. Channels $\Phi\in\rmC(\CC^n,\calY)$ such that for any bipartite $\rho\in\rmD(\calX\otimes\calH)$, the state $(\Phi\otimes I_{\rmL(\calH)})(\rho)\in\rmD(\calY\otimes\calH)$ is separable. We know that $\Phi\in\mathrm{EB}$ \emph{\textbf{iff}} its Choi is separable.
+	An alternative characterisation is that $\Phi\in\mathrm{EB}$ \emph{\textbf{iff}} it can be written as $\Phi(\rho)=\sum_a \langle \mu(a),\rho\rangle \rho_a$, for some POVM $\{\mu(a)\}_a$ and collection of states $\{\rho_a\}_a$.
+	\item Extreme channels;
+	\item Pinching channels: $\Phi(X) =\sum_a \Pi_a X\Pi_a$ with $\{\Pi_a\}$ a projective measurement. The completely dephasing channel is an example of a pinching channel;
+	\item Mixed-unitary channels;
+\end{itemize}
+
+\section{Adjoint channel}
+
+Given a map $\Phi\in\rmT(\calX,\calY)$, we can always define its \emph{adjoint} $\Phi^*$. This is the unique map $\Phi^*\in\rmT(\calY,\calX)$ such that $\langle \Phi^*(Y),X\rangle=\langle Y,\Phi(X)\rangle$ for all $X\in\rmL(\calX)$ and $Y\in\rmL(\calY)$.
+
+The adjoint of a channel is also sometimes referred to as the \emph{Heisenberg-picture representation} of the channel. This originates from the observation that performing a measurement $\mu\in\Pos(\calY)$ on a state $\rho\in\rmD(\calX)$ after evolution through $\Phi\in\rmC(\calX,\calY)$, amounts to performing the measurement $\Phi^*(\mu)$ on $\rho$:
+\begin{equation}
+	\langle \mu,\Phi(\rho) \rangle = \langle \Phi^*(\mu),\rho\rangle.
+\end{equation}
+
+\section{Standard notation (some bullshit to remove)}
 
 \begin{equation}
 	[K(\Phi)\on{vec}(\rho)]_{12} = K(\Phi)_{12,34}\rho_{34}
@@ -792,6 +855,20 @@ Explicitly,
 	\equiv K(\Phi)_{13,24}.
 \end{equation}
 
+\section{Interesting properties and facts}
+
+\begin{itemize}
+	\item $\rmC(\calX,\calY)$ is \emph{convex};
+	\item A channel is invertible \emph{\textbf{iff}} it is a unitary channel;
+\end{itemize}
+
+\begin{thm}
+	Suppose $\Phi,\Psi\in\rmC(\calX,\calY)$ are such that $\Phi\circ\Psi=\Id$. If their Kraus operators are $\{A_a\}_a$ and $\{B_b\}_b$, respectively, then $A_a B_b=\lambda_{ab} I$ for some $\lambda_{ab}\in\CC$.
+\end{thm}
+\begin{proof}
+	See Preskill notes.
+\end{proof}
+
 \section{Up-down notation for maps and states}
 
 Another way to write maps is writing ``input indices'' low and ``output indices'' as high. For example:
@@ -817,6 +894,16 @@ Given a bipartite $\rho$, we then write the action of $\Phi$ on it as
 	\Phi(\rho)_{12|34} =
 	K(\Phi)_{12|34}^{56|78} \rho_{56|78}
 \end{equation}
+
+\section{Norms, distances, etc}
+
+\begin{defn}[Induced trace norm]
+	Let $\Phi\in\rmT(\calX,\calY)$. Its \emph{induced trace norm} is
+	\begin{equation}
+		\|\Phi\|_1 \equiv \max_{X\in\rmL(\calX): \|X\|_1\le 1}\|\Phi(X)\|_1.
+	\end{equation}
+	In words, this is the trace norm of $\Phi(X)$ maximised over all possible operators $X$ with trace norm less than $1$. (from Watrous)
+\end{defn}
 
 
 \chapter{Bell nonlocality}
@@ -1076,7 +1163,7 @@ In such scenario, it is not possible to make a list of all possible ``states'' o
 It must be stressed that such setup inherently assumes a separation between the system that is being probe and the rest of the universe.
 
 \section{Decomplexifying QM}
-A pure \emph{quantum state} $\psi$ is an element of a projective space $\mathbb{CP}^n\simeq S^{2n-1}/U(1)$.
+A pure \emph{quantum state} $\psi$ is an element of a projective space $\mathbb{CP}^n\simeq S^{2n+1}/U(1)$.
 Equivalently, it is an equivalence class of vectors in $\CC^{n}$ under the equivalence relation $\psi\sim\phi\Longleftrightarrow \psi=\lambda\phi$ for some $\lambda\in\CC$.
 Using only real numbers, we can describe states as equivalence classes of vectors of $\psi\in\RR^{2n}\simeq \RR^n\otimes\RR^2$: $\psi\in\RR^{2n}\!/\!\sim$ where $\psi\sim\phi\Longleftrightarrow \psi=\alpha(I\otimes R)\phi$ for some $\alpha\in\RR$ and $R\in SO(2)$.
 Equivalently, these are characterisable as orbits in the hypersphere $S^{2n-1}$.
@@ -1094,18 +1181,69 @@ In this notation, a linear map acting on a complex state, $A^c\psi^c$, translate
 \end{equation}
 In other words, the linear transformation $A^c$ is represented as
 \begin{equation}
-	A \doteq \begin{pmatrix}
+	A^c \to A \equiv \begin{pmatrix}
 		A_R & -A_I \\ A_I & A_R
 	\end{pmatrix}.
 \end{equation}
-If $A$ is unitary, $A^\dagger A=AA^\dagger=I$, then $A_R^T A_R+A_I^T A_I = A_R A_R^T+A_I A_I^T = I$ and $A_R^T A_I = A_I^T A_R$.
-This implies that $A_R$ and $A_I$ have the same left and right singular vectors, and with singular values summing to $1$:
+If $A^c$ is unitary, $(A^c)^\dagger A^c=A(A^c)^\dagger=I$, then $A_R^T A_R+A_I^T A_I = A_R A_R^T+A_I A_I^T = I$ and $A_R^T A_I = A_I^T A_R$.
+From this we can see that $A^T A=AA^T=I_{2n}$ and $\det(A)=\lvert\det(A^c)\rvert^2=1$, that is, $A\in SO(2n)$.
+Moreover, thus implies that $A_R$ and $A_I$ have the same left and right singular vectors, and with singular values summing to $1$:
 \begin{equation}
 	A_R = \sum_k \sqrt{s_k} \ketbra{u_k}{v_k},
 	\qquad
 	A_I = \sum_k \sqrt{1-s_k} \ketbra{u_k}{v_k}.
 \end{equation}
-Note that different between these operators and unitary matrices: unitary matrices' singular values are all equal to $1$, and therefore unitaries send any orthonormal basis into another orthonormal basis. In contrast, here, different vectors $\ket{v_k}$ are treated differently, in that they correspond to different singular values.
+Note the difference between these operators and unitary matrices: unitary matrices' singular values are all equal to $1$, and therefore unitaries send any orthonormal basis into another orthonormal basis. In contrast, here, different vectors $\ket{v_k}$ are treated differently, in that they correspond to different singular values.
+
+One can also verify that $A^c$ unitary implies $A\in \on{Sp}(2n,\RR)$:
+\begin{equation}\scalebox{0.9}{$\displaystyle
+	A^T \begin{pmatrix}
+		0 & I \\ -I & 0
+	\end{pmatrix} A
+	= \begin{pmatrix}
+		A_R^T & A_I^T \\ -A_I^T & A_R^T
+	\end{pmatrix}
+	\begin{pmatrix}
+		0 & I \\ -I & 0
+	\end{pmatrix}
+	\begin{pmatrix}
+		A_R & -A_I \\ A_I & A_R
+	\end{pmatrix} =
+	\begin{pmatrix}
+		-A_I^T A_R + A_R^T A_I & A_I^T A_I + A_R^T A_R \\
+		-A_R^T A_R - A_I^T A_I & A_R^T A_I - A_I^T A_R
+	\end{pmatrix}
+$}\end{equation}
+
+\subsection{Purely probabilistic route}
+
+At a fundamental level, a \emph{qubit state} is something that always returns a binary answer when measured.
+It is however crucial to observe that the outcome probabilities associated with a single measurement setup are not sufficient to fully characterise such a state: knowing that the probabilities in the $Z$ basis are $(0.5,0.5)$ does not tell us what the probabilities are in the $X$ basis.
+Nonetheless, sometimes knowing the probabilities in one basis \emph{is} sufficient for a full characterisation. More specifically, knowing that the outcome is deterministic in a given basis, say $Z$, implies it having maximal entropy in \emph{mutually unbiased} bases.
+
+For any state, there is always a measurement choice with a deterministic outcome, which alone would be sufficient to characterise the state. Can there be more than one? Sure, but that would probably amount to not be thinking about the state as a \emph{qubit} anymore.
+
+Suppose there is a measurement $M$ which, performed on the state $\psi$, results in outcome probabilities $\calP(\psi,M)=(1,0)$.
+There might be different a measurement $M'$ such that $\calP(\psi,M')=(0.5,0.5)$, and some other $M''$ such that $\calP(\psi,M'')=(3/4,1/4)$. Can we find a subset of measurements $\{M\}$ which allow us to optimally describe any possible outcome distribution resulting from a given state?
+We would then also need to understand how changing $\psi$ would affect the results.
+
+\begin{itemize}
+	\item Such an optimal description would also come with a way to write measurements in terms of other measurements. What exactly would that correspond to, from a physical standpoint? Measuring $\alpha\sigma_x+\beta\sigma_y$ can be reduced to measuring $\sigma_z$ after evolving the state through an appropriate basis-changing unitary.
+	This would correspond to saying that for any $M'$, there is some $\psi'$ such that $\calP(\psi,M)=\calP(\psi',M')$.
+	Question is: is it necessary to discuss \emph{evolution} to only describe possible measurement outcomes?
+	\item I guess the problem is to characterise what are the possible functional relationships $(\psi,M)\mapsto \calP(\psi,M)$. QM would have us think we need to parametrise $\psi$ as a complex vector (more specifically, $\psi\in\mathbb{CP}^n$) and $M$ as a Hermitian operator, and then $\calP(\psi,M)=\mel{\psi}{M}{\psi}$, but is this type of description really the only possible one?
+	\item How can we inject into $M\mapsto \calP(\psi,M)$ the fact that there is some underlying ``thing'' (the state $\psi$) that is being measured in different ways? If $\psi$ is only characterised by $\calP(\psi,M_\psi)=(1,0)$ for some $M_\psi$, then there probably is no way to distinguish between different $M_\perp$ such that $\calP(\psi,M_\perp)=(0.5,0.5)$.
+	At the same time, QM suggests that there \emph{cannot} be arbitrarily many such $M_\perp$. On the contrary, for a qubit, there are two and only two such ``unbiased'' measurements.
+	Physically, that would mean that there cannot be more than two measurement setups leading to maximally entropic outcomes.
+	There is probably some assumption on what kinds of ``measurements'' are accepted here, as one can imagine there being many ways to completely destroy the state in order to get unpredictable outcomes.
+	\item One can imagine there being an underlying \emph{master distribution} which fully determines all outcomes (Bell be damned).
+	Such distribution would have to also ``cause'' the choices of measurements, thus rendering the concepts of conditional probabilities somewhat non-fundamental.
+	Note that we cannot have any ``hidden variable'' or similar parameter capable of predicting measurement outcomes. This is because we are not really describing the state \emph{per se}, but rather its interaction with its surroundings/measurement apparatus.
+\end{itemize}
+
+Suppose we have binary random variables $X_i$ which are all \emph{mutually unbiased}, meaning that $\Pr(X_i=x_i|X_j=x_j)=1/2$ for all $i,j$ and $x_i,x_j\in\{0,1\}$. I guess an important aspect here is that we are assuming that the system that is being measured is always the same. There must therefore be some bound on the total amount of information that can be stored in it.
+At the same time, the random variables correspond to different measurements, \emph{i.e.} different ways in which we can interact with the system. Each one of these thus \emph{inject} some new information into the system, to some degree.
+That is why we need to talk of a probability assignment of the form $\calP(\psi,M)$, which depends both on state \emph{and} measurement.
 
 \section{What is this ``\emph{QM}'' you keep blabbering about?}
 
