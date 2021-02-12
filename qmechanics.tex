@@ -905,6 +905,338 @@ Given a bipartite $\rho$, we then write the action of $\Phi$ on it as
 	In words, this is the trace norm of $\Phi(X)$ maximised over all possible operators $X$ with trace norm less than $1$. (from Watrous)
 \end{defn}
 
+\chapter{CV formalism}
+
+\section{Basic formulas}
+
+\begin{equation}
+	(a^\dagger)^n \ket m 
+	= \sqrt{\frac{(m+n)!}{m!}} \ket{m+n}.
+\end{equation}
+
+\begin{equation}
+	a^n \ket m = \sqrt{\frac{m!}{(m-n)!}} \ket{m-n},\quad n\le m.
+\end{equation}
+
+\section{Displacement operators}
+
+\begin{defn}[Displacement operators]
+	$D(\alpha) \equiv \exp(\alpha a^\dagger-\bar\alpha a)$ for $\alpha\in\CC$.
+\end{defn}
+
+\begin{prop}
+	\begin{equation}
+		D(\alpha)
+		= e^{-\lvert\alpha\rvert^2/2}
+			\exp(\alpha a^\dagger)\exp(-\bar\alpha a).
+	\end{equation}
+\end{prop}
+
+\begin{prop}
+	Displacement operators acting on the vacuum state generate coherent states:
+	\begin{equation}
+		D(\alpha)\ket0 = e^{-|\alpha|^2/2}\exp(\alpha a^\dagger)\ket0
+		= \ket\alpha
+		\equiv e^{-|\alpha|^2/2} \sum_{k=0}^\infty
+			\frac{\alpha^k}{\sqrt{k!}} \ket k.
+	\end{equation}
+\end{prop}
+
+\begin{prop}
+	\begin{equation}
+		D(\alpha)\ket1
+		= e^{-|\alpha|^2/2}
+			\sum_{k=0}^\infty \frac{\alpha^{k-1}}{\sqrt{k!}}\left(
+			k - |\alpha|^2
+			\right) \ket k
+		= e^{-|\alpha|^2/2}
+			\sum_{k=0}^\infty \frac{\alpha^{k}}{\sqrt{k!}}
+			\left( \frac{ k - |\alpha|^2 }{ \alpha } \right) \ket k
+	\end{equation}
+\end{prop}
+\begin{proof}
+	We have
+	\begin{equation}
+		D(\alpha) \ket 1
+		= e^{-|\alpha|^2/2}
+		  \exp(\alpha a^\dagger) (\ket1 - \bar\alpha \ket0)
+		= e^{-|\alpha|^2/2}
+		  \sum_{k=0}^\infty \frac{\alpha^k}{k!} \left[
+		  	\sqrt{(k+1)!}\ket{k+1}
+		  	- \bar\alpha \sqrt{k!}\ket k
+		  \right]
+	\end{equation}
+	and therefore
+	\begin{equation}
+		D(\alpha)\ket1
+		= e^{-|\alpha|^2/2} \left[
+			-\bar\alpha \ket 0
+			+ \sum_{k=1}^\infty \frac{\alpha^{k-1}}{\sqrt{k!}}\left(
+			k - |\alpha|^2
+			\right) \ket k
+		\right],
+	\end{equation}
+	which can be can also be written as in the proposition.
+\end{proof}
+
+\begin{prop}
+	\begin{equation}
+		D(\alpha) \ket \ell
+		= e^{-|\alpha|^2/2}
+		\sum_{s=0}^\infty \frac{\alpha^{s-\ell}}{\sqrt{\ell!s!}}
+		\left(
+		\sum_{k=0}^{\min(s,\ell)}
+		(-1)^{\ell-k}|\alpha|^{2(\ell-k)} k!\binom{\ell}{k}\binom{s}{k}
+		\right)
+		\ket{s}
+	\end{equation}
+\end{prop}
+
+\begin{proof}
+	\begin{equation}
+	\begin{gathered}
+		D(\alpha) \ket \ell
+		= e^{-|\alpha|^2/2}
+		\exp(\alpha a^\dagger) 
+		\sum_{k=0}^\ell \frac{(-\bar\alpha)^k}{k!} a^k \ket\ell \\
+		= e^{-|\alpha|^2/2}
+		\exp(\alpha a^\dagger) 
+		\sum_{k=0}^\ell \frac{(-\bar\alpha)^k}{k!} \sqrt{\frac{\ell!}{(\ell-k)!}} \ket{\ell-k}
+		= e^{-|\alpha|^2/2}
+		\exp(\alpha a^\dagger) 
+		\sum_{k=0}^\ell
+		\frac{(-\bar\alpha)^{\ell-k}}{(\ell-k)!} \sqrt{\frac{\ell!}{k!}} \ket{k} \\
+		= e^{-|\alpha|^2/2}
+		\sum_{k=0}^\ell\sum_{j=0}^\infty
+		\frac{(-\bar\alpha)^{\ell-k} \alpha^j}{j!(\ell-k)!} \sqrt{\frac{\ell!(k+j)!}{k!^2}} \ket{k+j} \\
+		= e^{-|\alpha|^2/2}
+		\sum_{s=0}^\infty \left(
+			\sum_{k=0}^{\min(s,\ell)}
+			\frac{(-\bar\alpha)^{\ell-k} \alpha^{s-k}}{(s-k)!(\ell-k)!} \sqrt{\frac{\ell!s!}{k!^2}} 
+		\right) \ket{s} \\
+		= e^{-|\alpha|^2/2}
+		\sum_{s=0}^\infty \frac{\alpha^{s-\ell}}{\sqrt{\ell!s!}}
+		\left(
+		\sum_{k=0}^{\min(s,\ell)}
+		(-1)^{\ell-k}|\alpha|^{2(\ell-k)} k!\binom{\ell}{k}\binom{s}{k}
+		\right)
+		\ket{s} 
+	\end{gathered}
+	\end{equation}
+\end{proof}
+
+\begin{prop}
+	\begin{equation}
+		D(\alpha)\PP_0 D^\dagger(\alpha) = \ketbra\alpha \equiv \PP_\alpha.
+	\end{equation}
+	\begin{equation}
+		D(\alpha)\PP_1 D^\dagger(\alpha)
+		= ...
+	\end{equation}
+\end{prop}
+
+\begin{prop} to check:
+	\begin{equation}
+		D(\alpha) a D^\dagger(\alpha) = a + \alpha
+	\end{equation}
+\end{prop}
+
+\section{Thermalised states}
+
+\begin{defn}
+	Given a state $\rho$, we define the corresponding \emph{thermalised state with average occupation number} $\bar n$ as
+	\begin{equation}
+		\Phi_{\bar n}^{\rm th}(\rho)
+		\equiv \int d\mu \frac{e^{-\mu/\bar n}}{\bar n}
+		D(\sqrt\mu)\rho D^\dagger(\sqrt\mu).
+	\end{equation}
+\end{defn}
+
+\begin{prop}
+	\begin{equation}
+		\Phi^{\rm th}_{\bar n}(\PP_0)
+		= \sum_{j,k=0}^\infty
+			\frac{((j+k)/2)!}{\sqrt{j!k!}}
+			\frac{1}{\bar n} \left(\frac{\bar n}{\bar n+1}\right)^{1+(j+k)/2}
+			\ketbra{j}{k}
+	\end{equation}
+\end{prop}
+Therefore in particular
+\begin{equation}
+	\langle j|\Phi^{\rm th}_{\bar n}(\PP_0)|j\rangle
+	= \sum_{j=0}^\infty \frac{\bar n^j}{(1+\bar n)^{1+j}}.
+\end{equation}
+
+\begin{prop}
+	\begin{equation}
+		\langle j\rvert \Phi^{\rm th}_{\bar n}(\PP_1) \lvert j\rangle
+		= \sum_{j=0}^\infty
+			\frac{ \bar n^j }{ (\bar n+1)^{j+1} }
+			\frac{ (j+ \bar n^2) }{ \bar n(\bar n + 1) }.
+	\end{equation}
+\end{prop}
+
+\begin{proof}
+	Remember that
+	\begin{equation}
+		D(\sqrt\mu)\PP_1 D(\sqrt\mu)
+		= e^{-\mu}\sum_{j,k=0}^\infty \frac{\mu^{(j+k)/2 -1}}{\sqrt{j!k!}}
+		(j-\mu)(k-\mu)
+		\ketbra{j}{k}.
+	\end{equation}
+	Therefore
+	\begin{equation}
+	\begin{gathered}
+		\Phi^{\rm th}_{\bar n}(\PP_1)
+		\equiv \sum_{j,k=0}^\infty \ketbra{j}{k}
+		\int_0^\infty d\mu \,
+		\frac{e^{-\mu/\bar n}}{\bar n} e^{-\mu}
+		\frac{\mu^{(j+k)/2 -1}}{\sqrt{j!k!}}
+		(j-\mu)(k-\mu) \\
+		= \sum_{j,k=0}^\infty \ketbra{j}{k}
+		\frac{C^{-(j+k)/2}}{\bar n \sqrt{j!k!}}
+		\int_0^\infty d\mu \,
+		e^{-x} x^{(j+k)/2-1}
+		(j-x/C)(k-x/C),
+	\end{gathered}
+	\end{equation}
+	where $C\equiv 1+1/\bar n$. Evaluating the integral we have
+	\begin{equation}
+	\begin{gathered}
+		= \sum_{j,k=0}^\infty \ketbra{j}{k}
+		\frac{C^{-(j+k)/2}}{\bar n \sqrt{j!k!}}
+		\left[
+			jk ((j+k)/2-1)!
+			-\frac{(j+k)}{C} ((j+k)/2)!
+			+\frac{1}{C^2} ((j+k)/2+1)!
+		\right].
+	\end{gathered}
+	\end{equation}
+	In particular for $j=k$ we have
+	\begin{equation}
+	\begin{gathered}
+		\langle j| \Phi^{\rm th}_{\bar n}(\PP_1) \lvert j\rangle
+		= \sum_{j=0}^\infty
+		\frac{C^{-j-2}}{\bar n j!}
+		\left[
+			j^2 (j-1)! C^2
+			- 2j j! C
+			+ (j+1)!
+		\right] \\
+		= \sum_{j=0}^\infty \frac{1}{\bar n}
+		\left(\frac{\bar n}{\bar n + 1}\right)^{j+2}
+		\left[
+			j \left(\frac{\bar n+1}{\bar n}\right)^2
+			- 2j \left(\frac{\bar n+1}{\bar n}\right)
+			+ j+1
+		\right] \\
+		= \sum_{j=0}^\infty \frac{1}{\bar n}
+		\left(\frac{\bar n}{\bar n + 1}\right)^{j+2}
+		\left[
+			j\left(
+				\frac{(\bar n+1)^2 - 2\bar n(\bar n+1) + \bar n^2}{\bar n^2}
+			\right)
+			+1
+		\right] \\
+		= \sum_{j=0}^\infty \frac{1}{\bar n}
+		\left(\frac{\bar n}{\bar n + 1}\right)^{j+2}
+		\left[
+			\frac{j}{\bar n^2}
+			+1
+		\right]
+		= \sum_{j=0}^\infty 
+			\frac{ \bar n^{j-1}}{(\bar n+1)^{j+2}}
+			(j+ \bar n^2)
+		= \sum_{j=0}^\infty
+			\frac{ \bar n^j }{ (\bar n+1)^{j+1} }
+			\frac{ (j+ \bar n^2) }{ \bar n(\bar n + 1) }
+	\end{gathered}
+	\end{equation}
+\end{proof}
+
+\begin{prop}
+	\begin{equation}
+		\Phi^{\rm th}_{\bar n}(\ketbra{0}{1})
+		= 
+	\end{equation}
+\end{prop}
+
+\begin{proof}
+	\begin{equation}
+	\begin{gathered}
+		\Phi^{\rm th}_{\bar n}(\ketbra{0}{1})
+		= \int_0^\infty d\mu \frac{e^{-\mu/\bar n}}{\bar n}
+		\sum_{j,k=0}^\infty \ketbra{j}{k}
+		e^{-\mu} \frac{1}{\sqrt{j!k!}}
+		\mu^{\frac{j+k}{2} - \frac12} (k-\mu) \\
+		= \sum_{j,k=0}^\infty \ketbra{j}{k}
+		\frac{C^{(-\frac{j+k}{2}-\frac32)}}{\bar n\sqrt{j!k!}}
+		\int_0^\infty dx
+			e^{-x} x^{(\frac{j+k}{2}-\frac12)}
+			(Ck - x) \\
+		= \sum_{j,k=0}^\infty \ketbra{j}{k}
+		\frac{1}{\bar n\sqrt{j!k!}}
+		\left(\frac{\bar n}{\bar n + 1}\right)^{(j+k+3)/2}
+		\Gamma\left(\frac{j+k+1}{2}\right)
+		\left(
+			Ck - \frac{j+k+1}{2}
+		\right) \\
+		= \sum_{j,k=0}^\infty \ketbra{j}{k}
+		\frac{1}{\bar n\sqrt{j!k!}}
+		\left(\frac{\bar n}{\bar n + 1}\right)^{(j+k+3)/2}
+		\Gamma\left(\frac{j+k+1}{2}\right)
+		\left(
+			Ck - \frac{j+k+1}{2}
+		\right) \\
+		= \sum_{j,k=0}^\infty \ketbra{j}{k}
+		\frac{1}{\bar n\sqrt{j!k!}}
+		\left(\frac{\bar n}{\bar n + 1}\right)^{(j+k+3)/2}
+		\Gamma\left(\frac{j+k+1}{2}\right)
+		\left(
+			\frac{ \bar n(k- j) + 2k - \bar n }{ 2\bar n }
+		\right).
+	\end{gathered}
+	\end{equation}
+	Thus in particular
+	\begin{equation}
+	\begin{gathered}
+		\langle j| \Phi^{\rm th}_{\bar n}(\ketbra{0}{1}) |j\rangle
+		= \frac{1}{\bar n j!}
+		\left(\frac{ \bar n }{ \bar n + 1 }\right)^{j + 3/2}
+		(j+1/2)!
+		\left( \frac{ 2j - \bar n }{ 2\bar n } \right) \\
+		=
+		\frac{ \bar n^{ j - 1/2 } }{ (\bar n + 1)^{ j + 3/2 } }
+		\frac{ (j+1/2)! }{ j! }
+		\left( \frac{ 2j - \bar n }{ 2 } \right)
+	\end{gathered}
+	\end{equation}
+\end{proof}
+
+\begin{prop}
+	The state $\ket0+\ket1$ evolving through a beasplitter with transmittivity $t$ results, looking only at the transmitted output branch, in the state
+	\begin{equation}
+		\rho_t
+		\equiv
+		\frac{2-T}{2} \PP_0
+		+ \frac{T}{2} \PP_1
+		+ \frac12 (t \ketbra{1}{0} + \mathrm{h.c.}).
+	\end{equation}
+	Applying $\Phi^{\rm th}_{\bar n}$ to this state, and focusing on the Fock-state probabilities, gives
+	\begin{equation}
+	\begin{gathered}
+		P_j^{\mathrm{th};\bar n}
+		= \frac{\bar n^j}{(\bar n + 1)^{j+1}}
+		\left(
+			\frac{2-T}{2}
+			+ \frac{T}{2} \frac{j+\bar n^2}{\bar n(\bar n + 1)}
+			+ \frac{\Re(t)}{\sqrt{\bar n(\bar n + 1)}}
+			\frac{(j+1/2)!}{j!}
+			\left( \frac{ 2j - \bar n }{ 2 } \right)
+		\right).
+	\end{gathered}
+	\end{equation}
+\end{prop}
 
 \chapter{Bell nonlocality}
 
