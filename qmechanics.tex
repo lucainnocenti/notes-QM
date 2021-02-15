@@ -85,6 +85,7 @@
 
 \usepackage{parskip} % suppress indenting new paragraphs
 
+
 \usepackage[printonlyused,withpage,nohyperlinks,smaller]{acronym}
 \input{fix_acronym.tex}
 
@@ -128,6 +129,7 @@
 \newcommand{\calG}{{\mathcal{G}}}
 \newcommand{\calH}{{\mathcal{H}}}
 \newcommand{\calI}{{\mathcal{I}}}
+\newcommand{\calJ}{{\mathcal{J}}}
 \newcommand{\calY}{{\mathcal{Y}}}
 \newcommand{\calL}{{\mathcal{L}}}
 \newcommand{\calM}{{\mathcal{M}}}
@@ -1041,6 +1043,73 @@ Given a bipartite $\rho$, we then write the action of $\Phi$ on it as
 	\end{equation}
 \end{prop}
 
+\section{Linear evolution}
+
+\begin{prop}
+	Consider evolution through a linear interferometer described by the unitary $\calU$. We then have
+	\begin{equation}
+		\ket k \equiv \frac{(a^\dagger)^k}{\sqrt{k!}} \ket 0
+		\xrightarrow{\calU} \sum_{\calJ\in[0...k]^n : |\calJ|=k}
+		\binom{k}{\calJ_1\cdots \calJ_n}^{1/2}
+		\bs c_{\calJ}
+		\ket{\calJ_1\cdots \calJ_n}.
+	\end{equation}
+\end{prop}
+
+\begin{proof}
+	\begin{equation}
+	\begin{gathered}
+		\varphi(\calU) \ket k
+		= \frac{1}{\sqrt{k!}}(\calU a^\dagger \calU^\dagger)^k \ket0
+		= \frac{1}{\sqrt{k!}}
+		\left(
+			\sum_{j=1}^n c_j a_j^\dagger
+		\right)^k \ket 0
+		= \frac{1}{\sqrt{k!}}
+		\sum_{J\in [n]^k} \left(\prod_{\ell=1}^k c_{J_\ell} a_{J_\ell}^\dagger\right) \ket0 \\
+		= \frac{1}{\sqrt{k!}}
+		\sum_{\calJ\in[0...k]^n : |\calJ|=k}
+		\binom{k}{\calJ_1\cdots \calJ_n}
+		\prod_{\ell=1}^n (c_\ell a_{\ell}^\dagger)^{\calJ_\ell} \ket0 \\
+		= \sum_{\calJ\in[0...k]^n : |\calJ|=k}
+		\binom{k}{\calJ_1\cdots \calJ_n}^{1/2}
+		\bs c_\calJ \ket{\calJ_1\cdots \calJ_n}.
+	\end{gathered}
+	\end{equation}
+\end{proof}
+
+\begin{prop}
+	For a two-output interferometer (\emph{i.e.} a beamsplitter),
+	\begin{equation}
+		\ket k \to
+		\sum_{j=0}^k \binom{k}{j}^{1/2} t^j r^{k-j} \ket{j,k-j}.
+	\end{equation}
+	Looking only at the first output port (that is, partial tracing the second mode), we get
+	\begin{equation}
+		\ket k \to
+		\sum_{j=0}^k \binom{k}{j} T^j (1-T)^{k-j} \PP_j.
+	\end{equation}
+\end{prop}
+
+\begin{prop}
+	Consider a thermal state $\rho^{\rm th}_{\bar n}$, evolving through a beamsplitter with transmittivity $T\equiv |t|^2$, of which we only consider the first output port. We then have
+	\begin{equation}
+	\begin{gathered}
+		\rho^{\rm th}_{\bar n}
+		\equiv \sum_{k=0}^\infty \frac{\bar n^k}{(\bar n+1)^{k+1}}\PP_k
+		\longrightarrow
+		\sum_{k=0}^\infty \frac{\bar n^k}{(\bar n+1)^{k+1}}
+		\sum_{j=0}^k \binom{k}{j} T^j (1-T)^{k-j} \PP_j \\
+		= \sum_{j=0}^\infty \PP_j \left[
+			\sum_{k=j}^\infty 
+			\frac{\bar n^k}{(\bar n+1)^{k+1}}
+			\binom{k}{j}
+			T^j (1-T)^{k-j}
+		\right]
+	\end{gathered}
+	\end{equation}
+\end{prop}
+
 \section{Thermalised states}
 
 \begin{defn}
@@ -1050,6 +1119,7 @@ Given a bipartite $\rho$, we then write the action of $\Phi$ on it as
 		\equiv \int d\mu \frac{e^{-\mu/\bar n}}{\bar n}
 		D(\sqrt\mu)\rho D^\dagger(\sqrt\mu).
 	\end{equation}
+	\uncertain{should I also randomise the phases?}
 \end{defn}
 
 \begin{prop}
@@ -1225,7 +1295,8 @@ Therefore in particular
 	Applying $\Phi^{\rm th}_{\bar n}$ to this state, and focusing on the Fock-state probabilities, gives
 	\begin{equation}
 	\begin{gathered}
-		P_j^{\mathrm{th};\bar n}
+		% P_j^{\mathrm{th};\bar n}
+		\langle j\rvert \Phi^{\rm th}_{\bar n}(\rho_t) \lvert j\rangle
 		= \frac{\bar n^j}{(\bar n + 1)^{j+1}}
 		\left(
 			\frac{2-T}{2}
