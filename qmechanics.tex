@@ -124,6 +124,7 @@
 \newcommand{\calA}{{\mathcal{A}}}
 \newcommand{\calB}{{\mathcal{B}}}
 \newcommand{\calC}{{\mathcal{C}}}
+\newcommand{\calD}{{\mathcal{D}}}
 \newcommand{\calE}{{\mathcal{E}}}
 \newcommand{\calF}{{\mathcal{F}}}
 \newcommand{\calG}{{\mathcal{G}}}
@@ -146,6 +147,7 @@
 \newcommand{\rmL}{{\mathrm{L}}}
 \newcommand{\rmT}{{\mathrm{T}}}
 
+\newcommand{\wondering}[1]{{\color{red}\itshape\bfseries (#1)}}
 \newcommand{\uncertain}[1]{{\color{red}\bfseries (#1)}}
 \newcommand{\nice}[1]{{\color{green!50!black} #1}}
 \newcommand{\bad}[1]{{\color{red!60!black} #1}}
@@ -158,6 +160,7 @@
 \DeclareMathOperator{\Pos}{Pos}
 \DeclareMathOperator{\Herm}{Herm}
 \DeclareMathOperator{\Id}{Id}
+\DeclareMathOperator{\Lin}{Lin}
 
 
 % ========== EXTERNAL FILES ==============================
@@ -907,9 +910,377 @@ Given a bipartite $\rho$, we then write the action of $\Phi$ on it as
 	In words, this is the trace norm of $\Phi(X)$ maximised over all possible operators $X$ with trace norm less than $1$. (from Watrous)
 \end{defn}
 
+\chapter{Foundations}
+
+\section{Mixed facts}
+
+\begin{defn}[Effects]
+	Denote with $\on{Eff}(\calH)\subset\Herm(\calH)$ the set of \emph{effects} on $\calH$, that is, the set of positive operators $E$ such that $0\le E \le I$. If $\dim(\calH)=d$, we write this set as $\on{Eff}_d(\calH)$. When clear from the context, the dependence on $\calH$ might be omitted.
+\end{defn}
+Note that $\on{Eff}_d$ is equivalently characterised as the set of Hermitian operators with eigenvalues in the unit interval.
+Note that POVMs are subsets of $\on{Eff}$ that sum to the identity operator.
+
+\begin{prop}
+	The set of effects, $\on{Eff}(\calH)$, is convex. Its extreme points are the projection operators.
+\end{prop}
+\begin{proof}
+	Proof adapted from~\parencite{caves2004gleasontype}.
+	Let $E\in\on{Eff}_d$ be an effect in a finite-dimensional space.
+	Write its spectral decomposition as
+	$E = \sum_k \lambda_k \PP_k$, where $\lambda_k\in[0,1]$ are the eigenvalues of $E$ and $\PP_k$ projectors onto the corresponding eigenvectors.
+	We will prove that we can always write $E$ as
+	\begin{equation}
+		E = \lambda_1 \Pi_1 + \sum_{m=2}^d (\lambda_m-\lambda_{m-1})\Pi_m + (1-\lambda_d) 0,
+	\end{equation}
+	where $\Pi_k=\sum_{j=k}^d\PP_k$, with $\bs 0$ denoting the null operator (that is, the operator sending every vector to $0\in\calH$).
+	Because every such $\Pi_k$ is a projector, this proves that every element of $\on{Eff}_d$ can be written as the convex combination of a finite set of projectors.
+	The statement follows from writing
+	\begin{equation}
+	\begin{gathered}
+		\lambda_1\sum_{j=1}^d \PP_j
+		+ \sum_{m=2}^d(\lambda_m-\lambda_{m-1})\sum_{j=m}^d \PP_j
+		+ (1-\lambda_d)0 \\
+		= \sum_{j=1}^d \left(\lambda_1 + \sum_{m=2}^j (\lambda_m-\lambda_{m-1})\right) \PP_j
+		+ (1-\lambda_d) 0
+		= \underbrace{\sum_{j=1}^d \lambda_j \PP_j}_{=E} + (1-\lambda_d) 0 = E.
+	\end{gathered}
+	\end{equation}
+	This shows that every $E$ is convex combination of projectors. We then have to show that every projector is an extreme point, that is, cannot be written as a nontrivial convex combination of other projectors.
+	For the purpose, observe that for a generic projector $\Pi\in\calP(\calH)$ we have $v\in\on{supp}(\Pi)\Longleftrightarrow \Pi v=v$.
+	Suppose $\Pi=a\Pi_1+(1-a)\Pi_2$ for some $\Pi_1,\Pi_2\in\calP(\calH)$ and $a\in(0,1)$.
+	% Then clearly $\on{supp}(\Pi_1)\cap\on{supp}(\Pi_2)\subseteq\on{supp}(\Pi)$.
+	Then $\ker(\Pi)\subseteq\ker(\Pi_1)\cap\ker(\Pi_2)\subseteq\ker(\Pi_i)$ for $i=1,2$, which implies taking the orthogonal spaces that $\on{supp}(\Pi_i)\subseteq\on{supp}(\Pi)$.
+	On the other hand, $\on{supp}(\Pi)\subseteq\on{supp}(\Pi_i)$, because for any $v\in\on{supp}(\Pi)$ we have
+	\begin{equation}
+		1 = \mel{v}{\Pi}{v}
+		= a\mel{v}{\Pi_1}{v} + (1-a) \mel{v}{\Pi_2}{v},
+	\end{equation}
+	which can only be verified if $\mel{v}{\Pi_1}{v}=\mel{v}{\Pi_2}{v}=1$.
+	We conclude that $\on{supp}(\Pi_i)=\on{supp}(\Pi)$, and thus $\Pi=\Pi_1=\Pi_2$.
+\end{proof}
+
+\begin{prop}
+	Let $A\in\on{Eff}(\calH)$ and $B\in\Lin(\calH)$ such that $A+B\le I$.
+	Then $B\in\on{Eff}(\calH)$.
+\end{prop}
+\begin{proof}
+	We need to prove that (1) $B\in\Herm(\calH)$, and (2) that $0\le B\le I$.
+	\begin{itemize}
+		\item The first follows from writing $A+B+(I-A-B)=I$, which implies that $B=I - A - (I-A-B)$ is Hermitian by virtue of being a linear combination of Hermitian operators.
+		\item Taking expectation values on arbitrary vectors $v\in\calH$, we see that
+		\begin{equation}
+			\expval{B}_v \le 1 - \expval{A}_v.
+		\end{equation}
+		This implies that $\sigma(B)\in[0,1]$, and thus that $0\le B\le I$.
+	\end{itemize}
+\end{proof}
+
+\begin{prop}
+	Let $A,B\in\on{Eff}(\calH)$ with $A\le B$. Then $B-A\in\on{Eff}(\calH)$.
+	\label{prop:diff_of_effects_is_effect}
+\end{prop}
+\begin{proof}
+	By definition $0\le A,B\le I$ and $B-A\ge 0$.
+	But also, for any $v\in\calH$, we have
+	$\mel{v}{B-A}{v}=\mel{v}{B}{v}-\mel{v}{A}{v}\in[-1,1]$.
+	We conclude that $B-A\le I$, and thus $B-A\in\on{Eff}(\calH)$.
+\end{proof}
+
+
+\section{Gleason's theorem}
+
+\begin{defn}[States as probability measures]
+	Let $\calP(\calH)$ be the set of projection operators on an Hilbert space $\calH$. A \emph{quantum state} can be defined as a generalised probability measure on $\calP(\calH)$, that is, as a function $v:\calP(\calH)\to[0,1]$ such that $v(I)=1$ and
+	$v(\sum_k E_k) = \sum_k v(E_k)$
+	for any set of projectors $\{E_k\}\subset\calP(\calH)$ such that $\sum_k E_k\le I$.
+\end{defn}
+The requirement that $\sum_k E_k\in\calP(\calH)$ automatically implies mutual orthogonality of the $E_k$ (proof), thus $v$ is by definition additive on orthogonal projectors.
+Gleason's theorem says that any such state $v$, when $\dim(\calH)\ge3$, can be represented as $v(E)=\Tr(\rho E)$ for some $\rho\in\Herm(\calH)$.
+A generalisation of this result to \emph{effects} is given in~\parencite{busch2003quantum,caves2004gleasontype}.
+
+\begin{defn}[Frame functions]
+	Let $\calH$ be a separable Hilbert space.
+	We say that $f$ is a \emph{frame function} for $\calH$ if, for any orthonormal basis $\{x_i\}\subset\calH$, it satisfies
+	$\sum_i f(x_i) = 1$.
+	A frame function $f$ is said to be \emph{regular} if there is some $\rho\in\Herm(\calH)$ such that $f(x)=\mel{x}{\rho}{x}$.
+\end{defn}
+
+\begin{defn}[Frame functions]
+	\emph{Frame functions} are sometimes defined in a slightly different way, as functions $f:\on{Eff}_d\to[0,1]$ such that $\sum_k f(E_k)=1$ for all sets $\{E_k\}\subset\on{Eff}_d$ such that $\sum_k E_k=I$.
+\end{defn}
+These two definitions should be mostly equivalent. The equivalence is probably proven observing that $\on{Eff}_d$ is the convex hull of projection operators, and that there is a bijection between trace-1 projection operators and unit vectors.
+
+We will use the latter definition for now.
+
+\begin{example}
+	Two possible frame functions in $\RR^2$ are $f(\bs n_\theta)=1/2$ and $f(\bs n_\theta)=\cos(2\pi \theta)$.
+\end{example}
+\begin{proof}
+	These are ``frame functions'' in the sense of functions defined on $\calS(\calH)$ (the unit sphere).
+
+	The orthonormal bases in $\RR^2$ are pairs of unit vectors in the directions $\theta$ and $\theta+\pi/2$, for any $\theta\in[0,2\pi]$.
+	Denote with $v_1, v_2\in\RR^2$ one such orthonormal basis, and let $f(\bs n_\theta)\equiv \cos(n\theta)$. Then,
+	\begin{equation}
+	\begin{gathered}
+		f(\bs n_\theta) + f(\bs n_{\theta+\pi/2})
+		= \cos(n \theta) + \cos(n(\theta+\pi/2)) \\
+		= \cos(n\theta)(1 + \cos(n\pi/2)) - \sin(n\theta) \sin(n\pi/2).
+	\end{gathered}
+	\end{equation}
+	Therefore, for $f(\bs n_\theta) + f(\bs n_{\theta+\pi/2})$ to have constant value for all $\theta$, we must have $\sin(n\pi/2)=0$, \emph{i.e.} $n\in 2\ZZ$, which in turn implies $1+\cos(n\pi/2)\in\{0,2\}$ depending on whether $n=0\pmod 4$ or ${n=2\pmod 4}$.
+	We conclude that $f(\bs n_\theta) + f(\bs n_{\theta+\pi/2})=1$ if $f(\bs n_\theta)=1/2$, and
+	$f(\bs n_\theta) + f(\bs n_{\theta+\pi/2})=0$ for $f(\bs n_\theta)=\cos(2\theta)$.
+\end{proof}
+\wondering{are these "regular" frames?}
+
+\begin{prop}
+	Any frame function satisfies $f(I)=1$.
+\end{prop}
+
+\begin{prop}
+	Frame functions are \emph{additive} on the set of effects:
+	$f(E_1+E_2)=f(E_1)+f(E_2)$ for any $E_1,E_2\in\on{Eff}(\calH)$.
+	\label{prop:frame_functions_are_additive}
+\end{prop}
+\begin{proof}
+	Let $E_1,E_2\in\on{Eff}(\calH)$ be such that $E_1+E_2\le I$, and thus $E_1+E_2\in\on{Eff}(\calH)$.
+	Then $\{E_1,E_2,I-E_1-E_2\},\{E_1+E_2,I-E_1-E_2\}\in\on{POVM}(\calH)$.
+	Therefore
+	\begin{equation}
+		f(E_1 + E_2 + (I-E_1-E_2))
+		= f(E_1) + f(E_2) + f(I-E_1-E_2)
+		= f(E_1 + E_2) + f(I-E_1-E_2).
+	\end{equation}
+	It follows that $f(E_1)+f(E_2)=f(E_1+E_2)$.
+
+	For the more general case where $E_1+E_2\le I$ is not necessarily the case, we observe that $E_1+E_2\le 2I$, and thus $(E_1+E_2)/2\in\on{Eff}(\calH)$ for any $E_1,E_2\in\on{Eff}(\calH)$.
+	But we also see that for any $E\in\on{Eff}(\calH)$, if $2E\le I$ then $f(2E)=2f(E)$ and thus for any $E\in\on{Eff}(\calH)$ we must have $f(E/2)=f(E)/2$.
+	Therefore
+	\begin{equation}
+		f(E_1+E_2)/2 = f((E_1+E_2)/2)
+		= f(E_1/2) + f(E_2/2)
+		= f(E_1)/2 + f(E_2)/2.
+	\end{equation}
+\end{proof}
+
+\begin{prop}
+	Frame functions are homogeneous with respect to nonnegative rationals.
+\end{prop}
+\begin{proof}
+	For any $E\in\on{Eff}(\calH)$ and $k\in\NN\cap[0,\infty]$, we have $E/k\in\on{Eff}(\calH)$.
+	Therefore
+	\begin{equation}
+		f(E) = f(\underbrace{(E/k)+...+(E/k)}_k)
+		= k f(E/k).
+	\end{equation}
+	It follows that $f(E/k)=f(E)/k$.
+	Moreover, from~\cref{prop:frame_functions_are_additive}, we know that
+	$f(kE)=kf(E)$ for all $E\in\on{Eff}(\calH)$ and positive integers $k$.
+	We conclude that $f(qE)=qf(E)$ for any positive rational $q\in\QQ$.
+\end{proof}
+
+
+\begin{prop}
+	Let $f$ be a frame function on $\calH$, and $A,B\in\on{Eff}(\calH)$ with $A\le B$. Then $f(A)\le f(B)$.
+	\label{prop:frame_functions_are_monotone}
+\end{prop}
+\begin{proof}
+	We know by~\cref{prop:diff_of_effects_is_effect} that $B-A\in\on{eff}(\calH)$.
+	Therefore
+	\begin{equation}
+		f(B) = f((B-A)+A) = f(A) + f(B-A) \ge f(A).
+	\end{equation}
+\end{proof}
+
+\begin{prop}
+	Frame functions are \emph{positively homogeneous}, that is, $f(\alpha E)=\alpha f(E)$ for any $E\in\on{Eff}(\calH)$ and $\alpha\ge0$.
+\end{prop}
+\begin{proof}
+	Let $(p_k)_k$ and $(q_k)_k$ be increasing and decreasing sequences converging to $\alpha$. Then from~\cref{prop:frame_functions_are_monotone} we see that
+	\begin{equation}
+		p_k f(E) \le f(\alpha E) \le q_k f(E).
+	\end{equation}
+	Going to the limit we conclude that $\alpha f(E)=f(\alpha E)$.
+\end{proof}
+
+\begin{prop}
+	Frame functions can be uniquely extended linearly to $\Lin(\calH)$.
+\end{prop}
+\begin{proof}
+	For any $A\in\Herm(\calH)$, we have a decomposition $A=\alpha A_1 - \beta A_2$ with $A_1,A_2\in\on{Eff}(\calH)$ and $\alpha,\beta\ge0$.
+	We then just define
+	\begin{equation}
+		\tilde f(A) = \alpha f(A_1) - \beta f(A_2).
+	\end{equation}
+	Given an arbitrary $A\in\Lin(\calH)$, we can the define $\tilde f(A)\equiv \tilde f(A_H) + i f(A_S)$, where $A_H\equiv (A+A^\dagger)/2$ and $A_S\equiv (A-A^\dagger)/2i$ are Hermitian and skew-Hermitian components of $A$.
+\end{proof}
+
+\begin{prop}
+	As was shown with the previous results, any frame function $f:\on{Eff}(\calH)\to[0,1]$ extends linearly to a linear functional $\tilde f\in\Lin(\calH)\to\RR$. Any such functional can be represented as
+	\begin{equation}
+		\tilde f(A) = \Tr(A \rho_f)
+	\end{equation}
+	for some $\rho_f\in\Herm(\calH)$.
+\end{prop}
+\begin{proof}
+	Let $\{\sigma_k\}\subset\Lin(\calH)$ be an operatorial basis for $\Lin(\calH)$.
+	In this basis, we have the decomposition $A=\sum_k \sigma_k \langle \sigma_k, A\rangle$, where $\langle \sigma_k,A\rangle\equiv\Tr(\sigma_k^\dagger A)$.
+	We then write
+	\begin{equation}
+		\tilde f(A) = \sum_k \langle \sigma_k,A\rangle \tilde f(\sigma_k).
+	\end{equation}
+	Our goal is to find $\rho_f$ such that $\tilde f(A)=\langle \rho_f,A\rangle = \sum_k \langle\sigma_k,A\rangle \langle\rho_f,\sigma_k\rangle$.
+	We thus need $\rho_f$ to satisfy the conditions
+	$\langle\rho_f,\sigma_k\rangle = \tilde f(\sigma_k)$.
+	We conclude that $\rho_f$ must have the form $\rho_f=\sum_k \tilde f(\sigma_k)^* \sigma_k$.
+\end{proof}
+
+
+\chapter{Information theory}
+
+\section{Classical source coding}
+
+Consider a source emitting symbols taken from some finite alphabet $X$, and some probability vector $p\in \calP(X)$.
+Denote with $X^n$ the set of strings of length $n$ with elements in $X$.
+
+\begin{defn}[Typical strings]
+	A string $a_1\cdots a_n\in X^n$ is said to be $\epsilon$-typical with respect to $p$ if
+	\begin{equation}
+		2^{-n(H(p)+\epsilon)} < p(a_1)\cdots p(a_n) < 2^{-n(H(p)-\epsilon)}.
+	\end{equation}
+	Denote with $T_{n,\epsilon}(p)\subset X^n$ the set of all such strings.
+\end{defn}
+
+The above definition makes precise the idea of typical strings corresponding to probabilities $p(\bs a)\sim 2^{-nH(p)}$.
+The definition can be equivalently expressed as requiring that
+\begin{equation}
+	\left\lvert \frac{1}{n}\log p(\bs a) + H(p) \right\rvert < \epsilon
+\end{equation}
+
 \chapter{CV formalism}
 
-\section{Basic formulas}
+\section{Quadratures and co.}
+
+\begin{defn}[Mode operators]
+	Annihilation and creation operators are defined as the operators $a,a^\dagger$ such that $[a,a^\dagger]=1$.
+	If multiple modes are considered, we have $[a_j,a_k^\dagger]=\delta_{jk}$ and $[a_j,a_k]=[a_j^\dagger,a_k^\dagger]=0$.
+\end{defn}
+
+\begin{prop}
+	We have $[a^\dagger a, a] = -a$ and
+	$[a^\dagger a, a^\dagger] = a^\dagger$.
+\end{prop}
+
+\begin{defn}
+	Position and momentum operators are defined as the Hermitian and skew-Hermitian components of $a$, respectively:
+	\begin{equation}
+		x = \frac{a + a^\dagger}{\sqrt2},
+		\qquad
+		p = \frac{a - a^\dagger}{\sqrt2 i}.
+	\end{equation}
+\end{defn}
+With these definitions, the operators satisfy $[x,p]=i$, and $a$ is retrieved as
+$a = \frac{x + ip}{\sqrt2}$.
+
+It is worth noting that $a,a^\dagger$ cannot actually be represented as operators in some underlying Hilbert space $\calH$. One way to see this is to take the trace of the relation $[a,a^\dagger]=1$.
+The RHS is the identity operator in the underlying space, whose trace equals the dimension of the space itself, whereas $\Tr([A,B])=0$ for any $A,B$.
+
+\begin{defn}[General quadratures]
+	More generally, we define the \emph{quadrature operators} $q(\phi)$ from the mode operators --- or equivalently, from the position and momentum operators --- as
+	\begin{equation}
+		q(\phi) = \cos(\phi) x + \sin(\phi) p
+		= \frac{1}{\sqrt2}(a e^{-i\phi} + a^\dagger e^{i\phi}).
+	\end{equation}
+	The definition is straightforwardly generalised to multimode spaces upon replacing $q\to q_k, a\to a_k, x\to x_k,p\to p_k$.
+\end{defn}
+
+\begin{prop}
+	The quadrature operators $q(\phi)$ satisfy
+	\begin{equation}
+		[q(\theta), q(\phi)] = i \sin(\phi-\theta).
+	\end{equation}
+\end{prop}
+
+\subsection{Multimode quadratures}
+
+One way to handle multimode operators is to bundle them together, defining the column vector
+$\bs r \equiv (x_1, p_1, x_2, p_2, ..., x_n, p_n)^T$.
+More explicitly, we define $\bs r$ as a vector of $2n$ operators with components $r_{2k}=x_k$ and $r_{2k+1}=p_k$.
+With this definition, we have the commutation relations:
+\begin{prop}
+	$[r_k, r_\ell] = i\Omega_{k\ell},$
+	or more briefly, $[\bs r,\bs r] = i\Omega$,
+	where the \emph{symplectic matrix} $\Omega$ is
+	\begin{equation}
+		\Omega = \bigoplus_{k=1}^{n} (i\sigma_y)
+		= I_n \otimes (i\sigma_y),
+		\qquad
+		\text{where }
+		\qquad
+		i\sigma_y\equiv \begin{pmatrix}
+			0 & 1\\-1& 0
+		\end{pmatrix}.
+	\end{equation}
+\end{prop}
+\begin{proof}
+	The only nonvanishing commutators between elements of $\bs r$ are
+	\begin{equation}
+		[r_{2k}, r_{2k+1}] = [x_k, p_k] = i.
+	\end{equation}
+\end{proof}
+
+
+\section{Covariance matrices and co}
+
+\begin{defn}[Covariance matrix]
+	Given a state $\rho\in\rmD(\calH)$,
+	we define its \emph{covariance matrix} $\sigma(\rho)$ as
+	\begin{equation}
+		\sigma(\rho)_{k\ell}
+		= \frac12 \langle \{ r_k, r_\ell\}\rangle_\rho
+		- \langle r_k\rangle_\rho \langle r_\ell\rangle_\rho.
+	\end{equation}
+\end{defn}
+
+\begin{prop}
+	The diagonal elements of $\sigma(\rho)$ are the variances of the quadrature operators.
+\end{prop}
+\begin{proof}
+	% \begin{equation}
+	% 	\sigma(\rho)_{kk}
+	% 	= \langle r_k^2\rangle_\rho - \langle r_k\rangle_\rho^2.
+	% \end{equation}
+	$\sigma(\rho)_{kk} = \langle r_k^2\rangle_\rho - \langle r_k\rangle_\rho^2.$
+\end{proof}
+
+\begin{prop}
+	The covariance matrix is \emph{real, symmetric, positive definite}, and such that $\sigma+\frac{i}{2}\Omega\ge0$.
+\end{prop}
+
+\section{Wigner functions}
+
+\begin{defn}
+	Given $\rho\in\rmD(\calH^{\otimes n})$ (an $n$-mode state), its \emph{Wigner function} is the map $W_\rho:\RR^{n}\times\RR^n\to \RR$ defined as
+	\begin{equation}
+		W_\rho(\bs x,\bs p)
+		= \int_{\RR^n} \frac{d\bs q}{(2\pi)^n}
+		\mel{\bs x+\frac12\bs q}{\rho}{\bs x-\frac12 \bs q}
+		e^{i \bs p\cdot\bs q},
+	\end{equation}
+	where $d\bs q\equiv \prod_{k=1}^n dq_k$.
+\end{defn}
+
+\begin{defn}
+	The \emph{characteristic function} of $\rho$ is defined as
+	\begin{equation}
+		\chi_\rho(\bs\alpha)
+		= \expval{D(\bs\alpha)}_\rho
+		\equiv \Tr[\rho D(\bs\alpha)],
+	\end{equation}
+	where $D(\bs\alpha)\equiv \otimes_{k=1}^n D_k(\alpha_k)$.
+\end{defn}
+
+\section{Some formulas}
 
 \begin{equation}
 	(a^\dagger)^n \ket m 
@@ -935,6 +1306,40 @@ Given a bipartite $\rho$, we then write the action of $\Phi$ on it as
 \end{prop}
 
 \begin{prop}
+	In terms of position and momentum operators, the displacement operator reads
+	\begin{equation}
+		\hat D(\alpha)
+		= \exp[\sqrt2 i(\alpha_I \hat x - \alpha_R \hat p)],
+	\end{equation}
+	where $\alpha\equiv \alpha_R+i\alpha_I$.
+	In matrix notation, this can also be written as
+	\begin{equation}
+		\hat D(\alpha)
+		= \exp\left[\sqrt2 i \begin{pmatrix}
+			\hat x & \hat p
+		\end{pmatrix}
+		\begin{pmatrix}
+			0 & 1 \\ -1 & 0
+		\end{pmatrix}
+		\begin{pmatrix}
+			\alpha_R \\ \alpha_I
+		\end{pmatrix}\right]
+		\equiv \exp(\sqrt2 i\, \hat z^T \Omega \vec\alpha),
+	\end{equation}
+	where $\Omega\equiv i\sigma_y$ is the \emph{symplectic matrix}, we defined the vector of operators $\hat z\equiv (\hat x,\hat p)^T$, and we denotes with $\vec \alpha$ the length-$2$ vector with components real and imaginary parts of $\alpha\in\CC$.
+\end{prop}
+\begin{proof}
+	Notice that
+	\begin{equation}
+		\alpha a^\dagger - \bar\alpha a
+		= \alpha \left(\frac{\hat x-i\hat p}{\sqrt2}\right)
+		- \bar\alpha\left(\frac{\hat x + i\hat p}{\sqrt2}\right)
+		= \left(\frac{\alpha-\bar\alpha}{\sqrt2}\right) \hat x
+		+ \left(\frac{\alpha+\bar\alpha}{\sqrt2 i}\right) \hat p.
+	\end{equation}
+\end{proof}
+
+\begin{prop}
 	Displacement operators acting on the vacuum state generate coherent states:
 	\begin{equation}
 		D(\alpha)\ket0 = e^{-|\alpha|^2/2}\exp(\alpha a^\dagger)\ket0
@@ -943,6 +1348,21 @@ Given a bipartite $\rho$, we then write the action of $\Phi$ on it as
 			\frac{\alpha^k}{\sqrt{k!}} \ket k.
 	\end{equation}
 \end{prop}
+
+\subsection{Multimode displacement operators}
+
+\begin{defn}
+	For multimode states, we defined the \emph{single-mode} displacement operators as
+	$D_k(\alpha)\equiv\exp(\alpha a^\dagger_k-\bar\alpha a_k)$,
+	and the \emph{joint} displacement operator on $n$ modes as
+	\begin{equation}
+		D(\bs\alpha)
+		= D_1(\alpha_1)\otimes\cdots\otimes D_n(\alpha_n),
+		\qquad \bs\alpha\equiv (\alpha_1,...,\alpha_n).
+	\end{equation}
+\end{defn}
+
+\subsection{Displacement operators on Fock states}
 
 \begin{prop}
 	\begin{equation}
@@ -1037,11 +1457,22 @@ Given a bipartite $\rho$, we then write the action of $\Phi$ on it as
 	\end{equation}
 \end{prop}
 
-\begin{prop} to check:
+\begin{prop}
 	\begin{equation}
-		D(\alpha) a D^\dagger(\alpha) = a + \alpha
+		D(\alpha) a D^\dagger(\alpha) = a - \alpha
 	\end{equation}
 \end{prop}
+\begin{proof}
+	Write $D(\alpha)=\exp(\calD)$ with $\calD\equiv \alpha a^\dagger-\bar\alpha a$.
+	Then
+	\begin{equation}
+		D(\alpha) a D^\dagger(\alpha)
+		= e^\calD a e^{-\calD}
+		= \exp(\on{ad}(\calD)) a
+		= a + [\calD,a] = a-\alpha,
+	\end{equation}
+	where we used the fact that $[\calD,a]=-\alpha$, and thus any other commutator term arising from $\exp(\on{ad}(\calD))a$ vanishes.
+\end{proof}
 
 \section{Linear evolution}
 
@@ -1106,6 +1537,30 @@ Given a bipartite $\rho$, we then write the action of $\Phi$ on it as
 			\binom{k}{j}
 			T^j (1-T)^{k-j}
 		\right]
+		= \sum_{j=0}^\infty \PP_j \left[
+			\frac{T^j}{(1+\bar n)(1-T)^j}
+			\sum_{k=j}^\infty \binom{k}{j} A^k
+		\right],
+	\end{gathered}
+	\end{equation}
+	where in the last step we defined $A\equiv \frac{\bar n}{1+\bar n}(1-T)$.
+	We now make use of the formula
+	\begin{equation}
+		\sum_{k=j}^\infty \binom{k}{j} A^k
+		= \frac{A^j}{(1-A)^{j+1}},
+	\end{equation}
+	to conclude that
+	\begin{equation}
+	\begin{gathered}
+		\rho^{\rm th}{\bar n} \to
+		\sum_{j=0}^\infty \PP_j
+		\left[
+			\frac{T^j}{(1+\bar n)(1-T)^j}
+			\left(\frac{\bar n}{1+\bar n}(1-T)\right)^j
+			\left(\frac{1+\bar n}{1+\bar n T}\right)^{j+1}
+		\right] \\
+		= \sum_{j=0}^\infty \PP_j
+		\frac{T^j}{(1+\bar nT)^{j+1}}
 	\end{gathered}
 	\end{equation}
 \end{prop}
@@ -1116,172 +1571,252 @@ Given a bipartite $\rho$, we then write the action of $\Phi$ on it as
 	Given a state $\rho$, we define the corresponding \emph{thermalised state with average occupation number} $\bar n$ as
 	\begin{equation}
 		\Phi_{\bar n}^{\rm th}(\rho)
-		\equiv \int d\mu \frac{e^{-\mu/\bar n}}{\bar n}
-		D(\sqrt\mu)\rho D^\dagger(\sqrt\mu).
+		\equiv \int d\mu\int_0^{2\pi} \frac{d\phi}{2\pi} \frac{e^{-\mu/\bar n}}{\bar n}
+		D(\sqrt\mu e^{i\phi})\rho D^\dagger(\sqrt\mu e^{i\phi}).
 	\end{equation}
-	\uncertain{should I also randomise the phases?}
 \end{defn}
 
 \begin{prop}
 	\begin{equation}
 		\Phi^{\rm th}_{\bar n}(\PP_0)
-		= \sum_{j,k=0}^\infty
-			\frac{((j+k)/2)!}{\sqrt{j!k!}}
-			\frac{1}{\bar n} \left(\frac{\bar n}{\bar n+1}\right)^{1+(j+k)/2}
-			\ketbra{j}{k}
+		= \sum_{j=0}^\infty \frac{\bar n^j}{(1+\bar n)^{1+j}} \PP_j.
+		% = \sum_{j,k=0}^\infty
+		% 	\frac{((j+k)/2)!}{\sqrt{j!k!}}
+		% 	\frac{1}{\bar n} \left(\frac{\bar n}{\bar n+1}\right)^{1+(j+k)/2}
+		% 	\ketbra{j}{k}
 	\end{equation}
 \end{prop}
-Therefore in particular
-\begin{equation}
-	\langle j|\Phi^{\rm th}_{\bar n}(\PP_0)|j\rangle
-	= \sum_{j=0}^\infty \frac{\bar n^j}{(1+\bar n)^{1+j}}.
-\end{equation}
+\begin{proof}
+	The displacement operators act on the vacuum state as
+	\begin{equation}
+		\hat D(\sqrt\mu e^{i\phi})\ketbra0 \hat D^\dagger(\sqrt\mu e^{i\phi})
+		= e^{-\mu} \sum_{j,k=0}^\infty \frac{\mu^{(j+k)/2}}{\sqrt{j!k!}} e^{i\phi(j-k)} \ketbra{j}{k}.
+	\end{equation}
+	Integrating over the phases $\phi$, using $\int_0^{2\pi}d\phi e^{i\phi j}=2\pi \delta_{j,0}$, we get
+	\begin{equation}
+		\int_0^{2\pi} \frac{d\phi}{2\pi}
+		\hat D(\sqrt\mu e^{i\phi})\ketbra0 \hat D^\dagger(\sqrt\mu e^{i\phi})
+		= e^{-\mu} \sum_{j=0}^\infty \frac{\mu^j}{j!} \ketbra j.
+	\end{equation}
+	Integrating over $\mu$ and introducing the additional factors $e^{-\mu/\bar n}/\bar n$, we then reach the conclusion.
+\end{proof}
 
 \begin{prop}
 	\begin{equation}
-		\langle j\rvert \Phi^{\rm th}_{\bar n}(\PP_1) \lvert j\rangle
-		= \sum_{j=0}^\infty
-			\frac{ \bar n^j }{ (\bar n+1)^{j+1} }
-			\frac{ (j+ \bar n^2) }{ \bar n(\bar n + 1) }.
-	\end{equation}
-\end{prop}
-
-\begin{proof}
-	Remember that
-	\begin{equation}
-		D(\sqrt\mu)\PP_1 D(\sqrt\mu)
-		= e^{-\mu}\sum_{j,k=0}^\infty \frac{\mu^{(j+k)/2 -1}}{\sqrt{j!k!}}
-		(j-\mu)(k-\mu)
-		\ketbra{j}{k}.
-	\end{equation}
-	Therefore
-	\begin{equation}
-	\begin{gathered}
 		\Phi^{\rm th}_{\bar n}(\PP_1)
-		\equiv \sum_{j,k=0}^\infty \ketbra{j}{k}
-		\int_0^\infty d\mu \,
-		\frac{e^{-\mu/\bar n}}{\bar n} e^{-\mu}
-		\frac{\mu^{(j+k)/2 -1}}{\sqrt{j!k!}}
-		(j-\mu)(k-\mu) \\
-		= \sum_{j,k=0}^\infty \ketbra{j}{k}
-		\frac{C^{-(j+k)/2}}{\bar n \sqrt{j!k!}}
-		\int_0^\infty d\mu \,
-		e^{-x} x^{(j+k)/2-1}
-		(j-x/C)(k-x/C),
-	\end{gathered}
-	\end{equation}
-	where $C\equiv 1+1/\bar n$. Evaluating the integral we have
-	\begin{equation}
-	\begin{gathered}
-		= \sum_{j,k=0}^\infty \ketbra{j}{k}
-		\frac{C^{-(j+k)/2}}{\bar n \sqrt{j!k!}}
-		\left[
-			jk ((j+k)/2-1)!
-			-\frac{(j+k)}{C} ((j+k)/2)!
-			+\frac{1}{C^2} ((j+k)/2+1)!
-		\right].
-	\end{gathered}
-	\end{equation}
-	In particular for $j=k$ we have
-	\begin{equation}
-	\begin{gathered}
-		\langle j| \Phi^{\rm th}_{\bar n}(\PP_1) \lvert j\rangle
-		= \sum_{j=0}^\infty
-		\frac{C^{-j-2}}{\bar n j!}
-		\left[
-			j^2 (j-1)! C^2
-			- 2j j! C
-			+ (j+1)!
-		\right] \\
-		= \sum_{j=0}^\infty \frac{1}{\bar n}
-		\left(\frac{\bar n}{\bar n + 1}\right)^{j+2}
-		\left[
-			j \left(\frac{\bar n+1}{\bar n}\right)^2
-			- 2j \left(\frac{\bar n+1}{\bar n}\right)
-			+ j+1
-		\right] \\
-		= \sum_{j=0}^\infty \frac{1}{\bar n}
-		\left(\frac{\bar n}{\bar n + 1}\right)^{j+2}
-		\left[
-			j\left(
-				\frac{(\bar n+1)^2 - 2\bar n(\bar n+1) + \bar n^2}{\bar n^2}
-			\right)
-			+1
-		\right] \\
-		= \sum_{j=0}^\infty \frac{1}{\bar n}
-		\left(\frac{\bar n}{\bar n + 1}\right)^{j+2}
-		\left[
-			\frac{j}{\bar n^2}
-			+1
-		\right]
-		= \sum_{j=0}^\infty 
-			\frac{ \bar n^{j-1}}{(\bar n+1)^{j+2}}
-			(j+ \bar n^2)
 		= \sum_{j=0}^\infty
 			\frac{ \bar n^j }{ (\bar n+1)^{j+1} }
 			\frac{ (j+ \bar n^2) }{ \bar n(\bar n + 1) }
+			\PP_j.
+	\end{equation}
+\end{prop}
+\begin{proof}
+	The action of $\hat D$ on $\ket1$ gives
+	\begin{equation}
+		\hat D(\sqrt\mu e^{i\phi})\ketbra1 \hat D^\dagger(\sqrt\mu e^{i\phi})
+		= e^{-\mu} \sum_{j,k=0}^\infty \frac{\mu^{(j+k)/2}}{\sqrt{j!k!}} e^{i\phi(j-k)}
+		\left(\frac{j-\mu}{\sqrt\mu e^{i\phi}}\right)
+		\left(\frac{k-\mu}{\sqrt\mu e^{-i\phi}}\right)
+		\ketbra{j}{k}.
+	\end{equation}
+	Integrating over the phases we get
+	\begin{equation}
+		\int_0^{2\pi} \frac{d\phi}{2\pi}
+		\hat D(\sqrt\mu e^{i\phi})\ketbra1 \hat D^\dagger(\sqrt\mu e^{i\phi})
+		= e^{-\mu} \sum_{j=0}^\infty \frac{\mu^{j-1}}{j!} (j-\mu)^2 \PP_j.
+	\end{equation}
+	Therefore,
+	\begin{equation}
+	\begin{gathered}
+		\Phi_{\bar n}^{\rm th}(\PP_1)
+		= \sum_{j=0}^\infty \frac{1}{j!\bar n}\PP_j \int_0^\infty d\mu
+		e^{-\mu} \mu^{j-1} (j-\mu)^2 e^{-\mu/\bar n}
+		= \sum_{j=0}^\infty \frac{1}{j!\bar n}\PP_j
+		C^{-j-2} \int_0^\infty d\mu
+		e^{-\mu} \mu^{j-1} (C j-\mu)^2 \\
+		= \sum_{j=0}^\infty \frac{1}{j!\bar n}\PP_j
+		C^{-j-2} \left[
+			C^2 j^2 (j-1)! - 2C j j! + (j+1)!
+		\right],
 	\end{gathered}
 	\end{equation}
+	where $C\equiv 1+1/\bar n$.
+	We reach the conclusion by simply inserting the explicit formula for $C$ in the above expression.
 \end{proof}
+
+% \begin{proof}
+% 	Remember that
+% 	\begin{equation}
+% 		D(\sqrt\mu)\PP_1 D(\sqrt\mu)
+% 		= e^{-\mu}\sum_{j,k=0}^\infty \frac{\mu^{(j+k)/2 -1}}{\sqrt{j!k!}}
+% 		(j-\mu)(k-\mu)
+% 		\ketbra{j}{k}.
+% 	\end{equation}
+% 	Therefore
+% 	\begin{equation}
+% 	\begin{gathered}
+% 		\Phi^{\rm th}_{\bar n}(\PP_1)
+% 		\equiv \sum_{j,k=0}^\infty \ketbra{j}{k}
+% 		\int_0^\infty d\mu \,
+% 		\frac{e^{-\mu/\bar n}}{\bar n} e^{-\mu}
+% 		\frac{\mu^{(j+k)/2 -1}}{\sqrt{j!k!}}
+% 		(j-\mu)(k-\mu) \\
+% 		= \sum_{j,k=0}^\infty \ketbra{j}{k}
+% 		\frac{C^{-(j+k)/2}}{\bar n \sqrt{j!k!}}
+% 		\int_0^\infty d\mu \,
+% 		e^{-x} x^{(j+k)/2-1}
+% 		(j-x/C)(k-x/C),
+% 	\end{gathered}
+% 	\end{equation}
+% 	where $C\equiv 1+1/\bar n$. Evaluating the integral we have
+% 	\begin{equation}
+% 	\begin{gathered}
+% 		= \sum_{j,k=0}^\infty \ketbra{j}{k}
+% 		\frac{C^{-(j+k)/2}}{\bar n \sqrt{j!k!}}
+% 		\left[
+% 			jk ((j+k)/2-1)!
+% 			-\frac{(j+k)}{C} ((j+k)/2)!
+% 			+\frac{1}{C^2} ((j+k)/2+1)!
+% 		\right].
+% 	\end{gathered}
+% 	\end{equation}
+% 	In particular for $j=k$ we have
+% 	\begin{equation}
+% 	\begin{gathered}
+% 		\langle j| \Phi^{\rm th}_{\bar n}(\PP_1) \lvert j\rangle
+% 		= \sum_{j=0}^\infty
+% 		\frac{C^{-j-2}}{\bar n j!}
+% 		\left[
+% 			j^2 (j-1)! C^2
+% 			- 2j j! C
+% 			+ (j+1)!
+% 		\right] \\
+% 		= \sum_{j=0}^\infty \frac{1}{\bar n}
+% 		\left(\frac{\bar n}{\bar n + 1}\right)^{j+2}
+% 		\left[
+% 			j \left(\frac{\bar n+1}{\bar n}\right)^2
+% 			- 2j \left(\frac{\bar n+1}{\bar n}\right)
+% 			+ j+1
+% 		\right] \\
+% 		= \sum_{j=0}^\infty \frac{1}{\bar n}
+% 		\left(\frac{\bar n}{\bar n + 1}\right)^{j+2}
+% 		\left[
+% 			j\left(
+% 				\frac{(\bar n+1)^2 - 2\bar n(\bar n+1) + \bar n^2}{\bar n^2}
+% 			\right)
+% 			+1
+% 		\right] \\
+% 		= \sum_{j=0}^\infty \frac{1}{\bar n}
+% 		\left(\frac{\bar n}{\bar n + 1}\right)^{j+2}
+% 		\left[
+% 			\frac{j}{\bar n^2}
+% 			+1
+% 		\right]
+% 		= \sum_{j=0}^\infty 
+% 			\frac{ \bar n^{j-1}}{(\bar n+1)^{j+2}}
+% 			(j+ \bar n^2)
+% 		= \sum_{j=0}^\infty
+% 			\frac{ \bar n^j }{ (\bar n+1)^{j+1} }
+% 			\frac{ (j+ \bar n^2) }{ \bar n(\bar n + 1) }
+% 	\end{gathered}
+% 	\end{equation}
+% \end{proof}
 
 \begin{prop}
 	\begin{equation}
 		\Phi^{\rm th}_{\bar n}(\ketbra{0}{1})
-		= 
+		= \sum_{j=0}^\infty
+		\frac{\bar n^{j}}{(1+\bar n)^{j+2}} \sqrt{j+1}
+		\ketbra{j}{j+1}.
 	\end{equation}
 \end{prop}
 
 \begin{proof}
+	We have
+	\begin{equation}
+		\hat D(\sqrt\mu e^{i\phi})\ketbra{0}{1} \hat D^\dagger(\sqrt\mu e^{i\phi})
+		= e^{-\mu} \sum_{j,k=0}^\infty
+		\frac{\mu^{(j+k-1)/2}}{\sqrt{j!k!}}
+		e^{i\phi(j-k+1)} (k-\mu) \ketbra{j}{k}.
+	\end{equation}
+	Integrating over the phases, we get a term $\delta_{k,j+1}$, which results in
+	\begin{equation}
+		\int_0^{2\pi} \frac{d\phi}{2\pi}
+		\hat D(\sqrt\mu e^{i\phi})\ketbra{0}{1} \hat D^\dagger(\sqrt\mu e^{i\phi})
+		= e^{-\mu} \sum_{j=0}^\infty
+		\frac{\mu^j}{j!\sqrt{j+1}} (j+1-\mu) \ketbra{j}{j+1}.
+	\end{equation}
+	And finally,
 	\begin{equation}
 	\begin{gathered}
 		\Phi^{\rm th}_{\bar n}(\ketbra{0}{1})
-		= \int_0^\infty d\mu \frac{e^{-\mu/\bar n}}{\bar n}
-		\sum_{j,k=0}^\infty \ketbra{j}{k}
-		e^{-\mu} \frac{1}{\sqrt{j!k!}}
-		\mu^{\frac{j+k}{2} - \frac12} (k-\mu) \\
-		= \sum_{j,k=0}^\infty \ketbra{j}{k}
-		\frac{C^{(-\frac{j+k}{2}-\frac32)}}{\bar n\sqrt{j!k!}}
-		\int_0^\infty dx
-			e^{-x} x^{(\frac{j+k}{2}-\frac12)}
-			(Ck - x) \\
-		= \sum_{j,k=0}^\infty \ketbra{j}{k}
-		\frac{1}{\bar n\sqrt{j!k!}}
-		\left(\frac{\bar n}{\bar n + 1}\right)^{(j+k+3)/2}
-		\Gamma\left(\frac{j+k+1}{2}\right)
-		\left(
-			Ck - \frac{j+k+1}{2}
-		\right) \\
-		= \sum_{j,k=0}^\infty \ketbra{j}{k}
-		\frac{1}{\bar n\sqrt{j!k!}}
-		\left(\frac{\bar n}{\bar n + 1}\right)^{(j+k+3)/2}
-		\Gamma\left(\frac{j+k+1}{2}\right)
-		\left(
-			Ck - \frac{j+k+1}{2}
-		\right) \\
-		= \sum_{j,k=0}^\infty \ketbra{j}{k}
-		\frac{1}{\bar n\sqrt{j!k!}}
-		\left(\frac{\bar n}{\bar n + 1}\right)^{(j+k+3)/2}
-		\Gamma\left(\frac{j+k+1}{2}\right)
-		\left(
-			\frac{ \bar n(k- j) + 2k - \bar n }{ 2\bar n }
-		\right).
-	\end{gathered}
-	\end{equation}
-	Thus in particular
-	\begin{equation}
-	\begin{gathered}
-		\langle j| \Phi^{\rm th}_{\bar n}(\ketbra{0}{1}) |j\rangle
-		= \frac{1}{\bar n j!}
-		\left(\frac{ \bar n }{ \bar n + 1 }\right)^{j + 3/2}
-		(j+1/2)!
-		\left( \frac{ 2j - \bar n }{ 2\bar n } \right) \\
-		=
-		\frac{ \bar n^{ j - 1/2 } }{ (\bar n + 1)^{ j + 3/2 } }
-		\frac{ (j+1/2)! }{ j! }
-		\left( \frac{ 2j - \bar n }{ 2 } \right)
+		= \sum_{j=0}^\infty \frac{1}{j!\sqrt{j+1}} \ketbra{j}{j+1} \frac{1}{\bar n}
+		\int_0^\infty d\mu
+		e^{-\mu/\bar n} e^{-\mu} \mu^j (j+1-\mu) \\
+		= \sum_j \ketbra{j}{j+1} \frac{C^{-j-2}}{j!\sqrt{j+1}\bar n}
+		\int d\mu \, e^{-\mu} \mu^j (C(j+1) - \mu) \\
+		= \sum_{j=0}^\infty \ketbra{j}{j+1} \frac{C^{-j-2}}{j!\sqrt{j+1}\bar n}
+		(C j! (j+1) - (j+1)!) \\
+		= \sum_{j=0}^\infty \ketbra{j}{j+1} \frac{C^{-j-2}}{\bar n} \sqrt{j+1} (C-1)
+		= \sum_{j=0}^\infty \ketbra{j}{j+1}
+			\frac{\bar n^{j}}{(1+\bar n)^{j+2}} \sqrt{j+1}.
 	\end{gathered}
 	\end{equation}
 \end{proof}
+
+
+% ----- old shitty (and wrong) "proof"
+% \begin{proof}
+% 	\begin{equation}
+% 	\begin{gathered}
+% 		\Phi^{\rm th}_{\bar n}(\ketbra{0}{1})
+% 		= \int_0^\infty d\mu \frac{e^{-\mu/\bar n}}{\bar n}
+% 		\sum_{j,k=0}^\infty \ketbra{j}{k}
+% 		e^{-\mu} \frac{1}{\sqrt{j!k!}}
+% 		\mu^{\frac{j+k}{2} - \frac12} (k-\mu) \\
+% 		= \sum_{j,k=0}^\infty \ketbra{j}{k}
+% 		\frac{C^{(-\frac{j+k}{2}-\frac32)}}{\bar n\sqrt{j!k!}}
+% 		\int_0^\infty dx
+% 			e^{-x} x^{(\frac{j+k}{2}-\frac12)}
+% 			(Ck - x) \\
+% 		= \sum_{j,k=0}^\infty \ketbra{j}{k}
+% 		\frac{1}{\bar n\sqrt{j!k!}}
+% 		\left(\frac{\bar n}{\bar n + 1}\right)^{(j+k+3)/2}
+% 		\Gamma\left(\frac{j+k+1}{2}\right)
+% 		\left(
+% 			Ck - \frac{j+k+1}{2}
+% 		\right) \\
+% 		= \sum_{j,k=0}^\infty \ketbra{j}{k}
+% 		\frac{1}{\bar n\sqrt{j!k!}}
+% 		\left(\frac{\bar n}{\bar n + 1}\right)^{(j+k+3)/2}
+% 		\Gamma\left(\frac{j+k+1}{2}\right)
+% 		\left(
+% 			Ck - \frac{j+k+1}{2}
+% 		\right) \\
+% 		= \sum_{j,k=0}^\infty \ketbra{j}{k}
+% 		\frac{1}{\bar n\sqrt{j!k!}}
+% 		\left(\frac{\bar n}{\bar n + 1}\right)^{(j+k+3)/2}
+% 		\Gamma\left(\frac{j+k+1}{2}\right)
+% 		\left(
+% 			\frac{ \bar n(k- j) + 2k - \bar n }{ 2\bar n }
+% 		\right).
+% 	\end{gathered}
+% 	\end{equation}
+% 	Thus in particular
+% 	\begin{equation}
+% 	\begin{gathered}
+% 		\langle j| \Phi^{\rm th}_{\bar n}(\ketbra{0}{1}) |j\rangle
+% 		= \frac{1}{\bar n j!}
+% 		\left(\frac{ \bar n }{ \bar n + 1 }\right)^{j + 3/2}
+% 		(j+1/2)!
+% 		\left( \frac{ 2j - \bar n }{ 2\bar n } \right) \\
+% 		=
+% 		\frac{ \bar n^{ j - 1/2 } }{ (\bar n + 1)^{ j + 3/2 } }
+% 		\frac{ (j+1/2)! }{ j! }
+% 		\left( \frac{ 2j - \bar n }{ 2 } \right)
+% 	\end{gathered}
+% 	\end{equation}
+% \end{proof}
 
 \begin{prop}
 	The state $\ket0+\ket1$ evolving through a beasplitter with transmittivity $t$ results, looking only at the transmitted output branch, in the state
