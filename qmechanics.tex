@@ -22,7 +22,7 @@
 }
 % ================ packages to use Italian characters ================
 % Note that the utf8 encoding only works if the file is saved in UTF-8 encoding
-\usepackage[utf8]{inputenc}
+% \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
 
 \usepackage{csquotes}
@@ -38,6 +38,11 @@
 
 % bbold provides \mathbb{1}, but ruins letters, and \mathbb{1} itself is pixelated.
 % \usepackage{bbold}
+\usepackage[usenames,dvipsnames,table]{xcolor}
+
+\usepackage{easyReview}
+\usepackage{physics} % provides Dirac notation and lots of other things
+\usepackage{minitoc}
 
 \usepackage{dsfont} % provides more \mathbb \smallskipymbols
 \usepackage{amsmath,amssymb,amsthm,thmtools}
@@ -46,7 +51,11 @@
 \usepackage{calc}
 \usepackage{mathrsfs} % provides the nice \matchsrc font
 % \usepackage{soulutf8} % provides \st and \ul
+\usepackage{soul}
 \usepackage[normalem]{ulem} %provides \sout command for striking through text
+
+\usepackage{float} % provides the option H for includegraphics
+
 % =========== HYPERREF AND CO. =============
 \usepackage{nameref, hyperref, cleveref}
 \crefname{appsec}{Appendix}{Appendices}
@@ -57,19 +66,15 @@
   citecolor    = red!80!black %Colour of citations
 }
 
-\usepackage{physics} % provides Dirac notation and lots of other things
-
-\usepackage{float} % provides the option H for includegraphics
-
 \usepackage{graphicx}
 
-\usepackage[usenames,dvipsnames,table]{xcolor}
 \usepackage[skins]{tcolorbox}
 \tcbuselibrary{breakable}
 
 \newtcolorbox[auto counter]{depthbox}[2][]{%
     enhanced, breakable, title=Box~\thetcbcounter: #2 #1%
 }
+
 
 \usepackage[font=small,justification=centering]{caption} % tweak fonts in labels
 \usepackage{subcaption}
@@ -161,6 +166,9 @@
 \DeclareMathOperator{\Herm}{Herm}
 \DeclareMathOperator{\Id}{Id}
 \DeclareMathOperator{\Lin}{Lin}
+\DeclareMathOperator{\Prob}{Prob}
+
+\DeclareMathOperator*{\argmax}{argmax}
 
 
 % ========== EXTERNAL FILES ==============================
@@ -174,6 +182,7 @@
 \author{Luca Innocenti}
 \maketitle
 
+\dominitoc
 \tableofcontents
 
 \chapter{Schr\"{o}dinger equation and stuff}
@@ -763,6 +772,8 @@ This immediately follows from remembering that a pure state $\rho$ only admits a
 \end{thm}
 
 \chapter{Channels}
+\minitoc
+
 % Let $\rho\in\rmD(\calX)$ be a state.
 A \emph{map} acting on an operator $X\in\rmL(\calX)$ is an operator $\Phi\in\rmL(\rmL(\calX),\rmL(\calY))$. We denote the set of such maps with $\rmT(\calX,\calY)$.
 
@@ -909,6 +920,152 @@ Given a bipartite $\rho$, we then write the action of $\Phi$ on it as
 	\end{equation}
 	In words, this is the trace norm of $\Phi(X)$ maximised over all possible operators $X$ with trace norm less than $1$. (from Watrous)
 \end{defn}
+
+\begin{prop}
+	Let $\Phi\in\rmT(\calX,\calY)$ be a \emph{positive} map. Then
+	\begin{equation}
+		\|\Phi\|_1 = \max_{u\in\calS(\calX)}\Tr[\Phi(uu^*)].
+	\end{equation}
+\end{prop}
+
+\section{Quantum state discrimination (to move?)}
+
+Suppose Alice sends Bob a state. She can decide to send one of $\rho_0,\rho_1\in\rmD(\calX)$. Bob's goal is to determine whether the state he received is $\rho_0$ or $\rho_1$.
+
+\hl{(does Bob need to know the distribution with which $\rho_0$ and $\rho_1$ are chosen?)}
+
+How would Bob manage such a feat? He will need to find some \emph{binary measurement} $\mu:\{0,1\}\to\Pos(\calX)$ which, when used on the received state $\rho$, returns a result which with good probability corresponds to the state Alice sent in the first place.
+If Bob knows that Alice will send him either the state $\rho_i$ with some probability $\lambda_i$, he will describe the state send by Alice as
+$\rho = \sum_{i=0,1} \lambda_i \rho_i$.
+
+Suppose Bob performs a measurement $\mu$ and finds some result $b\in\{0,1\}$.
+If the received state is $\rho_i$, the probability of observing such event is
+\begin{equation}
+	\Prob(\text{measured }b | \rho=\rho_i)
+	\equiv \Prob(b | \rho_i)
+	= \langle \mu(b), \rho_i\rangle.
+\end{equation}
+Therefore, the \emph{prior} probability of the state being $\rho_i$, knowing that the measurement resulted in the outcome $b$, is
+\begin{equation}
+	\Prob(\rho_i | b)
+	= \frac{\lambda_i \langle \mu(b),\rho_i\rangle}{\Prob(b)}
+	= \frac{\lambda_i \langle \mu(b),\rho_i\rangle}{\sum_i \lambda_i \langle \mu(b),\rho_i\rangle}.
+	\label{eq:prob_rhoi_given_measuredb}
+\end{equation}
+Of course, from Bob's perspective, this is the prior probability only if he knows the probabilities $\lambda_i$ with which each $\rho_i$ is picked by Alice.
+From~\cref{eq:prob_rhoi_given_measuredb}, we see that Bob's best guess about which state he received is
+\begin{equation}
+	i_{\rm opt}(\mu,b) = \argmax_i \lambda_i \langle\mu(b),\rho_i\rangle.
+\end{equation}
+The probability of this guess being correct is
+$\max_i\Prob(\rho_i|b)$.
+The overall probability of guessing correctly using this strategy (that is, the probability of successfully finding $i$ estimated before knowing the measurement outcome $b$) is thus
+\begin{equation}
+	p_{\rm success}(\mu)
+	= \sum_{b\in\{0,1\}}
+	\Prob(b)
+	\max_i \Prob(\rho_i | b)
+	= \sum_{b\in\{0,1\}}
+	\max_{i\in\{0,1\}}
+	\lambda_i \langle\mu(b),\rho_i\rangle.
+\end{equation}
+We can now use the identity $2\max(a,b)=(a+b)+|a-b|$, valid for any $a,b\in\RR$. This tells us that
+\begin{equation}
+	p_{\rm success}(\mu)
+	= \frac12 + \frac12
+	\sum_{b\in\{0,1\}} \left\lvert
+	\langle\mu(b), \lambda_0 \rho_0 - \lambda_1\rho_1\rangle
+	\right\rvert
+\end{equation}
+The natural next question is then: what is the measurement $\mu$ that maximises the success probability $p_{\rm success}(\mu)$?
+To answer this we observe that
+\begin{equation}
+	\sup_{\mu\in\on{POVM}}
+	\sum_{b\in\{0,1\}} \left\lvert
+	\langle\mu(b), \lambda_0 \rho_0 - \lambda_1\rho_1\rangle
+	\right\rvert
+	= \|\lambda_0 \rho_0 - \lambda_1\rho_1\|_1.
+\end{equation}
+This follows as a special case of~\cref{prop:sum_of_traceswithPos_less_than_trace_norm}.
+
+\begin{prop}
+	Let $A\in\Herm(\calX)$ be an Hermitian operator in a finite-dimensional complex Euclidean space.
+	Let $P,Q\in\Pos(\calX)$ such that $P+Q=I$. Then
+	\begin{equation}
+		\lvert \Tr(PA)\rvert
+		+ \lvert \Tr(QA)\rvert \le \|A\|_1.
+	\end{equation}
+	Moreover, the equality is achieved choosing $P$ as the projector onto the positive eigenvectors of $A$.
+	\label{prop:sum_of_traceswithPos_less_than_trace_norm}
+\end{prop}
+
+
+\begin{prop}
+	Let $u\in\CC^\Sigma$ be a vector,
+	and $\{P_a: a\in\Sigma\}\subset\Pos(\calX)$ a collection of positive semidefinite operators.
+	Then
+	\begin{equation}
+		\left\|\sum_{a\in\Sigma} u(a)P_a\right\|
+		\le \| u\|_\infty \left\| \sum_{a\in\Sigma}P_a\right\|.
+	\end{equation}
+\end{prop}
+\begin{proof}
+	Define $A\in\Lin(\calX,\calX\otimes\CC^\Sigma)$ as the operator
+	\begin{equation}
+		A = \sum_{a\in\Sigma} \sqrt{P_a}\otimes e_a
+		: \calX\ni v\mapsto \sum_{a\in\Sigma} (\sqrt{P_a}v)\otimes e_a.
+	\end{equation}
+	Componentwise, this amounts to $A_{ia,j} = (\sqrt{P_a})_{ij}$.
+	Its Hermitian conjugate $A^\dagger$ is the operator satisfying
+	% \begin{equation}
+		$A^\dagger(v\otimes e_a)
+				= \sqrt{P_a}v$.
+	% \end{equation}
+	Using $A$, we can write $P_a$ as
+	\begin{equation}
+		P_a = A^\dagger (I_{\calX}\otimes E_{aa})A,
+		\qquad E_{aa}\equiv e_a e_a^\dagger.
+	\end{equation}
+	We then have
+	\begin{equation}
+	\begin{gathered}
+		\left\|\sum_{a\in\Sigma} u(a) P_a\right\|
+		= \left\|\sum_{a\in\Sigma} u(a) A^\dagger(I_{\calX}\otimes E_{aa})A\right\|
+		\le \|A^\dagger\|
+		\left\|\sum_{a\in\Sigma} u(a) (I_{\calX}\otimes E_{aa})\right\|
+		\|A\|
+		= \|u\|_\infty \left\|\sum_{a\in\Sigma}P_a\right\|.
+	\end{gathered}
+	\end{equation}
+\end{proof}
+\begin{proof}
+	If $B$ is Hermitian, the operator norm satisfies
+	$\|B\|=\max_{x:\|x\|=1} \lvert\langle x,Bx\rangle\rvert$.
+	Therefore
+	\begin{equation}
+		\left\|\sum_{a\in\Sigma} u(a) P_a\right\|
+		= \max_{x:\|x\|=1} \left\lvert
+		\sum_{a\in\Sigma}
+		u(a) \langle x, P_a x\rangle
+		\right\rvert
+		\le \|u\|_\infty
+		\underbrace{
+			\max_{x:\,\|x\|=1}
+			\sum_{a\in\Sigma}\langle x,P_a x\rangle
+		}_{=\|\sum_a P_a\|},
+	\end{equation}
+	where we used the fact that $\langle x,Px\rangle\ge0$ for all $x$.
+\end{proof}
+
+
+
+\section{Channel discrimination}
+
+Let $\Phi_0,\Phi_1\in\rmC(\calX,\calY)$ be channels, and $\lambda\in[0,1]$ be a real number. Let $\rho\in\rmD(\calX)$ be some state.
+Suppose Alice can send Bob a quantum state obtained from evolving $\rho$ through either $\Phi_0$ or $\Phi_1$.
+Bob's goal is, given $\Phi_i(\rho)$, to figure out whether $i=0$ or $i=1$.
+
+
 
 \chapter{Foundations}
 
@@ -1135,8 +1292,40 @@ We will use the latter definition for now.
 	We conclude that $\rho_f$ must have the form $\rho_f=\sum_k \tilde f(\sigma_k)^* \sigma_k$.
 \end{proof}
 
+\section{Kochen-Specker theorem}
+
+\begin{defn}[Contextual assignments]
+	Let $v:\Herm(\calH)\to\RR$ be a function that is an \emph{algebra homomorphism on compatible observables}, that is, such that $v(A+B)=v(A)+v(B)$ and $v(AB)=v(A)v(B)$ whenever $[A,B]=0$.
+	Let us refer to such a function as a \emph{contextual assignment}.
+\end{defn}
+
+\begin{prop}
+	$v(\alpha A)=\alpha v(A)$ for any $v\in \CC$. This might actually require some continuity assumption to jump from homogeneity with respect to $\QQ$ to the general case, but we will assume this to be satisfied.
+\end{prop}
+
+\begin{prop}
+	For any observable $A\in\Herm(\calH)$, we have $v(A)\in\sigma(A)$, with $\sigma(A)$ denoting the spectrum of $A$. In particular, $v(P)\in[0,1]$ for any projection operator $P\in\on{Proj}(\calH)$, and $v(I)=1$.
+\end{prop}
+\begin{proof}
+	We can always write $A=\sum_k\lambda_k \PP_{v_k}$ for some orthonormal basis $\{v_k\}_k\subset\calH$, hence the conclusion from observing that only one element of $\{v(\PP_{v_k})\}$ can be nonvanishing.
+\end{proof}
+
+In~\parencite{cabello1994simple} they prove that such contextual assignments are not possible for $\on{dim}(\calH)\ge3$. The proof proceeds via a grueling exploration of how $v$ must act on different trines of projections.
+
+
+
 
 \chapter{Information theory}
+
+\begin{prop}
+	Let $p\in[0,1]$ and $n,N\in\NN$ be positive integers with $n\le N$.
+	Then,
+	\begin{equation}
+		p^{np} (1-p)^{N-np}
+		= 2^{-nH(p)},
+	\end{equation}
+	where $H(p)\equiv -p\log_2(p)-(1-p)\log_2(1-p)$ is the Shannon entropy of the corresponding probability distribution.
+\end{prop}
 
 \section{Classical source coding}
 
@@ -1158,6 +1347,7 @@ The definition can be equivalently expressed as requiring that
 \end{equation}
 
 \chapter{CV formalism}
+\minitoc
 
 \section{Quadratures and co.}
 
@@ -1366,6 +1556,24 @@ With this definition, we have the commutation relations:
 
 \begin{prop}
 	\begin{equation}
+		D(\alpha) a D^\dagger(\alpha) = a - \alpha,
+		\qquad D^\dagger(\alpha) a D(\alpha) = a + \alpha
+	\end{equation}
+\end{prop}
+\begin{proof}
+	Write $D(\alpha)=\exp(\calD)$ with $\calD\equiv \alpha a^\dagger-\bar\alpha a$.
+	Then
+	\begin{equation}
+		D(\alpha) a D^\dagger(\alpha)
+		= e^\calD a e^{-\calD}
+		= \exp(\on{ad}(\calD)) a
+		= a + [\calD,a] = a-\alpha,
+	\end{equation}
+	where we used the fact that $[\calD,a]=-\alpha$, and thus any other commutator term arising from $\exp(\on{ad}(\calD))a$ vanishes.
+\end{proof}
+
+\begin{prop}
+	\begin{equation}
 		D(\alpha)\ket1
 		= e^{-|\alpha|^2/2}
 			\sum_{k=0}^\infty \frac{\alpha^{k-1}}{\sqrt{k!}}\left(
@@ -1375,6 +1583,7 @@ With this definition, we have the commutation relations:
 			\sum_{k=0}^\infty \frac{\alpha^{k}}{\sqrt{k!}}
 			\left( \frac{ k - |\alpha|^2 }{ \alpha } \right) \ket k
 	\end{equation}
+	\label{prop:displacement_action_on_1}
 \end{prop}
 \begin{proof}
 	We have
@@ -1399,6 +1608,9 @@ With this definition, we have the commutation relations:
 		\right],
 	\end{equation}
 	which can be can also be written as in the proposition.
+\end{proof}
+\begin{proof}
+	We can also observe that $D(\alpha)\ket1=D(\alpha) a^\dagger D(\alpha)\ket\alpha=(a^\dagger-\bar\alpha)\ket\alpha$, which leads to the same result.
 \end{proof}
 
 \begin{prop}
@@ -1446,6 +1658,10 @@ With this definition, we have the commutation relations:
 	\end{gathered}
 	\end{equation}
 \end{proof}
+\begin{proof}
+	Same result is obtained observing that
+	$D(\alpha)\ket\ell=\frac{1}{\sqrt{\ell!}}(a^\dagger-\bar\alpha)^\ell \ket\alpha$.
+\end{proof}
 
 \begin{prop}
 	\begin{equation}
@@ -1456,23 +1672,6 @@ With this definition, we have the commutation relations:
 		= ...
 	\end{equation}
 \end{prop}
-
-\begin{prop}
-	\begin{equation}
-		D(\alpha) a D^\dagger(\alpha) = a - \alpha
-	\end{equation}
-\end{prop}
-\begin{proof}
-	Write $D(\alpha)=\exp(\calD)$ with $\calD\equiv \alpha a^\dagger-\bar\alpha a$.
-	Then
-	\begin{equation}
-		D(\alpha) a D^\dagger(\alpha)
-		= e^\calD a e^{-\calD}
-		= \exp(\on{ad}(\calD)) a
-		= a + [\calD,a] = a-\alpha,
-	\end{equation}
-	where we used the fact that $[\calD,a]=-\alpha$, and thus any other commutator term arising from $\exp(\on{ad}(\calD))a$ vanishes.
-\end{proof}
 
 \section{Linear evolution}
 
@@ -1509,7 +1708,7 @@ With this definition, we have the commutation relations:
 	\end{equation}
 \end{proof}
 
-\begin{prop}
+\begin{example}
 	For a two-output interferometer (\emph{i.e.} a beamsplitter),
 	\begin{equation}
 		\ket k \to
@@ -1520,50 +1719,32 @@ With this definition, we have the commutation relations:
 		\ket k \to
 		\sum_{j=0}^k \binom{k}{j} T^j (1-T)^{k-j} \PP_j.
 	\end{equation}
-\end{prop}
+\end{example}
 
-\begin{prop}
-	Consider a thermal state $\rho^{\rm th}_{\bar n}$, evolving through a beamsplitter with transmittivity $T\equiv |t|^2$, of which we only consider the first output port. We then have
+\begin{example}
+	Denote with $\calE_t$ the channel describing linear evolution through a beansplitter with transmittivity $t$ followed by a partial trace with respect to the second output mode. We have
 	\begin{equation}
-	\begin{gathered}
-		\rho^{\rm th}_{\bar n}
-		\equiv \sum_{k=0}^\infty \frac{\bar n^k}{(\bar n+1)^{k+1}}\PP_k
-		\longrightarrow
-		\sum_{k=0}^\infty \frac{\bar n^k}{(\bar n+1)^{k+1}}
-		\sum_{j=0}^k \binom{k}{j} T^j (1-T)^{k-j} \PP_j \\
-		= \sum_{j=0}^\infty \PP_j \left[
-			\sum_{k=j}^\infty 
-			\frac{\bar n^k}{(\bar n+1)^{k+1}}
-			\binom{k}{j}
-			T^j (1-T)^{k-j}
-		\right]
-		= \sum_{j=0}^\infty \PP_j \left[
-			\frac{T^j}{(1+\bar n)(1-T)^j}
-			\sum_{k=j}^\infty \binom{k}{j} A^k
-		\right],
-	\end{gathered}
+		\calE_t(\ketbra{j}{j+1})
+		= \sum_{k=0}^j \binom{j}{k} \frac{j+1}{k+1}
+		\bar t T^k (1-T)^{j-k} \ketbra{k}{k+1}.
 	\end{equation}
-	where in the last step we defined $A\equiv \frac{\bar n}{1+\bar n}(1-T)$.
-	We now make use of the formula
+	This follows from
 	\begin{equation}
-		\sum_{k=j}^\infty \binom{k}{j} A^k
-		= \frac{A^j}{(1-A)^{j+1}},
+		\ketbra{j}{k} \to
+		\sum_{m=0}^j \sum_{n=0}^k
+		\binom{j}{m}^{1/2} \binom{k}{n}^{1/2}
+		t^{m} \bar t^n r^{j-m} \bar r^{k-n}
+		\ketbra{m,j-m}{n,k-n},
 	\end{equation}
-	to conclude that
+	and thus
 	\begin{equation}
-	\begin{gathered}
-		\rho^{\rm th}{\bar n} \to
-		\sum_{j=0}^\infty \PP_j
-		\left[
-			\frac{T^j}{(1+\bar n)(1-T)^j}
-			\left(\frac{\bar n}{1+\bar n}(1-T)\right)^j
-			\left(\frac{1+\bar n}{1+\bar n T}\right)^{j+1}
-		\right] \\
-		= \sum_{j=0}^\infty \PP_j
-		\frac{T^j}{(1+\bar nT)^{j+1}}
-	\end{gathered}
+		\calE_t(\ketbra{j}{k})
+		= \sum_{m=0}^j \binom{j}{m}^{1/2} \binom{k}{k+m-j}^{1/2}
+		T^m R^{j-m} \bar t^{k-j}
+		\ketbra{m}{m+k-j}.
 	\end{equation}
-\end{prop}
+\end{example}
+
 
 \section{Thermalised states}
 
@@ -1609,6 +1790,7 @@ With this definition, we have the commutation relations:
 			\frac{ (j+ \bar n^2) }{ \bar n(\bar n + 1) }
 			\PP_j.
 	\end{equation}
+	\label{prop:thermalisation_of_P1}
 \end{prop}
 \begin{proof}
 	The action of $\hat D$ on $\ket1$ gives
@@ -1732,7 +1914,7 @@ With this definition, we have the commutation relations:
 \end{prop}
 
 \begin{proof}
-	We have
+	Using~\cref{prop:displacement_action_on_1}, we see that
 	\begin{equation}
 		\hat D(\sqrt\mu e^{i\phi})\ketbra{0}{1} \hat D^\dagger(\sqrt\mu e^{i\phi})
 		= e^{-\mu} \sum_{j,k=0}^\infty
@@ -1818,8 +2000,42 @@ With this definition, we have the commutation relations:
 % 	\end{equation}
 % \end{proof}
 
+\subsection{Attenuation and then thermalisation}
+
 \begin{prop}
-	The state $\ket0+\ket1$ evolving through a beasplitter with transmittivity $t$ results, looking only at the transmitted output branch, in the state
+	Let $\Phi_t$ the channel corresponding to attenuation through a beamsplitter with transmittivity $t$, and $\Phi_{\bar n}^{\rm th}$ the thermalisation operation. Then
+	\begin{equation}
+		\Phi_t(\PP_1)
+		= (1-T) \PP_0 + T \PP_1,
+	\end{equation}
+	where $T\equiv|t|^2$, and
+	\begin{equation}
+		\Phi_{\bar n}^{\rm th}(\Phi_t(\PP_1))
+		= \sum_{k=0}^\infty
+		\PP_j
+		\frac{\bar n^j}{(1+\bar n)^{j+1}}
+		\frac{\bar n(\bar n+1) + T(j-\bar n)}{\bar n(1+\bar n)}
+	\end{equation}
+	\label{prop:attenuation_and_then_thermalisation_focks}
+\end{prop}
+\begin{proof}
+	We have, using~\cref{prop:thermalisation_of_P1},
+	\begin{equation}
+	\begin{gathered}
+		\Phi_{\bar n}^{\rm th}(\Phi_t(\PP_1))
+		= \sum_{j=0}^\infty \PP_j
+		\frac{\bar n^j}{(1+\bar n)^{j+1}} \left[
+		(1-T) + T \frac{j+\bar n^2}{\bar n(1+\bar n)}
+		\right] \\
+		= \sum_{j=0}^\infty \PP_j
+		\frac{\bar n^j}{(1+\bar n)^{j+1}}
+		\frac{\bar n(\bar n+1)+ T(j-\bar n)}{\bar n(1+\bar n)}
+	\end{gathered}
+	\end{equation}
+\end{proof}
+
+\begin{prop}
+	The state $\ket0+\ket1$ evolving through a beamsplitter with transmittivity $t$ results, looking only at the transmitted output branch, in the state
 	\begin{equation}
 		\rho_t
 		\equiv
@@ -1827,22 +2043,210 @@ With this definition, we have the commutation relations:
 		+ \frac{T}{2} \PP_1
 		+ \frac12 (t \ketbra{1}{0} + \mathrm{h.c.}).
 	\end{equation}
-	Applying $\Phi^{\rm th}_{\bar n}$ to this state, and focusing on the Fock-state probabilities, gives
+	Applying $\Phi^{\rm th}_{\bar n}$ to this state gives
 	\begin{equation}
 	\begin{gathered}
 		% P_j^{\mathrm{th};\bar n}
-		\langle j\rvert \Phi^{\rm th}_{\bar n}(\rho_t) \lvert j\rangle
+		\langle j|\Phi^{\rm th}_{\bar n}(\rho_t)|j\rangle
 		= \frac{\bar n^j}{(\bar n + 1)^{j+1}}
 		\left(
 			\frac{2-T}{2}
 			+ \frac{T}{2} \frac{j+\bar n^2}{\bar n(\bar n + 1)}
-			+ \frac{\Re(t)}{\sqrt{\bar n(\bar n + 1)}}
-			\frac{(j+1/2)!}{j!}
-			\left( \frac{ 2j - \bar n }{ 2 } \right)
-		\right).
+			% + \frac{\Re(t)}{\sqrt{\bar n(\bar n + 1)}}
+			% \frac{(j+1/2)!}{j!}
+			% \left( \frac{ 2j - \bar n }{ 2 } \right)
+		\right) \\
+		= \frac{\bar n^j}{(\bar n + 1)^{j+1}}
+		\frac{1}{2\bar n(\bar n+1)}
+		% [(2-T)\bar n(\bar n+1) + T(j+\bar n^2)]
+		[2\bar n(\bar n+1) + T(j-\bar n)]
 	\end{gathered}
 	\end{equation}
 \end{prop}
+
+\begin{prop}
+	\begin{equation}
+		\sum_{k=n}^\infty \binom{k}{n} x^k
+		= \frac{x^n}{(1-x)^{n+1}}
+	\end{equation}
+	\label{eq:generalised_geometric_series}
+\end{prop}
+\begin{proof}
+	Differentiating the geometric series we get
+	\begin{equation}
+		D^n \frac{1}{1-x} = \frac{n!}{(1-x)^{n+1}},
+	\end{equation}
+	and on the other side
+	\begin{equation}
+		D^n \sum_{k=0}^\infty x^k
+		= \sum_{k=n}^\infty \frac{k!}{(k-n)!} x^{k-n}.
+	\end{equation}
+\end{proof}
+
+Let $\ket\psi$ be written in terms of mode operators as
+$\ket\psi=f_\psi(\hat a^\dagger)\ket0$.
+Then, using the relation $\hat D(\alpha) \hat a^\dagger \hat D^\dagger(\alpha)=\hat a^\dagger -\bar\alpha$, we see that
+$\hat D(\alpha)\ket\psi=f_\psi(\hat a^\dagger-\bar\alpha)\ket\alpha$.
+We can therefore write the thermalisation operation $\Phi^{\rm th}_{\bar n}$ as a statistical mixture of the form
+\begin{equation}
+	\Phi^{\rm th}_{\bar n}(\PP[\ket\psi])
+	= \int d\mu(\alpha)
+	\PP[f_\psi(\hat a^\dagger-\bar\alpha)\ket\alpha],
+\end{equation}
+where $d\mu(\alpha)=d(|\alpha|^2)\frac{d\phi}{2\pi} \frac{e^{-|\alpha|^2/\bar n}}{\bar n}$.
+Evolving through a beamsplitter thus gives
+\begin{equation}
+	\Phi_{{\rm BS},t}(\Phi_{\bar n}^{\rm th}(\PP[\ket\psi]))
+	= \int d\mu(\alpha)
+	\PP[f_\psi(t \hat a_1^\dagger + r \hat a_2^\dagger-\bar\alpha)
+	(\ket{t\alpha}\otimes\ket{r\alpha})
+	].
+\end{equation}
+On the other hand, if we pass $\ket\psi$ through the beamsplitter and \emph{then} thermalise, we get
+\begin{equation}
+	\Phi_{{\rm BS},t}(\PP[\ket\psi])
+	= \PP[f_{\psi}(t \hat a_1^\dagger + r\hat a_2^\dagger)
+	(\ket{\rm vac}\otimes \ket{\rm vac})
+	],
+\end{equation}
+and then, applying the thermalisation operation to the first mode, we get
+\begin{equation}
+	\Phi_{\bar n}^{\rm th}(\Phi_{{\rm BS},t}(\PP[\ket\psi]))
+	= \int d\mu(\alpha)\,
+	\PP[
+	f_\psi(t (\hat a_1^\dagger-\bar\alpha) + r\hat a_2^\dagger)
+	(\ket\alpha\otimes\ket{\rm vac})
+	]
+\end{equation}
+
+
+\subsection{Thermalisation and then attenuation}
+
+
+\begin{prop}
+	Consider a thermal state $\rho^{\rm th}_{\bar n}$, evolving through a beamsplitter with transmittivity $T\equiv |t|^2$, of which we only consider the first output port. We then have
+	\begin{equation}
+	\begin{gathered}
+		\rho^{\rm th}_{\bar n}
+		\equiv \sum_{k=0}^\infty \frac{\bar n^k}{(\bar n+1)^{k+1}}\PP_k
+		\longrightarrow
+		\sum_{k=0}^\infty \frac{\bar n^k}{(\bar n+1)^{k+1}}
+		\sum_{j=0}^k \binom{k}{j} T^j (1-T)^{k-j} \PP_j \\
+		= \sum_{j=0}^\infty \PP_j \left[
+			\sum_{k=j}^\infty 
+			\frac{\bar n^k}{(\bar n+1)^{k+1}}
+			\binom{k}{j}
+			T^j (1-T)^{k-j}
+		\right]
+		= \sum_{j=0}^\infty \PP_j \left[
+			\frac{T^j}{(1+\bar n)(1-T)^j}
+			\sum_{k=j}^\infty \binom{k}{j} A^k
+		\right],
+	\end{gathered}
+	\end{equation}
+	where in the last step we defined $A\equiv \frac{\bar n}{1+\bar n}(1-T)$.
+	Using~\cref{eq:generalised_geometric_series} we thus conclude that
+	% We now make use of the formula
+	% \begin{equation}
+	% 	\sum_{k=j}^\infty \binom{k}{j} A^k
+	% 	= \frac{A^j}{(1-A)^{j+1}},
+	% \end{equation}
+	% to conclude that
+	\begin{equation}
+	\begin{gathered}
+		\rho^{\rm th}_{\bar n} \to
+		\sum_{j=0}^\infty \PP_j
+		\left[
+			\frac{T^j}{(1+\bar n)(1-T)^j}
+			\left(\frac{\bar n}{1+\bar n}(1-T)\right)^j
+			\left(\frac{1+\bar n}{1+\bar n T}\right)^{j+1}
+		\right] \\
+		= \sum_{j=0}^\infty \PP_j
+		\frac{(\bar n T)^j}{(1+\bar nT)^{j+1}}.
+	\end{gathered}
+	\end{equation}
+\end{prop}
+
+\begin{prop}
+	Denote with $\calE_t$ the channel describing attenuation through a beamsplitter with transmittivity $t$. Then
+	\begin{equation}
+		\calE_t(\Phi_{\bar n}^{\rm th}(\PP_0))
+		= \sum_{k=0}^\infty \PP_j
+		\frac{(\bar n T)^j}{(1+\bar n T)^{j+1}},
+	\end{equation}
+	\begin{equation}
+		\calE_t(\Phi_{\bar n}^{\rm th}(\PP_1))
+		= \sum_{j=0}^\infty \PP_j \left[
+		\frac{(\bar n T)^j}{(1+\bar n T)^{j+1}}
+		\frac{(j + \bar n + (\bar n-1)\bar nT)}{\bar n(1+\bar nT)}
+		\right].
+	\end{equation}
+\end{prop}
+\begin{proof}
+	\begin{equation}
+	\begin{gathered}
+		\calE_t(\Phi_{\bar n}^{\rm th}(\PP_1))
+		= \sum_{k=0}^\infty
+		\frac{\bar n^k}{(1+\bar n)^{k+1}}
+		\frac{(k+\bar n^2)}{\bar n(\bar n+1)}
+		\sum_{j=0}^k
+		\binom{k}{j} T^j (1-T)^{k-j} \PP_j \\
+		= \sum_{j=0}^\infty \PP_j
+		\left[
+		\sum_{k=j}^\infty 
+		\frac{\bar n^k}{(1+\bar n)^{k+1}}
+		\frac{(k+\bar n^2)}{\bar n(\bar n+1)}
+		\binom{k}{j} T^j (1-T)^{k-j}
+		\right] \\
+		= \sum_{j=0}^\infty \PP_j \left[
+		T^j \frac{\bar n^{j-1}}{(1+\bar n T)^{j+2}}
+		(j + \bar n + (\bar n-1)\bar nT)
+		\right] \\
+		= \sum_{j=0}^\infty \PP_j \left[
+		\frac{(\bar n T)^j}{(1+\bar n T)^{j+1}}
+		\frac{(j + \bar n + (\bar n-1)\bar nT)}{\bar n(1+\bar nT)}
+		\right]
+	\end{gathered}
+	\end{equation}
+	% double checked
+	Note that, following~\cref{prop:attenuation_and_then_thermalisation_focks}, we have
+	\begin{equation}
+		\calE_t(\Phi_{\bar n}^{\rm th}(\PP_i))
+		= \Phi^{\rm th}_{\bar nT}(\calE_t(\PP_i)).
+	\end{equation}
+	This relation holds more generally for any input state \highlight{(I think? prove it)}
+	% Sum[
+	%   Binomial[k, j] (n/(1 + n) (1 - t))^k (k + n^2),
+	%   {k, j, Infinity}
+	%   ] // FullSimplify[#, n \[Element] Integers && n >= 0 && t >= 0] &
+\end{proof}
+
+% \begin{prop}
+% 	% Denote with $\calE_t$ the channel describing attenuation through a beamsplitter with transmittivity $t$.
+% 	\begin{equation}
+% 		\langle j|
+% 		\Phi_{\bar n}^{\rm th}\left(\PP\left(\frac{1}{\sqrt2}(\ket0+\ket1)\right)\right)
+% 		|j\rangle
+% 		= \frac{(\bar nT)^{j}}{(1+\bar nT)^{j+1}}
+% 		\frac{\bar nT(1+\bar nT)+j+\bar n(1+\bar nT-T)}{2(\bar nT)(1+\bar nT)}
+% 	\end{equation}
+% 	CHEEEEECK
+% \end{prop}
+% \begin{proof}
+% 	\begin{equation}
+% 	\begin{gathered}
+% 		\frac12 \sum_{j=0}^\infty
+% 		\frac{\bar n^j}{(1+\bar n)^{j+1}}
+% 		\left[
+% 			\left(
+% 			1 + \frac{(j+\bar n^2)}{\bar n(1+\bar n)}
+% 			\right) \PP_j
+% 			+ \frac{\sqrt{j+1}}{1+\bar n}
+% 			(\ketbra{j}{j+1}+\ketbra{j+1}{j})
+% 		\right]
+% 	\end{gathered}
+% 	\end{equation}
+% \end{proof}
 
 \chapter{Bell nonlocality}
 
@@ -2070,7 +2474,7 @@ A 1-producible state $\rho$ has $D_E(\rho)=1$ and is fully separable.
 	\renewcommand{\DH}{\mathcal D(\calH{})}
 	\newcommand{\aHanc}{\mathcal H_{\on{anc}}}
 	Let $\calH$ be a $d$-dimensional Hilbert space, and $\aHanc$ the Hilbert space of an ancillary system.
-	Then if the classical pure states $\{ \ket{\chi_i} \}_{i=1}^d \in \calH$ form a linearly independent set spanning $\calH$, there exists an isometry $V: \calH\to\H\otimes\aHanc^{\otimes d}$
+	Then if the classical pure states $\{ \ket{\chi_i} \}_{i=1}^d \in \calH$ form a linearly independent set spanning $\calH$, there exists an isometry $V: \calH\to\calH\otimes\aHanc^{\otimes d}$
 	such that for any state $\rho\in\DH$ with nonclassical number $N_N(\rho)=k$,
 	$V \rho V^\dagger$ is genuinely $(k+1)$-partite entangled iff $\rho$ is nonclassical ($2\le k\le d$)
 	and $V\rho V^\dagger$ is fully separable iff $\rho$ is classical ($k=1$).
