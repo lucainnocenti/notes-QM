@@ -28,6 +28,15 @@
 \usepackage{csquotes}
 \usepackage[italian,english]{babel}
 
+% \usepackage[a4paper,showframe,textwidth=00pt]{geometry}
+% \usepackage{geometry}
+%  \geometry{
+%  a4paper,
+%  total={170mm,257mm},
+%  left=20mm,
+%  top=20mm,
+%  }
+
 % \usepackage[T1]{fontenc}
 % ================ general page layout ================
 \usepackage{fontspec}
@@ -151,6 +160,7 @@
 \newcommand{\rmD}{{\mathrm{D}}}
 \newcommand{\rmL}{{\mathrm{L}}}
 \newcommand{\rmT}{{\mathrm{T}}}
+\newcommand{\rmU}{{\mathrm{U}}}
 
 \newcommand{\wondering}[1]{{\color{red}\itshape\bfseries (#1)}}
 \newcommand{\uncertain}[1]{{\color{red}\bfseries (#1)}}
@@ -447,24 +457,27 @@ Note that in the above the choice of $\ket{v_k}$ is unique if and only if $\rho$
 
 \section{Fidelity}
 
-\begin{defn}
+\begin{defn}\label{def:fidelity}
 	The \emph{fidelity} between two states $\rho$ and $\sigma$ is the quantity:
 	\begin{equation}
-		\calF(\rho,\sigma) \equiv \tr(\sqrt{\rho^{1/2}\sigma\rho^{1/2}}).
+		F(\rho,\sigma) \equiv \tr(\sqrt{\rho^{1/2}\sigma\rho^{1/2}}).
 	\end{equation}
-	\label{def:fidelity}
 \end{defn}
 
-\begin{prop}
-	\Cref{def:fidelity} is equivalent to $\calF(\rho,\sigma)=\tr\lvert\sqrt\rho\sqrt\sigma\rvert$, where $|A|\equiv\sqrt{A^\dagger A}$.
-	\label{def:fidelity_with_abs}
+\begin{prop}\label{def:fidelity_with_abs}
+	\Cref{def:fidelity} is equivalent to
+	\begin{equation}
+	F(\rho,\sigma)=\tr\lvert\sqrt\rho\sqrt\sigma\rvert
+	\equiv \|\sqrt\rho\sqrt\sigma\|_1,	
+	\end{equation}
+	where $|A|\equiv\sqrt{A^\dagger A}$ and $\|\cdot\|_1$ denotes the trace one-norm.
 \end{prop}
 \begin{proof}
 	$(\sqrt\rho\sqrt\sigma)^\dagger (\sqrt\rho\sqrt\sigma) = \sqrt\sigma\rho\sqrt\sigma$.
 \end{proof}
 
 \begin{prop}
-	The fidelity is \emph{symmetric}: $\calF(\rho,\sigma)=\calF(\sigma,\rho)$.
+	The fidelity is \emph{symmetric}: $F(\rho,\sigma)=F(\sigma,\rho)$.
 \end{prop}
 \begin{proof}
 	This is more easily shown from~\cref{def:fidelity_with_abs}, and follows from the more general fact that for any matrix $A$, $\tr|A^\dagger|=\tr|A|$.
@@ -505,6 +518,42 @@ Note that in the above the choice of $\ket{v_k}$ is unique if and only if $\rho$
 		\calF(\rho,\sigma)=\max_{\ket{\psi_\rho},\ket{\psi_\sigma}}\lvert\braket{\psi_\rho}{\psi_\sigma}\rvert.
 	\end{equation}
 \end{thm}
+
+A few propositions that will turn useful later on:
+\begin{prop}
+	Let $P,Q\in\Pos(\calX)$ be positive semidefinite operators.
+	Then $F(P,Q)^2 \le \Tr(P)\Tr(Q)$, with equality \emph{iff} $P$ and $Q$ are linearly dependent.
+\end{prop}
+\begin{proof}
+	\highlight{Watrous}
+\end{proof}
+
+\begin{prop}
+	Let $P,Q\in\Pos(\calX)$ be positive semidefinite operators, and $V\in\rmU(\calX,\calY)$ an isometry into some larger space $\calY$ with $\dim(\calY)\ge\dim(\calX)$. Then
+	\begin{equation}
+		F(P,Q) = F(VPV^\dagger, VQV^\dagger).
+	\end{equation}
+\end{prop}
+\begin{proof}
+	\highlight{Watrous}
+\end{proof}
+
+\begin{prop}
+	Let $P\in\Pos(\calX)$ and $v\in\calX$. Then
+	$F(P,vv^\dagger) = \sqrt{v^\dagger  P v}$.
+\end{prop}
+\begin{proof}
+	\highlight{Watrous}
+\end{proof}
+
+\begin{prop}
+	Let $P,Q\in\Pos(\calX)$. Then
+	$F(P,QPQ) = \langle P,Q\rangle$.
+\end{prop}
+\begin{proof}
+	Here $\langle P,Q\rangle=\Tr(PQ)$. See \highlight{Watrous}.
+\end{proof}
+
 
 \begin{prop}
 	Let $\{E_k\}_k$ be a POVM. The fidelity can be written as
@@ -810,6 +859,14 @@ We thus have
 \end{equation}
 More formally, if $\Phi\in\rmT(\calX,\calY)$, then $K(\Phi)\in\rmL(\calY\otimes\calY,\calX\otimes\calX)$.
 
+\begin{prop}
+	Denote with $e_+\equiv \sum_i \ket{i,i}\in\calY\otimes\calY$ the unnormalised maximally mixed state in $\calY$.
+	For any map $\Phi\in\rmT(\calX,\calY)$ we have
+	\begin{equation}
+		e_+^\dagger K(\Phi) = K(\Tr\circ\, \Phi) \in \Lin(\calX\otimes\calX,\CC)
+	\end{equation}
+\end{prop}
+
 \subsection{Choi representation}
 
 \subsection{Stinespring representation}
@@ -942,7 +999,7 @@ Suppose Bob performs a measurement $\mu$ and finds some result $b\in\{0,1\}$.
 If the received state is $\rho_i$, the probability of observing such event is
 \begin{equation}
 	\Prob(\text{measured }b | \rho=\rho_i)
-	\equiv \Prob(b | \rho_i)
+	\equiv p(b | \rho_i,\mu)
 	= \langle \mu(b), \rho_i\rangle.
 \end{equation}
 Therefore, the \emph{prior} probability of the state being $\rho_i$, knowing that the measurement resulted in the outcome $b$, is
@@ -969,13 +1026,83 @@ The overall probability of guessing correctly using this strategy (that is, the 
 	\max_{i\in\{0,1\}}
 	\lambda_i \langle\mu(b),\rho_i\rangle.
 \end{equation}
+
+
+\begin{example}
+	Suppose we want to discriminate between $\rho_0=\PP_0$ and $\rho_1=\PP_+\equiv \frac12\sum_{i,j\in\{0,1\}}E_{ij}$, and we use the measurement $\mu$ with $\mu(0)=\PP_0, \mu(1)=\PP_1$.
+	The outcome probabilities then read
+	\begin{equation}
+		\langle \mu(0),\rho_0\rangle = 1,
+		\quad
+		\langle \mu(1),\rho_0\rangle = 0,
+		\quad
+		\langle \mu(0),\rho_1\rangle = \frac12,
+		\quad
+		\langle \mu(1),\rho_1\rangle = \frac12.
+	\end{equation}
+	Therefore we have
+	$\Prob(b=0) = (1+\lambda_0)/2$,
+	$\Prob(b=1) = (1-\lambda_0)/2$, and 
+	\begin{equation}
+	\begin{gathered}
+		\Prob(\rho_0|b=0) = \frac{2\lambda_0}{1+\lambda_0},
+		\qquad\qquad
+		\Prob(\rho_1|b=0) = \frac{1-\lambda_0}{1+\lambda_0}, \\
+		\Prob(\rho_0|b=1) = 0,\qquad\qquad\,\,
+		\qquad\qquad
+		\Prob(\rho_1|b=1) = 1.
+	\end{gathered}
+	\end{equation}
+	% \begin{equation}
+	% 	\Prob(\rho_0|b=0) = \frac{2\lambda_0}{1+\lambda_0},\quad
+	% 	\Prob(\rho_1|b=0) = \frac{1-\lambda_0}{1+\lambda_0},\quad
+	% 	\Prob(\rho_0|b=1) = 0,\quad
+	% 	\Prob(\rho_1|b=1) = 1.
+	% \end{equation}
+	Then, $i_{\rm opt}(\mu,0)= \max(2\lambda_0,1-\lambda_0)$
+	and $i_{\rm opt}(\mu,1)= 1$, which means that when $b=0$ is measured, Bob's best guess is $\rho_0$ when $\lambda_0\ge1/3$, whereas when $b=1$ is found, Bob's best guess is always $\rho_1$.
+	This is of course to be expected: $b=1$ is possible only if $\rho=\rho_1$.
+
+	The overall success probability with this strategy is
+	$p_{\rm success}(\mu) = \max(\lambda_0,\frac{1-\lambda_0}{2})+\frac{1-\lambda_0}{2}$.
+
+	Let us consider now a more general strategy for the same qubit states.
+	Suppose $\mu(0)= \alpha(I+\bs v\cdot\bs\sigma)$, where $0<\alpha\le1$ and $\|\bs v\|\le \frac{1-\alpha}{\alpha}$. Every effect can be written in such a way, thus we can parametrise every one-qubit POVM changing $\alpha$ and $\bs v\in\RR^3$. With this POVM we have
+	\begin{equation}
+		\langle\mu(0),\rho_0\rangle = \alpha(1+v_3),
+		\qquad
+		\langle\mu(0),\rho_1\rangle = \alpha(1+v_1),
+	\end{equation}
+	and thus
+	\begin{equation}
+		\Prob(b=0) = \alpha[\lambda_0(1+v_3) + \lambda_1(1+v_1)]
+		= \alpha[(1+v_1) + \lambda_0 (v_3-v_1)].
+	\end{equation}
+	The success probabilities reads
+	\begin{equation}
+		p_{\rm success}(\mu)
+		= \max(
+		\lambda\alpha(1+v_3),
+		(1-\lambda)\alpha(1+v_1)
+		) +
+		\max(
+		\lambda(1-\alpha-\alpha v_3),
+		(1-\lambda)(1-\alpha-\alpha v_1)
+		).
+		\label{eq:QST:success_prob_in_example_general_POVM}
+	\end{equation}
+	Note how this success probability is consistent with the one derived for the special case of $\mu(0)=\PP_0$, which corresponds to the choice of parameters $\alpha=1/2$ and $\bs v=(0,0,1)^T$.
+\end{example}
+
+
+% Another way to get to an expression for $p_{\rm success}(\mu)$ is to notice that 
 We can now use the identity $2\max(a,b)=(a+b)+|a-b|$, valid for any $a,b\in\RR$. This tells us that
 \begin{equation}
 	p_{\rm success}(\mu)
 	= \frac12 + \frac12
 	\sum_{b\in\{0,1\}} \left\lvert
 	\langle\mu(b), \lambda_0 \rho_0 - \lambda_1\rho_1\rangle
-	\right\rvert
+	\right\rvert.
 \end{equation}
 The natural next question is then: what is the measurement $\mu$ that maximises the success probability $p_{\rm success}(\mu)$?
 To answer this we observe that
