@@ -1,4 +1,4 @@
-\documentclass[a4paper]{report}
+\documentclass[12pt]{report}
 
 % =============== bibliography  ========================
 \usepackage[
@@ -28,6 +28,7 @@
 \usepackage{csquotes}
 \usepackage[italian,english]{babel}
 
+\usepackage[a4paper, margin=1.2in]{geometry}
 % \usepackage[a4paper,showframe,textwidth=00pt]{geometry}
 % \usepackage{geometry}
 %  \geometry{
@@ -41,7 +42,7 @@
 % ================ general page layout ================
 \usepackage{fontspec}
 \usepackage{microtype}
-\usepackage{fullpage}
+% \usepackage{fullpage}
 % ================ mathematics and fonts ================
 \usepackage{bm} % provides more bold symbols
 
@@ -155,6 +156,7 @@
 \newcommand{\calV}{{\mathcal{V}}}
 \newcommand{\calW}{{\mathcal{W}}}
 \newcommand{\calX}{{\mathcal{X}}}
+\newcommand{\calZ}{{\mathcal{Z}}}
 
 \newcommand{\rmC}{{\mathrm{C}}}
 \newcommand{\rmD}{{\mathrm{D}}}
@@ -177,6 +179,7 @@
 \DeclareMathOperator{\Id}{Id}
 \DeclareMathOperator{\Lin}{Lin}
 \DeclareMathOperator{\Prob}{Prob}
+\DeclareMathOperator{\Proj}{Proj}
 
 \DeclareMathOperator*{\argmax}{argmax}
 
@@ -824,13 +827,14 @@ This immediately follows from remembering that a pure state $\rho$ only admits a
 \minitoc
 
 % Let $\rho\in\rmD(\calX)$ be a state.
-A \emph{map} acting on an operator $X\in\rmL(\calX)$ is an operator $\Phi\in\rmL(\rmL(\calX),\rmL(\calY))$. We denote the set of such maps with $\rmT(\calX,\calY)$.
+A \emph{map} acting on operators $X\in\Lin(\calX)$ is an operator $\Phi\in\Lin(\Lin(\calX),\Lin(\calY))$. We denote the set of such maps with $\rmT(\calX,\calY)$.
+When we wish to restrict our discussions to finite-dimensional spaces, or specify their dimensions, we will assume $\calX,\calY$ to be spaces of the form $\CC^n$ for some $n\in\NN$.
 
 A given $\Phi\in\rmT(\calX,\calY)$ is said to be
 \begin{itemize}
 	\item \emph{unital} if $\Phi(I_{\calX})=I_{\calY}$, where $I_{\calX},I_{\calY}$ are the identities in $\calX,\calY$, respectively;
 	\item \emph{trace-preserving} if $\Tr(\Phi(X))=\Tr(X)$;
-	\item \emph{Hermitian preserving} if $\Phi(X^\dagger)=\Phi(X)^\dagger$, for all $X\in\rmL(\calX)$;
+	\item \emph{Hermitian preserving} if $\Phi(X^\dagger)=\Phi(X)^\dagger$, for all $X\in\Lin(\calX)$;
 	\item \emph{positive} if $\Phi(X)\ge0$ for all $X\ge0$;
 	\item \emph{completely positive} if $(\Phi\otimes I_n)\ge0$ for any $n\ge0$.
 \end{itemize}
@@ -838,34 +842,293 @@ A given $\Phi\in\rmT(\calX,\calY)$ is said to be
 A map is said to be CPTP if it is trace-preserving and completely positive. CPTP maps are also referred to as \emph{channels}. We denote the set of channels with $\rmC(\calX,\calY)$.
 
 
+\begin{prop}\label{prop:characterisation_of_positive_maps_from_rank1ops}
+	A map $\Phi\in\rmT(\calX,\calY)$ is positive \emph{iff} it preserves the positivity of rank-one operators with unit trace, that is, \emph{iff} $\Phi(uu^\dagger)\ge0$ for all $u\in\calS(\calX)$.
+\end{prop}
+\begin{proof}
+	We want to prove that $\Phi(X)\ge0$ for all $X\in\Pos(\calX)$ \emph{iff} $\Phi(uu^\dagger)\ge0$ for all $u\in\calX$.
+	One direction is immediate from $uu^\dagger\in\Pos(\calX)$.
+	Let us then assume that $\Phi(uu^\dagger)\ge0$ for all $u\in\calS(\calX)$.
+	Any positive $X\in\Pos(\calX)$ is, via its eigendecomposition, a linear combination with positive coefficients of such rank-one operators.
+	Thus $\Phi(X)\ge0$ because a positive linear combination of positive operators is also a positive operator.
+\end{proof}
+
+\section{Complete positivity}
+
+One interesting aspect about the positivity of extensions is that complete positivity of a given map $\Phi\in\rmT(\calX,\calY)$ is equivalent to whether $\Phi\otimes I_{\Lin(\calX)}$ preserves the positivity of the maximally entangled state $\calX\otimes\calX$. More precisely:
+\begin{prop}
+	Let $\Phi\in\rmT(\calX,\calY)$. Then $\Phi\in\rmC(\calX,\calY)$ \emph{iff}
+	\begin{equation}
+		(\Phi\otimes I_{\Lin(\calX)})(e_+ e_+^\dagger)\ge0,
+	\end{equation}
+	where $e_+\in\calX\otimes\calX$ is the maximally entangled (unnormalised) state.
+\end{prop}
+\begin{proof}
+	If $\Phi$ is CPTP then obviously $(\Phi\otimes I_{\Lin(\calX)})(e_+ e_+^\dagger)\ge0$ by definition of complete positivity.
+	For the other direction, observe that
+	\begin{equation}
+		\langle i,j| (\Phi\otimes I_{\Lin(\calX)})(e_+ e_+^\dagger) |k,\ell\rangle
+		= \langle i | \Phi(E_{j\ell}) | k\rangle.
+	\end{equation}
+	Therefore, $(\Phi\otimes I_{\Lin(\calX)})(e_+ e_+^\dagger)\ge0$ implies the existence of a set of orthogonal vectors $\{u(a)\}_a\subset\calY\otimes\calX$ such that
+	\begin{equation}
+		\langle i|\Phi(E_{j\ell})|k\rangle
+		= \sum_a u(a)_{ij} \overline{u(a)}_{k\ell}.
+	\end{equation}
+	Moreover, for any $X\in\Lin(\calX\otimes\calX)$ and $\ket\alpha\in \calY\otimes\calX$ we have,
+	\begin{equation}
+		\langle \alpha| (\Phi\otimes I_{\Lin(\calX)})(X) |\alpha\rangle
+		= \sum_{ijk\ell mn}
+		\bar\alpha_{ij} \alpha_{k\ell}
+		\langle i|\Phi(E_{mn})|k\rangle X_{mj,n\ell}.
+	\end{equation}
+	We want to prove that, if $X\in\Pos(\calX\otimes\calY)$, then this quantity is positive for all $\ket\alpha$.
+
+	The positivity of $X$ implies that there is a set $\{v(a)\}_a\subset\calX\otimes\calX$ of orthogonal vectors such that
+	$X = \sum_a v(a) v(a)^\dagger$, which componentwise reads
+	\begin{equation}
+		X_{ij,k\ell} = \sum_a v(a)_{ij} \overline{v(a)}_{k\ell}.
+	\end{equation}
+	Consequently we can write
+	\begin{equation}
+	\begin{gathered}
+		\langle \alpha| (\Phi\otimes I_{\Lin(\calX)})(X) |\alpha\rangle
+		= \sum_{ijk\ell mn a} \bar\alpha_{ij} \alpha_{k\ell}
+		\langle i|\Phi(E_{mn})|k\rangle v(a)_{mj} \overline{v(a)}_{n\ell} \\
+		= \sum_{ijk\ell mn ab}
+		\bar\alpha_{ij} \alpha_{k\ell}
+		u(b)_{im} \overline{u(b)}_{kn}
+		v(a)_{mj} \overline{v(a)}_{n\ell}
+		= \sum_{ab} |\beta_{ab}|^2 \ge 0,
+	\end{gathered}
+	\end{equation}
+	where $\beta_{ab}\in\CC$ are defined as
+	\begin{equation}
+		\beta_{ab} \equiv \sum_{ijm}
+		\bar\alpha_{ij} u(b)_{im} v(a)_{mj}
+	\end{equation}
+\end{proof}
+
+\begin{proof}
+	Let us try now a slightly different proof that is less reliant on explicit index decompositions.
+	Observe that
+	\begin{equation}
+		(\Phi\otimes I_{\Lin(\calX)})(e_+ e_+^\dagger)
+		= \sum_{ij} \Phi(E_{ij}) \otimes E_{ij}.
+	\end{equation}
+	\highlight{(to finish)}
+\end{proof}
+
+\begin{prop}
+	Let $\Phi\in\rmC(\calX,\calY)$. Then there are operators $\{A_a\}_a\subset\Lin(\calX,\calY)$ such that, for all $X\in\Lin(X)$, we have
+	\begin{equation}
+		\Phi(X) = \sum_a A_a X A_a^\dagger.
+	\end{equation}
+
+\end{prop}
+
+Let $\Phi\in\rmC(\calX,\calY)$ and let $e_+\equiv \sqrt{\dim(\calX)}\ket +\in\calX\otimes\calX$ denote the maximally entangled state in $\calX\otimes\calX$.
+Consider the operator $J(\Phi)\equiv (\Phi\otimes I_{\Lin(\calX)})(e_+ e_+^\dagger)$.
+This is an operator $J(\Phi)\in\Lin(\calY\otimes\calX)$ such that
+\begin{equation}
+	\langle i,j| (\Phi\otimes I_{\Lin(\calX)})(e_+ e_+^\dagger) |k,\ell\rangle
+	= \langle i | \Phi(E_{j\ell}) | k\rangle.
+\end{equation}
+Because $\Phi$ is CPTP, we know that $J(\Phi)\ge0$.
+Therefore there are positive numbers $s_a\ge0$ and orthonormal vectors $u_a,v_a\in\calY\otimes\calX$ with $\langle u_a,u_b\rangle=\langle v_a,v_b\rangle = \delta_{ab}$ such that
+\begin{equation}
+	J(\Phi) = \sum_a s_a u_a v_a^\dagger.
+\end{equation}
+\highlight{(finish)}
+
+Let $e_{ij}\in \calX\otimes\calX$ be such that $(e_{ij})_{k\ell}=\delta_{ik}\delta_{j\ell}$. Then for any $X\in\Lin(\calX\otimes\calX)$ we have
+\begin{equation}
+	e_{ij}^\dagger  [(\Phi\otimes I_{\Lin(\calX)})(X)] e_{ij}
+	= \sum (\Phi\otimes I_{\Lin(\calX)})_{(ij)(ij),JK} X_{JK}
+	% = \sum_{k,\ell} K(\Phi)_{ii,k\ell} X_{kj,\ell j}
+\end{equation}
+
 \section{Representations}
 
 \subsection{Natural representation}
 
-Any operator $X\in\rmL(\CC^n)$ can also be understood as a vector, being $\rmL(\CC^n)$ itself a vector space with $\dim\rmL(\CC^n)=n^2$. A standard way of doing this involves choosing a basis $\{\sigma_k\}_k\subset\rmL(\CC^n)$ and performing the decomposition $X=\sum_k c_k\sigma_k$. We can then identify $X$ with the corresponding vector of coefficients $\bs c\equiv (c_k)_k$.
-One such basis is $\{E_{ij}\}_{i,j=1}^n\subset\rmL(\CC^n)$, where $E_{ij}\equiv \ketbra{i}{j}$.
-The corresponding coefficients of $X$ in such basis are simply its matrix elements. We denote such set of coefficients with $\on{vec}(X)\in\CC^{n^2}$, which is thus defined as
+Operators $X\in\Lin(\calX)$ can be understood as vectors, being $\Lin(\calX)$ itself a vector space with $\dim(\Lin(\calX))=\dim(\calX)^2$. A standard way of doing this involves choosing a basis $\{\sigma_k\}_k\subset\Lin(\calX)$ and performing the decomposition $X=\sum_k c_k\sigma_k$. We can then identify $X$ with the corresponding vector of coefficients $\bs c\equiv (c_k)_k$.
+An example of such a basis is $\{E_{ij}\}_{i,j=1}^n\subset\Lin(\calX)$, where $E_{ij}\equiv \ketbra{i}{j}$.
+The corresponding coefficients of $X$ in such basis are simply its matrix elements. We denote such set of coefficients with $\on{vec}(X)\in\CC^{\dim(\calX)^2}$, which thus satisfies
 % \begin{equation}
 	$\on{vec}(X)_{ij} \equiv X_{ij} \equiv \mel{i}{X}{j}$.
 % \end{equation}
-More formally, if $X\in\rmL(\calX,\calY)$, then $\on{vec}(X)\in\calY\otimes\calX$.
+More formally, if $X\in\Lin(\calX,\calY)$, then $\on{vec}(X)\in\calY\otimes\calX$.
 
-A map $\Phi\in\rmT(\CC^n,\CC^m)$ can then be represented as the matrix sending $\on{vec}(X)$ to $\on{vec}(\Phi(X))$. We denote this operator with $K(\Phi)\in\rmL(\CC^m\otimes\CC^m,\CC^n\otimes\CC^n)$, and refer to $K(\Phi)$ as the \emph{natural representation} of $\Phi$.
+\begin{example}
+	Denote with $I_{\Lin(\calX)}$ the identity map in the operator space $\Lin(\calX)$ for some $\calX$. This is by definition the map such that $I_{\Lin(\calX)}(X)=X$ for all $X\in\Lin(\calX)$.
+	Then
+	\begin{equation}
+		K(I_{\Lin(\calX)})_{ij,k\ell}
+		= \delta_{ik}\delta_{j\ell}
+	\end{equation}
+\end{example}
+
+A map $\Phi\in\rmT(\calX,\calY)$ can then be represented as the matrix sending $\on{vec}(X)$ to $\on{vec}(\Phi(X))$. We denote this operator with $K(\Phi)\in\Lin(\calY\otimes\calY,\calX\otimes\calX)$, and refer to $K(\Phi)$ as the \emph{natural representation} of $\Phi$.
 We thus have
 \begin{equation}
 	K(\Phi)_{ij,k\ell}
 	\equiv \mel{i,j}{K(\Phi)}{k,\ell}
 	= \mel{i}{\Phi(E_{k\ell})}{j}.
 \end{equation}
-More formally, if $\Phi\in\rmT(\calX,\calY)$, then $K(\Phi)\in\rmL(\calY\otimes\calY,\calX\otimes\calX)$.
+We can also get to this expression observing that, for any $X\in\Lin(\calX)$,
+\begin{equation}
+	\Phi(X)
+	= \sum_{ij} \langle i|\Phi(X) |j\rangle E_{ij}
+	= \sum_{ijk\ell} X_{k\ell}
+	\underbrace{\langle i|\Phi(E_{k\ell})|j\rangle}_{\equiv K(\Phi)_{ij,k\ell}} E_{ij}.
+\end{equation}
 
 \begin{prop}
-	Denote with $e_+\equiv \sum_i \ket{i,i}\in\calY\otimes\calY$ the unnormalised maximally mixed state in $\calY$.
+	Denote with $e_+\equiv \sum_i \ket{i,i}\in\calY\otimes\calY$ the unnormalised maximally entangled state in $\calY$.
 	For any map $\Phi\in\rmT(\calX,\calY)$ we have
 	\begin{equation}
 		e_+^\dagger K(\Phi) = K(\Tr\circ\, \Phi) \in \Lin(\calX\otimes\calX,\CC)
 	\end{equation}
 \end{prop}
+
+\paragraph{Natural representation and multipartite spaces}
+We write the matrix elements of $X\in\Lin(\calX\otimes\calY)$ as
+\begin{equation}
+	X_{x_1 y_1,x_2 y_2}
+	\equiv \langle x_1, y_1 | X | x_2, y_2\rangle
+	= \Tr[X (E_{x_1 x_2} \otimes E_{y_1 y_2})].
+\end{equation}
+We thus denote on the LHS of the comma indices referring to the \emph{output space}, and on the RHS indices referring to the \emph{input space}. Here both are $\calX\otimes\calY$.
+
+Consider a map acting on a bipartite system: $\Phi\in\rmT(\calX\otimes\calY,\calW\otimes\calZ)$. Then
+\begin{equation}
+	\Phi(X)_{w_1 z_1, w_2 z_2}
+	= \sum_{x_1 x_2 y_1 y_2}
+	K(\Phi)_{(w_1 z_1, w_2 z_2),(x_1 y_1, x_2 y_2)}
+	X_{x_1 y_1,x_2 y_2}.
+\end{equation}
+We use parentheses on the indices of $K(\Phi)$ to distinguish between the two different ``classes'' of input and output spaces: the input space for $K(\Phi)$ is $(\calX\otimes\calY)^{\otimes 2}$, which can in turn be divided into ``input and output indices'', according to how the indices connect to the operator $X$.
+
+In the general case of $\Phi\in\rmT(\bigotimes_i \calX_i,\bigotimes_i \calY_i)$ and $X\in\Lin(\bigotimes_i \calX_i)$, we write
+\begin{equation}
+	X_{I,J} \equiv X_{i_1\cdots i_n, j_1\cdots j_n},
+\end{equation}
+and thus
+\begin{equation}
+	\Phi(X)_{I,J}
+	= \sum_{KL} K(\Phi)_{IJ,KL} X_{K,L}.
+\end{equation}
+Here, the index $L$ connects to the input space of the input operator space, $K$ to the output space of the input operator space, $J$ to the input space of the output operator space, and finally $I$ to the output space of the output operator space.
+Each one of these indices is in turn a \emph{tuple} of indices marking the underlying multipartite structure of the space.
+
+In particular, if $X\in\Lin(\calX), Y\in\Lin(\calY)$, we have
+% \begin{equation}
+	$(X\otimes Y)_{I,J} = X_{i_1,j_1} Y_{i_2,j_2}.$
+% \end{equation}
+More generally, if $X_i\in\Lin(\calX_i)$, we write
+\begin{equation}
+	\left(\bigotimes_k X_k\right)_{I,J}
+	= \prod_k (X_k)_{I_k,J_k}.
+\end{equation}
+
+If $\Phi_i\in\rmT(\calX_i,\calY_i)$, and $X_i\in\Lin(\calX_i)$, then
+\begin{equation}
+	\left[
+	\left(\bigotimes_i \Phi_i\right)\left(\bigotimes_i X_i\right)
+	\right]_{IJ}
+	= \prod_i \Phi_i(X_i)_{I_i,J_i}.
+\end{equation}
+
+If $\Phi_1\in\rmT(\calX,\calW)$ and $\Phi_2\in\rmT(\calY,\calZ)$,
+then $\Phi_1\otimes\Phi_2\in\rmT(\calX\otimes\calY,\calW\otimes\calZ)$ and
+\begin{equation}
+	K(\Phi_1\otimes \Phi_2)_{IJ,KL}
+	= K(\Phi_1)_{I_1 J_1, K_1 L_1}
+	K(\Phi_2)_{I_2 J_2, K_2 L_2}.
+\end{equation}
+More generally, if $\Phi_i\in\rmT(\calX_i,\calY_i)$, we have
+\begin{equation}
+	K\big(\bigotimes_i \Phi\big)_{IJ,KL}
+	= \prod_i K(\Phi_i)_{I_i J_i,K_i L_i}.
+\end{equation}
+
+\begin{example}
+	Let $\Phi\in\rmT(\calX,\calY)$, and let
+	$e_+\equiv \sqrt{\dim(\calX)}\ket+\in\calX\otimes\calX$
+	be the unnormalised maximally entangled state. Then
+	\begin{equation}
+		K(\Phi\otimes I_{\Lin(\calX)})_{IJ,KL}
+		= K(\Phi)_{I_1 J_1,K_1 L_1}
+		\delta_{I_2 K_2} \delta_{J_2 L_2},
+	\end{equation}
+	and therefore, for any $X\in\Lin(\calX\otimes\calX)$,
+	\begin{equation}
+		[(\Phi\otimes I_{\Lin(\calX)})(X)]_{(ij),(k\ell)}
+		= \sum_{mn} K(\Phi)_{ik,mn} X_{(mj),(n\ell)}.
+	\end{equation}
+	For $X=e_+ e_+^\dagger$ we thus get
+	\begin{equation}
+		[(\Phi\otimes I_{\Lin(\calX)})(e_+ e_+^\dagger)]_{(ij),(k\ell)}
+		= \sum_{mn}
+		K(\Phi)_{ik,mn} \delta_{mj} \delta_{n\ell}
+		= K(\Phi)_{ik,j\ell}.
+	\end{equation}
+\end{example}
+
+\subsection{Unitary representation}
+
+\begin{prop}\label{prop:CPTP_unitary_representation}
+	Let $\Phi\in\rmC(\calX,\calY)$. Then there are auxiliary spaces $\calZ,\calW$, some isometry $U\in\rmU(\calX\otimes\calZ,\calY\otimes\calW)$, and some pure state $u\in\calS(\calZ)$, such that for all $X\in\Lin(\calX)$ the channel can be represented as
+	\begin{equation}
+		\Phi(X) = \Tr_\calW[U(X\otimes uu^\dagger) U^\dagger ].
+	\end{equation}
+\end{prop}
+\begin{proof}
+	Prove it from the Kraus representation of the channel.
+\end{proof}
+
+\highlight{(what about the more general case of $\Phi\in\rmT(\calX,\calY)$?)}
+
+\begin{prop}
+	Let $\Phi\in\rmC(\calX,\calY)$, and let $\Phi^\dagger\in\rmT(\calY,\calX)$ denote its adjoint map.
+	Suppose $\Phi$ has a unitary representation as in~\cref{prop:CPTP_unitary_representation}.
+	Then
+	\begin{equation}
+		\Phi^\dagger(Y) =
+		(I_{\calX}\otimes u^\dagger)
+		[U^\dagger (Y\otimes I_{\calW}) U]
+		(I_{\calX}\otimes u).
+	\end{equation}
+\end{prop}
+\begin{proof}
+	We have for any $Y\in\Lin(\calY)$ and $X\in\Lin(\calX)$,
+	\begin{equation}
+	\begin{gathered}
+		\langle Y,\Phi(X)\rangle
+		= \Tr_\calY\big[Y^\dagger \Tr_\calW[U(X\otimes uu^\dagger)U^\dagger]\big] \\
+		= \Tr_{\calY\otimes\calW} \big[
+		(Y^\dagger\otimes I_{\calW}) U (X\otimes uu^\dagger) U^\dagger
+		\big] \\
+		= \Tr_{\calX\otimes\calZ} \big[
+		U^\dagger (Y^\dagger\otimes I_{\calW}) U (X\otimes uu^\dagger)
+		\big] \\
+		= \Tr_{\calX} \big[
+		(I_\calX\otimes u^\dagger) [
+			U^\dagger (Y^\dagger\otimes I_{\calW}) U
+		] (I_\calX\otimes u) \,\, X
+		\big].
+	\end{gathered}
+	\end{equation}
+	Note that here $u\in\calZ$. We conclude that
+	\begin{equation}
+		\Phi^\dagger(Y) =
+		(I_{\calX}\otimes u^\dagger)
+		[U^\dagger (Y\otimes I_{\calW}) U]
+		(I_{\calX}\otimes u)
+		\in\Lin(\calX).
+	\end{equation}
+\end{proof}
 
 \subsection{Choi representation}
 
@@ -873,12 +1136,84 @@ More formally, if $\Phi\in\rmT(\calX,\calY)$, then $K(\Phi)\in\rmL(\calY\otimes\
 
 \subsection{Kraus representation}
 
+\begin{prop}
+	Let $\Phi\in\rmT(\calX,\calY)$ be a map. There are collections of operators $\{A_a: a\in\Sigma\},\{B_a: a\in\Sigma\}\subset\Lin(\calX,\calY)$, for some finite alphabet $\Sigma$ with $\lvert\Sigma\rvert=\rank(J(\Phi))$, such that for all $X\in\Lin(\calX)$ we have
+	\begin{equation}
+		\Phi(X) = \sum_{a\in\Sigma} A_a X B_a^\dagger.
+	\end{equation}
+\end{prop}
+% \begin{proof}
+% 	In the natural representation, the statement reads
+% 	\begin{equation}
+% 		K(\Phi) = \sum_{a\in\Sigma} A_a\otimes \bar B_a.
+% 	\end{equation}
+% 	Remember that $K(\Phi)\in\Lin(\calX\otimes\calX,\calY\otimes\calY)$.
+% 	From the singular value decomposition, we know there are collections of orthogonal vectors
+% 	\begin{equation}
+% 		\{u(a):a\in\Gamma\}\subset \calY\otimes\calY, \qquad
+% 		\{v(a):a\in\Gamma\}\subset \calX\otimes\calX,
+% 	\end{equation}
+% 	for some finite alphabet $\Gamma$ with $\lvert\Gamma\rvert\le \rank(K(\Phi))$, such that
+% 	\begin{equation}
+% 		K(\Phi) = \sum_{a\in\Gamma} u(a) v(a)^\dagger.
+% 	\end{equation}
+% \end{proof}
+\begin{proof}
+	In the Choi representation, the statement reads
+	\begin{equation}
+		J(\Phi) = \sum_{a\in\Sigma} \on{vec}(A_a) \on{vec}(B_a)^\dagger.
+	\end{equation}
+	Remember that $J(\Phi)\in\Lin(\calY\otimes\calX)$.
+	From the singular value decomposition, we know there are collections of orthogonal vectors
+	\begin{equation}
+		\{u(a):a\in\Sigma\}\subset \calY\otimes\calX, \qquad
+		\{v(a):a\in\Sigma\}\subset \calY\otimes\calX,
+	\end{equation}
+	for some finite alphabet $\Sigma$ with $\lvert\Sigma\rvert=\rank(J(\Phi))$, such that
+	\begin{equation}
+		J(\Phi) = \sum_{a\in\Sigma} u(a) v(a)^\dagger.
+	\end{equation}
+	The statement follows with $A_a,B_a$ such that $\on{vec}(A_a)=u(a), \on{vec}(B_a)=v(a)$.
+\end{proof}
+\begin{proof}
+	Observe that $u\mapsto\Phi(uv^\dagger)$ is a linear mapping $\calX\to\Lin(\calY)$.
+	\highlight{TBQEOINC}
+
+	For any $u,v\in\calX$, we can write the singular value decomposition of $\Phi(uv^\dagger)$ as
+	\begin{equation}
+		\Phi(uv^\dagger) = \sum_{a\in\Sigma_{u,v}} x_a(u) y_a(v)^\dagger,
+	\end{equation}
+	for some collections of orthogonal vectors
+	\begin{equation}
+		\{x_a(u): a \in\Sigma_{u,v}\},
+		\{y_a(v): a \in\Sigma_{u,v}\}\subset\calY,
+	\end{equation}
+	and some finite alphabets $\Sigma_{u,v}$ with $\lvert\Sigma_{u,v}\rvert=\rank(\Phi(uv^\dagger))$.
+	Upon some relabelling, we can assume $\Sigma_{u,v}=\Sigma$ with $\lvert\Sigma\rvert=\max_{u,v\in\calX}\rank(\Phi(uv^\dagger))$.
+	Observe that 
+\end{proof}
+
+Any operator $A\in\Lin(\calX,\calY)$ defines a partition for $\calX$ and $\calY$, via its singular value decomposition. A more precise way to state this is that for any such $A$ there are collections of (not necessarily unit-trace) orthoprojectors,
+\begin{equation}
+	\{ \Pi^R_a: a\in\Sigma\}\subset \Proj(\calX),
+	\qquad
+	\{ \Pi^L_b: b\in\Sigma\}\subset \Proj(\calY),
+\end{equation}
+where $\Sigma$ is a finite register with $\lvert\Sigma\rvert\le\rank(A)$,
+that are such that
+\begin{equation}
+	\Pi^L_a A \Pi^R_a = s(a) \Pi^L_a \Pi^R_a \simeq s(a) I_{\tr(\Pi^R_a)}.
+\end{equation}
+In other words, for all $a\in\Sigma$, $\Pi^L_aA\Pi^R_a$ is equivalent to a multiple of an identity operator, up to a change of input and output bases.
+Here $s(a)\ge0$ are the singular values of $A$, and $|\Sigma|$ is equal to the number of \emph{distinct} singular values of $A$.
+
+
 \section{Notable examples}
 
 \begin{itemize}
 	\item Isometric channels: $\Phi(X)=UXU^\dagger$ for some isometry $U$.
 	\item Replacement channels;
-	\item Entanglement-breaking channels. Channels $\Phi\in\rmC(\CC^n,\calY)$ such that for any bipartite $\rho\in\rmD(\calX\otimes\calH)$, the state $(\Phi\otimes I_{\rmL(\calH)})(\rho)\in\rmD(\calY\otimes\calH)$ is separable. We know that $\Phi\in\mathrm{EB}$ \emph{\textbf{iff}} its Choi is separable.
+	\item Entanglement-breaking channels. Channels $\Phi\in\rmC(\CC^n,\calY)$ such that for any bipartite $\rho\in\rmD(\calX\otimes\calH)$, the state $(\Phi\otimes I_{\Lin(\calH)})(\rho)\in\rmD(\calY\otimes\calH)$ is separable. We know that $\Phi\in\mathrm{EB}$ \emph{\textbf{iff}} its Choi is separable.
 	An alternative characterisation is that $\Phi\in\mathrm{EB}$ \emph{\textbf{iff}} it can be written as $\Phi(\rho)=\sum_a \langle \mu(a),\rho\rangle \rho_a$, for some POVM $\{\mu(a)\}_a$ and collection of states $\{\rho_a\}_a$.
 	\item Extreme channels;
 	\item Pinching channels: $\Phi(X) =\sum_a \Pi_a X\Pi_a$ with $\{\Pi_a\}$ a projective measurement. The completely dephasing channel is an example of a pinching channel;
@@ -887,7 +1222,7 @@ More formally, if $\Phi\in\rmT(\calX,\calY)$, then $K(\Phi)\in\rmL(\calY\otimes\
 
 \section{Adjoint channel}
 
-Given a map $\Phi\in\rmT(\calX,\calY)$, we can always define its \emph{adjoint} $\Phi^*$. This is the unique map $\Phi^*\in\rmT(\calY,\calX)$ such that $\langle \Phi^*(Y),X\rangle=\langle Y,\Phi(X)\rangle$ for all $X\in\rmL(\calX)$ and $Y\in\rmL(\calY)$.
+Given a map $\Phi\in\rmT(\calX,\calY)$, we can always define its \emph{adjoint} $\Phi^*$. This is the unique map $\Phi^*\in\rmT(\calY,\calX)$ such that $\langle \Phi^*(Y),X\rangle=\langle Y,\Phi(X)\rangle$ for all $X\in\Lin(\calX)$ and $Y\in\Lin(\calY)$.
 
 The adjoint of a channel is also sometimes referred to as the \emph{Heisenberg-picture representation} of the channel. This originates from the observation that performing a measurement $\mu\in\Pos(\calY)$ on a state $\rho\in\rmD(\calX)$ after evolution through $\Phi\in\rmC(\calX,\calY)$, amounts to performing the measurement $\Phi^*(\mu)$ on $\rho$:
 \begin{equation}
@@ -1440,9 +1775,15 @@ We will use the latter definition for now.
 In~\parencite{cabello1994simple} they prove that such contextual assignments are not possible for $\on{dim}(\calH)\ge3$. The proof proceeds via a grueling exploration of how $v$ must act on different trines of projections.
 
 
-
-
 \chapter{Information theory}
+
+
+
+\section{Entropy and co}
+
+Define the function $\theta(\alpha,\beta)\equiv \alpha\log(\alpha/\beta)$. Then fuck you very much.
+
+\section{Classical source coding}
 
 \begin{prop}
 	Let $p\in[0,1]$ and $n,N\in\NN$ be positive integers with $n\le N$.
@@ -1453,8 +1794,6 @@ In~\parencite{cabello1994simple} they prove that such contextual assignments are
 	\end{equation}
 	where $H(p)\equiv -p\log_2(p)-(1-p)\log_2(1-p)$ is the Shannon entropy of the corresponding probability distribution.
 \end{prop}
-
-\section{Classical source coding}
 
 Consider a source emitting symbols taken from some finite alphabet $X$, and some probability vector $p\in \calP(X)$.
 Denote with $X^n$ the set of strings of length $n$ with elements in $X$.
@@ -1682,10 +2021,10 @@ With this definition, we have the commutation relations:
 \subsection{Displacement operators on Fock states}
 
 \begin{prop}
-	\begin{equation}
-		D(\alpha) a D^\dagger(\alpha) = a - \alpha,
-		\qquad D^\dagger(\alpha) a D(\alpha) = a + \alpha
-	\end{equation}
+	% \begin{equation}
+		$D(\alpha) a D^\dagger(\alpha) = a - \alpha,
+				\qquad D^\dagger(\alpha) a D(\alpha) = a + \alpha$
+	% \end{equation}
 \end{prop}
 \begin{proof}
 	Write $D(\alpha)=\exp(\calD)$ with $\calD\equiv \alpha a^\dagger-\bar\alpha a$.
@@ -1701,28 +2040,32 @@ With this definition, we have the commutation relations:
 
 \begin{prop}
 	\begin{equation}
+	\begin{gathered}
 		D(\alpha)\ket1
-		= e^{-|\alpha|^2/2}
-			\sum_{k=0}^\infty \frac{\alpha^{k-1}}{\sqrt{k!}}\left(
-			k - |\alpha|^2
-			\right) \ket k
+		% = e^{-|\alpha|^2/2}
+		% 	\sum_{k=0}^\infty \frac{\alpha^{k-1}}{\sqrt{k!}}\left(
+		% 	k - |\alpha|^2
+		% 	\right) \ket k \\
 		= e^{-|\alpha|^2/2}
 			\sum_{k=0}^\infty \frac{\alpha^{k}}{\sqrt{k!}}
 			\left( \frac{ k - |\alpha|^2 }{ \alpha } \right) \ket k
+	\end{gathered}
 	\end{equation}
 	\label{prop:displacement_action_on_1}
 \end{prop}
 \begin{proof}
 	We have
 	\begin{equation}
+	\begin{gathered}
 		D(\alpha) \ket 1
 		= e^{-|\alpha|^2/2}
-		  \exp(\alpha a^\dagger) (\ket1 - \bar\alpha \ket0)
+		  \exp(\alpha a^\dagger) (\ket1 - \bar\alpha \ket0) \\
 		= e^{-|\alpha|^2/2}
 		  \sum_{k=0}^\infty \frac{\alpha^k}{k!} \left[
 		  	\sqrt{(k+1)!}\ket{k+1}
 		  	- \bar\alpha \sqrt{k!}\ket k
 		  \right]
+	\end{gathered}
 	\end{equation}
 	and therefore
 	\begin{equation}
@@ -1762,7 +2105,7 @@ With this definition, we have the commutation relations:
 		\sum_{k=0}^\ell \frac{(-\bar\alpha)^k}{k!} a^k \ket\ell \\
 		= e^{-|\alpha|^2/2}
 		\exp(\alpha a^\dagger) 
-		\sum_{k=0}^\ell \frac{(-\bar\alpha)^k}{k!} \sqrt{\frac{\ell!}{(\ell-k)!}} \ket{\ell-k}
+		\sum_{k=0}^\ell \frac{(-\bar\alpha)^k}{k!} \sqrt{\frac{\ell!}{(\ell-k)!}} \ket{\ell-k} \\
 		= e^{-|\alpha|^2/2}
 		\exp(\alpha a^\dagger) 
 		\sum_{k=0}^\ell
@@ -1821,7 +2164,7 @@ With this definition, we have the commutation relations:
 		= \frac{1}{\sqrt{k!}}
 		\left(
 			\sum_{j=1}^n c_j a_j^\dagger
-		\right)^k \ket 0
+		\right)^k \ket 0 \\
 		= \frac{1}{\sqrt{k!}}
 		\sum_{J\in [n]^k} \left(\prod_{\ell=1}^k c_{J_\ell} a_{J_\ell}^\dagger\right) \ket0 \\
 		= \frac{1}{\sqrt{k!}}
@@ -1884,7 +2227,7 @@ With this definition, we have the commutation relations:
 	\end{equation}
 \end{defn}
 
-\begin{prop}
+\begin{prop}\label{prop:thermalisation_applied_to_00}
 	\begin{equation}
 		\Phi^{\rm th}_{\bar n}(\PP_0)
 		= \sum_{j=0}^\infty \frac{\bar n^j}{(1+\bar n)^{1+j}} \PP_j.
@@ -1909,7 +2252,7 @@ With this definition, we have the commutation relations:
 	Integrating over $\mu$ and introducing the additional factors $e^{-\mu/\bar n}/\bar n$, we then reach the conclusion.
 \end{proof}
 
-\begin{prop}
+\begin{prop}\label{prop:thermalisation_applied_to_11}
 	\begin{equation}
 		\Phi^{\rm th}_{\bar n}(\PP_1)
 		= \sum_{j=0}^\infty
@@ -1939,7 +2282,7 @@ With this definition, we have the commutation relations:
 	\begin{gathered}
 		\Phi_{\bar n}^{\rm th}(\PP_1)
 		= \sum_{j=0}^\infty \frac{1}{j!\bar n}\PP_j \int_0^\infty d\mu
-		e^{-\mu} \mu^{j-1} (j-\mu)^2 e^{-\mu/\bar n}
+		e^{-\mu} \mu^{j-1} (j-\mu)^2 e^{-\mu/\bar n} \\
 		= \sum_{j=0}^\infty \frac{1}{j!\bar n}\PP_j
 		C^{-j-2} \int_0^\infty d\mu
 		e^{-\mu} \mu^{j-1} (C j-\mu)^2 \\
@@ -1953,85 +2296,7 @@ With this definition, we have the commutation relations:
 	We reach the conclusion by simply inserting the explicit formula for $C$ in the above expression.
 \end{proof}
 
-% \begin{proof}
-% 	Remember that
-% 	\begin{equation}
-% 		D(\sqrt\mu)\PP_1 D(\sqrt\mu)
-% 		= e^{-\mu}\sum_{j,k=0}^\infty \frac{\mu^{(j+k)/2 -1}}{\sqrt{j!k!}}
-% 		(j-\mu)(k-\mu)
-% 		\ketbra{j}{k}.
-% 	\end{equation}
-% 	Therefore
-% 	\begin{equation}
-% 	\begin{gathered}
-% 		\Phi^{\rm th}_{\bar n}(\PP_1)
-% 		\equiv \sum_{j,k=0}^\infty \ketbra{j}{k}
-% 		\int_0^\infty d\mu \,
-% 		\frac{e^{-\mu/\bar n}}{\bar n} e^{-\mu}
-% 		\frac{\mu^{(j+k)/2 -1}}{\sqrt{j!k!}}
-% 		(j-\mu)(k-\mu) \\
-% 		= \sum_{j,k=0}^\infty \ketbra{j}{k}
-% 		\frac{C^{-(j+k)/2}}{\bar n \sqrt{j!k!}}
-% 		\int_0^\infty d\mu \,
-% 		e^{-x} x^{(j+k)/2-1}
-% 		(j-x/C)(k-x/C),
-% 	\end{gathered}
-% 	\end{equation}
-% 	where $C\equiv 1+1/\bar n$. Evaluating the integral we have
-% 	\begin{equation}
-% 	\begin{gathered}
-% 		= \sum_{j,k=0}^\infty \ketbra{j}{k}
-% 		\frac{C^{-(j+k)/2}}{\bar n \sqrt{j!k!}}
-% 		\left[
-% 			jk ((j+k)/2-1)!
-% 			-\frac{(j+k)}{C} ((j+k)/2)!
-% 			+\frac{1}{C^2} ((j+k)/2+1)!
-% 		\right].
-% 	\end{gathered}
-% 	\end{equation}
-% 	In particular for $j=k$ we have
-% 	\begin{equation}
-% 	\begin{gathered}
-% 		\langle j| \Phi^{\rm th}_{\bar n}(\PP_1) \lvert j\rangle
-% 		= \sum_{j=0}^\infty
-% 		\frac{C^{-j-2}}{\bar n j!}
-% 		\left[
-% 			j^2 (j-1)! C^2
-% 			- 2j j! C
-% 			+ (j+1)!
-% 		\right] \\
-% 		= \sum_{j=0}^\infty \frac{1}{\bar n}
-% 		\left(\frac{\bar n}{\bar n + 1}\right)^{j+2}
-% 		\left[
-% 			j \left(\frac{\bar n+1}{\bar n}\right)^2
-% 			- 2j \left(\frac{\bar n+1}{\bar n}\right)
-% 			+ j+1
-% 		\right] \\
-% 		= \sum_{j=0}^\infty \frac{1}{\bar n}
-% 		\left(\frac{\bar n}{\bar n + 1}\right)^{j+2}
-% 		\left[
-% 			j\left(
-% 				\frac{(\bar n+1)^2 - 2\bar n(\bar n+1) + \bar n^2}{\bar n^2}
-% 			\right)
-% 			+1
-% 		\right] \\
-% 		= \sum_{j=0}^\infty \frac{1}{\bar n}
-% 		\left(\frac{\bar n}{\bar n + 1}\right)^{j+2}
-% 		\left[
-% 			\frac{j}{\bar n^2}
-% 			+1
-% 		\right]
-% 		= \sum_{j=0}^\infty 
-% 			\frac{ \bar n^{j-1}}{(\bar n+1)^{j+2}}
-% 			(j+ \bar n^2)
-% 		= \sum_{j=0}^\infty
-% 			\frac{ \bar n^j }{ (\bar n+1)^{j+1} }
-% 			\frac{ (j+ \bar n^2) }{ \bar n(\bar n + 1) }
-% 	\end{gathered}
-% 	\end{equation}
-% \end{proof}
-
-\begin{prop}
+\begin{prop}\label{prop:thermalisation_applied_to_01}
 	\begin{equation}
 		\Phi^{\rm th}_{\bar n}(\ketbra{0}{1})
 		= \sum_{j=0}^\infty
@@ -2130,6 +2395,16 @@ With this definition, we have the commutation relations:
 \subsection{Attenuation and then thermalisation}
 
 \begin{prop}
+	Let $\Phi_t$ be the channel describing attenuation through a beamsplitter with transmittivity $t$, and $\Phi_{\bar n}^{\rm th}$ be the thermalisation operation. Then
+	\begin{equation}
+	\Phi^{\rm th}_{\bar n}(\Phi_t(\PP_0))
+	= \Phi^{\rm th}_{\bar n}(\PP_0)
+	= \rho^{\rm th}_{\bar n}
+	\equiv \sum_{j=0}^\infty \frac{\bar n^j}{(\bar n + 1)^{j+1}} \PP_j.
+	\end{equation}
+\end{prop}
+
+\begin{prop}
 	Let $\Phi_t$ the channel corresponding to attenuation through a beamsplitter with transmittivity $t$, and $\Phi_{\bar n}^{\rm th}$ the thermalisation operation. Then
 	\begin{equation}
 		\Phi_t(\PP_1)
@@ -2162,7 +2437,7 @@ With this definition, we have the commutation relations:
 \end{proof}
 
 \begin{prop}
-	The state $\ket0+\ket1$ evolving through a beamsplitter with transmittivity $t$ results, looking only at the transmitted output branch, in the state
+	The state $\ket0+\ket1$ evolving through a beamsplitter with transmittivity $t$, looking only at the transmitted output branch, gives
 	\begin{equation}
 		\rho_t
 		\equiv
@@ -2173,42 +2448,48 @@ With this definition, we have the commutation relations:
 	Applying $\Phi^{\rm th}_{\bar n}$ to this state gives
 	\begin{equation}
 	\begin{gathered}
-		% P_j^{\mathrm{th};\bar n}
 		\langle j|\Phi^{\rm th}_{\bar n}(\rho_t)|j\rangle
-		= \frac{\bar n^j}{(\bar n + 1)^{j+1}}
-		\left(
-			\frac{2-T}{2}
-			+ \frac{T}{2} \frac{j+\bar n^2}{\bar n(\bar n + 1)}
-			% + \frac{\Re(t)}{\sqrt{\bar n(\bar n + 1)}}
-			% \frac{(j+1/2)!}{j!}
-			% \left( \frac{ 2j - \bar n }{ 2 } \right)
-		\right) \\
 		= \frac{\bar n^j}{(\bar n + 1)^{j+1}}
 		\frac{1}{2\bar n(\bar n+1)}
 		% [(2-T)\bar n(\bar n+1) + T(j+\bar n^2)]
-		[2\bar n(\bar n+1) + T(j-\bar n)]
+		[2\bar n(\bar n+1) + T(j-\bar n)],
 	\end{gathered}
 	\end{equation}
 \end{prop}
-
-\begin{prop}
-	\begin{equation}
-		\sum_{k=n}^\infty \binom{k}{n} x^k
-		= \frac{x^n}{(1-x)^{n+1}}
-	\end{equation}
-	\label{eq:generalised_geometric_series}
-\end{prop}
 \begin{proof}
-	Differentiating the geometric series we get
+	We get, using~\cref{prop:thermalisation_applied_to_00,prop:thermalisation_applied_to_11,prop:thermalisation_applied_to_01},
 	\begin{equation}
-		D^n \frac{1}{1-x} = \frac{n!}{(1-x)^{n+1}},
+	\begin{gathered}
+		\Phi_{\bar n}^{\rm th}(\rho_t)
+		= \sum_{j=0}^\infty
+		\frac{\bar n^j}{2\bar n(\bar n + 1)^{j+2}}
+		[2\bar n(\bar n+1) + T(j-\bar n)]
+		\PP_j \\
+		+ \frac{t}{2}\sum_{j=0}^\infty
+		\frac{\bar n^j}{(\bar n + 1)^{j+2}} \sqrt{j+1} \,\, X_j,
+	\end{gathered}
 	\end{equation}
-	and on the other side
-	\begin{equation}
-		D^n \sum_{k=0}^\infty x^k
-		= \sum_{k=n}^\infty \frac{k!}{(k-n)!} x^{k-n}.
-	\end{equation}
+	where $X_j \equiv \ketbra{j}{j+1} + \ketbra{j+1}{j}$.
+	% \begin{equation}
+	% \begin{gathered}
+	% 	% P_j^{\mathrm{th};\bar n}
+	% 	\langle j|\Phi^{\rm th}_{\bar n}(\rho_t)|j\rangle
+	% 	= \frac{\bar n^j}{(\bar n + 1)^{j+1}}
+	% 	\left(
+	% 		\frac{2-T}{2}
+	% 		+ \frac{T}{2} \frac{j+\bar n^2}{\bar n(\bar n + 1)}
+	% 		% + \frac{\Re(t)}{\sqrt{\bar n(\bar n + 1)}}
+	% 		% \frac{(j+1/2)!}{j!}
+	% 		% \left( \frac{ 2j - \bar n }{ 2 } \right)
+	% 	\right) \\
+	% 	= \frac{\bar n^j}{(\bar n + 1)^{j+1}}
+	% 	\frac{1}{2\bar n(\bar n+1)}
+	% 	% [(2-T)\bar n(\bar n+1) + T(j+\bar n^2)]
+	% 	[2\bar n(\bar n+1) + T(j-\bar n)]
+	% \end{gathered}
+	% \end{equation}
 \end{proof}
+
 
 Let $\ket\psi$ be written in terms of mode operators as
 $\ket\psi=f_\psi(\hat a^\dagger)\ket0$.
@@ -2248,6 +2529,24 @@ and then, applying the thermalisation operation to the first mode, we get
 
 
 \subsection{Thermalisation and then attenuation}
+
+\begin{prop}\label{eq:generalised_geometric_series}
+	\begin{equation}
+		\sum_{k=n}^\infty \binom{k}{n} x^k
+		= \frac{x^n}{(1-x)^{n+1}}
+	\end{equation}
+\end{prop}
+\begin{proof}
+	Differentiating the geometric series we get
+	\begin{equation}
+		D^n \frac{1}{1-x} = \frac{n!}{(1-x)^{n+1}},
+	\end{equation}
+	and on the other side
+	\begin{equation}
+		D^n \sum_{k=0}^\infty x^k
+		= \sum_{k=n}^\infty \frac{k!}{(k-n)!} x^{k-n}.
+	\end{equation}
+\end{proof}
 
 
 \begin{prop}
@@ -2756,6 +3055,43 @@ The answer lies in the observation that the \emph{act of measuring itself}, in t
 In other words, in~\cref{MZ:eq:conditional_probabilities_classical_law}, we did not account for the third possibility of no measurement performed between the BSs.
 Doing that, we realise that the correct statement is quite trivial, because $p(\text{out}_1)=1$ only when no measurement is performed, which is an event incompatible with measuring the photon left or right (which are both sub-cases of the "measuring" instance).
 
+
+\section{States to density matrices}
+
+Let $\psi\in\calS(\CC^N)$ be a state, that is, a complex vector with unit norm.
+Denote with $\psi_\RR\in\RR^{2N}$ its \emph{realification}, defined by
+$\psi_\RR\equiv(\psi_R,\psi_I)^T$, where $\psi_R,\psi_I\in\RR^N$ are real and imaginary parts of $\psi$, respectively. We have
+\begin{equation}
+	\langle \psi_\RR,\psi_\RR\rangle_{\RR^{2N}}
+	= \|\psi_\RR\|^2 = \|\psi_R\|^2 + \|\psi_I\|^2
+	= \|\psi\|^2 \equiv \langle \psi,\psi\rangle_{\CC^N}.
+\end{equation}
+For any $\phi\in\calS(\CC^N)$, we have
+\begin{equation}
+	\langle \psi,\phi\rangle_{\CC^N}
+	\equiv \psi^\dagger \phi
+	= \sum_{k=1}^N \bar\psi_k \phi_k
+	= (\psi_R^\dagger\phi_R + \psi_I^\dagger \phi_I)
+	+ i(\psi_R^\dagger \phi_I - \psi_I^\dagger\phi_R),
+\end{equation}
+and therefore
+\begin{equation}
+	\lvert\langle \psi,\phi\rangle\rvert^2
+	= \lvert \langle \psi_\RR,\phi_\RR\rangle \rvert^2
+	+ \lvert \langle \psi_\RR,\EE\phi_\RR\rangle \rvert^2,
+\end{equation}
+% \begin{equation}
+% 	\lvert \psi^\dagger \phi\rvert^2
+% 	= \lvert\psi_\RR^\dagger \phi_\RR\rvert^2
+% 	+ \lvert\psi_\RR^\dagger \EE \phi_\RR \rvert^2,
+% \end{equation}
+where $\EE\equiv \begin{pmatrix}0 & I \\ -I & 0\end{pmatrix}$ is the symplectic matrix.
+
+Given $\psi\in\calS(\CC^N)$, we wish to characterise
+\begin{equation}
+	\{ \lvert\langle \phi,\psi\rangle\rvert^2 : \,\,\phi\in\calS(\CC^N) \}
+	\subseteq [0,1].
+\end{equation}
 
 
 
