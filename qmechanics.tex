@@ -1193,19 +1193,15 @@ More generally, if $\Phi_i\in\rmT(\calX_i,\calY_i)$, we have
 	Observe that 
 \end{proof}
 
-Any operator $A\in\Lin(\calX,\calY)$ defines a partition for $\calX$ and $\calY$, via its singular value decomposition. A more precise way to state this is that for any such $A$ there are collections of (not necessarily unit-trace) orthoprojectors,
+\paragraph{SVD? this paragraph must be reviewed}
+Any operator $A\in\Lin(\calX,\calY)$ can be uniquely characterised as a sum of the form
 \begin{equation}
-	\{ \Pi^R_a: a\in\Sigma\}\subset \Proj(\calX),
-	\qquad
-	\{ \Pi^L_b: b\in\Sigma\}\subset \Proj(\calY),
+	A = \sum_{a\in\Sigma} s(a)
+	\sum_{b=1}^{m_a} u(a,b) v(a,b)^\dagger,
 \end{equation}
-where $\Sigma$ is a finite register with $\lvert\Sigma\rvert\le\rank(A)$,
-that are such that
-\begin{equation}
-	\Pi^L_a A \Pi^R_a = s(a) \Pi^L_a \Pi^R_a \simeq s(a) I_{\tr(\Pi^R_a)}.
-\end{equation}
-In other words, for all $a\in\Sigma$, $\Pi^L_aA\Pi^R_a$ is equivalent to a multiple of an identity operator, up to a change of input and output bases.
-Here $s(a)\ge0$ are the singular values of $A$, and $|\Sigma|$ is equal to the number of \emph{distinct} singular values of $A$.
+where $s(a)\ge0$ are the \emph{singular values} of $A$, such that $s(a)\neq s(b)$ if $a\neq b$, and $\{u(a,b)\}_{a,b}\subset\calY$,
+$\{v(a,b)\}_{a,b}\subset\calX$ are orthonormal collections of vectors.
+Here $\Sigma$ is a finite register with $\lvert\Sigma\rvert\le \rank(A)$ equal to the number of distinct singular values of $A$ (\emph{i.e.} to the geometric multiplicity of $AA^\dagger$), and $\sum_a m_a=\rank(A)$.
 
 
 \section{Notable examples}
