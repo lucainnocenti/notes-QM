@@ -151,6 +151,7 @@
 \newcommand{\calM}{{\mathcal{M}}}
 \newcommand{\calO}{{\mathcal{O}}}
 \newcommand{\calP}{{\mathcal{P}}}
+\newcommand{\calQ}{{\mathcal{Q}}}
 \newcommand{\calS}{{\mathcal{S}}}
 \newcommand{\calU}{{\mathcal{U}}}
 \newcommand{\calV}{{\mathcal{V}}}
@@ -855,7 +856,55 @@ A map is said to be CPTP if it is trace-preserving and completely positive. CPTP
 
 \section{Complete positivity}
 
-One interesting aspect about the positivity of extensions is that complete positivity of a given map $\Phi\in\rmT(\calX,\calY)$ is equivalent to whether $\Phi\otimes I_{\Lin(\calX)}$ preserves the positivity of the maximally entangled state $\calX\otimes\calX$. More precisely:
+One interesting aspect about the positivity of extensions is that complete positivity of a given map $\Phi\in\rmT(\calX,\calY)$ is equivalent to whether $\Phi\otimes I_{\Lin(\calX)}$ preserves the positivity of the maximally entangled state $\calX\otimes\calX$.
+
+\begin{prop}
+	There is a linear bijection between $\rmT(\calX,\calY)$ and $\Lin(\calY\otimes\calX)$, via the mapping
+	\begin{equation}
+		\rmT(\calX,\calY)\ni \Phi\mapsto
+		J(\Phi) \equiv (\Phi\otimes I_{\Lin(\calX)})(e_+ e_+^\dagger)\in\Lin(\calY\otimes\calX).
+	\end{equation}
+\end{prop}
+\begin{proof}
+	Define $J(\Phi) \equiv (\Phi\otimes I_{\Lin(\calX)})(e_+ e_+^\dagger)$.
+	The linearity of the mapping $\Phi\mapsto J(\Phi)$ is clear.
+	We thus only need to show that this mapping is injective, and thus an isomorphism.
+	For the purpose, we observe that, for any $X\in\Lin(\calX)$,
+	\begin{equation}
+		\Phi(X) = \Tr_\calX [J(\Phi)(I_{\Lin(\calY)}\otimes X^T)].
+	\end{equation}
+	Therefore $J(\Phi)=0$ implies $\Phi=0$.
+\end{proof}
+
+More generally, we have for all $i,j,k,\ell$
+\begin{equation}
+	(\Phi\otimes I_{\Lin(\calX)})\ketbra{i,j}{k,\ell}
+	= \Phi(E_{ik}) \otimes E_{j\ell}.
+\end{equation}
+For any separable vector $u\equiv u_1\otimes u_2\in\calX\otimes\calX$, we have
+\begin{equation}
+	(\Phi\otimes I_{\Lin(\calX)}) (uu^\dagger)
+	= \Phi(u_1 u_1^\dagger) \otimes u_2 u_2^\dagger.
+\end{equation}
+Any vector $\psi\in\calX\otimes\calX$ can be decomposed as
+$\psi=\sum_a u_a\otimes v_a$ for some orthogonal collections $\{u_a\}_a,\{v_a\}_a\subset\calX$.
+Thus
+\begin{equation}
+	(\Phi\otimes I_{\Lin(\calX)})(\psi\psi^\dagger)
+	= \sum_{a,b} \Phi(u_a u_b^\dagger)\otimes v_a v_b^\dagger.
+\end{equation}
+For any $X\in\Lin(\calX\otimes\calX)$, define
+% \begin{equation}
+	$J_X(\Phi)
+		= (\Phi\otimes I_{\Lin(\calX)})(X)$.
+% \end{equation}
+Then
+\begin{equation}
+	\mel{i,j}{J_X(\Phi)}{k,\ell}
+	= \sum_{ab} \langle i|\Phi(E_{ab})|k\rangle X_{aj,b\ell}
+\end{equation}
+\highlight{(when is this still a bijection?)}
+
 \begin{prop}
 	Let $\Phi\in\rmT(\calX,\calY)$. Then $\Phi\in\rmC(\calX,\calY)$ \emph{iff}
 	\begin{equation}
@@ -863,6 +912,20 @@ One interesting aspect about the positivity of extensions is that complete posit
 	\end{equation}
 	where $e_+\in\calX\otimes\calX$ is the maximally entangled (unnormalised) state.
 \end{prop}
+
+
+\begin{proof}
+	The standard argument involves the observations:
+	\begin{itemize}
+		\item There is a linear bijection between $\rmT(\calX,\calY)$ and $\Lin(\calY\otimes\calX)$, via the mapping
+		\begin{equation}
+			\rmT(\calX,\calY)\ni \Phi\mapsto (\Phi\otimes I_{\Lin(\calX)})(e_+ e_+^\dagger)\in\Lin(\calY\otimes\calX).
+		\end{equation}
+	\end{itemize}
+	 applying the spectral theorem for positive operators to
+	$J(\Phi)\equiv (\Phi\otimes I_{\Lin(\calX)})(e_+ e_+^\dagger$
+\end{proof}
+
 \begin{proof}
 	If $\Phi$ is CPTP then obviously $(\Phi\otimes I_{\Lin(\calX)})(e_+ e_+^\dagger)\ge0$ by definition of complete positivity.
 	For the other direction, observe that
@@ -918,6 +981,7 @@ One interesting aspect about the positivity of extensions is that complete posit
 	\end{equation}
 	\highlight{(to finish)}
 \end{proof}
+
 
 \begin{prop}
 	Let $\Phi\in\rmC(\calX,\calY)$. Then there are operators $\{A_a\}_a\subset\Lin(\calX,\calY)$ such that, for all $X\in\Lin(X)$, we have
@@ -1088,6 +1152,77 @@ More generally, if $\Phi_i\in\rmT(\calX_i,\calY_i)$, we have
 	Prove it from the Kraus representation of the channel.
 \end{proof}
 
+\begin{prop}
+	Given $U\in\rmU(\calX\otimes\calZ,\calY\otimes\calW)$ and $u\in\calZ$, consider the map $\Phi\in\rmT(\calX,\calY)$ sending each $X\in\Lin(\calX)$ to
+	\begin{equation}
+		\Phi(X) = \Tr_\calW[U(X\otimes uu^\dagger)U^\dagger].
+	\end{equation}
+	Then for all $\psi\in\calX$,
+	\begin{equation}
+		\Phi(\psi\psi^\dagger) = \Tr_\calW(\PP[U(\psi\otimes u)]).
+	\end{equation}
+	Moreover,
+	\begin{equation}
+		\mel{i}{\Phi(E_{k\ell})}{j}
+		= \sum_{amn}
+		U_{ia,km} \bar U_{ja,\ell n} u_m \bar u_n
+	\end{equation}
+	Thus its Choi reads
+	\begin{equation}
+		\mel{i,j}{J(\Phi)}{k,\ell}
+		= 
+	\end{equation}
+\end{prop}
+
+\begin{prop}
+	Given $U\in\rmU(\calX\otimes\calZ,\calY\otimes\calW)$ and $u\in\calZ$, define the map $\Phi\in\rmT(\calX,\calY)$ as
+	\begin{equation}
+		\Phi(X) = \Tr_\calW[U(X\otimes uu^\dagger)U^\dagger],
+	\end{equation}
+	for all $X\in\Lin(\calX)$.
+	Then $\Phi$ is completely positive.
+	Moreover, if $\|u\|=1$, then $\Phi$ is trace-preserving, and thus $\Phi\in\rmC(\calX,\calY)$.
+\end{prop}
+\begin{proof}
+	Given an arbitrary auxiliary space $\calQ$ and $X'\in\Lin(\calX\otimes\calQ)$, the action of
+	$\Phi\otimes I_{\Lin(\calQ)}\in\rmT(\calX\otimes\calQ,\calY\otimes\calQ)$ reads
+	\begin{equation}\label{eq:action_extended_phi_in_unitary_repr}
+		(\Phi\otimes I_{\Lin(\calQ)})X'
+		= \Tr_\calW[(U\otimes I_\calQ) S(X'\otimes uu^\dagger)S (U\otimes I_\calQ)^\dagger ],
+	\end{equation}
+	where $S$ is the \emph{swap operator} defined via its action
+	$S\ket{a,b,c} = \ket{a,c,b}$.
+	The swap operator is needed here for purely formal reasons, to take take of the fact that $X'$ acts on first and third space, and would thus be awkward to write down directly.
+	From~\cref{eq:action_extended_phi_in_unitary_repr} we see that
+	\begin{equation}
+		(\Phi\otimes I_{\Lin(\calQ)})X' = \Tr_\calW[\calU (X'\otimes uu^\dagger)\calU^\dagger],
+	\end{equation}
+	for some isometry $\calU\in\rmU(\calX\otimes\calQ\otimes\calZ,\calY\otimes\calQ\otimes\calW)$.
+	Thus $(\Phi\otimes I_{\Lin(\calQ)})$ is positive, \emph{i.e.} $\Phi$ is \emph{completely} positive.
+\end{proof}
+
+\begin{prop}
+	Given $U\in\rmU(\calX\otimes\calZ,\calY\otimes\calW)$ and $u\in\calZ$, consider the map
+	% \begin{equation}
+		$\Phi(X) = \Tr_\calW[U(X\otimes uu^\dagger)U^\dagger].$
+	% \end{equation}
+	We can always write this as
+	\begin{equation}
+		\Phi(X) = \sum_{a} A_a X A_a^\dagger
+	\end{equation}
+	with $A_a\in\Lin(\calX,\calY)$ defined by
+	% \begin{equation}
+	$A_a = (I \otimes e_a^\dagger)U(I \otimes u)$,
+	% \end{equation}
+	with $\{e_a\}_a\subset\calW$ an orthonormal basis for $\calW$.
+	For $\psi\in\calX$, this reads
+	$\Phi(\psi\psi^\dagger) = \sum_a \PP[A_a \psi]$.
+	Moreover, we have
+	\begin{equation}
+		\sum_a A_a^\dagger A_a = I_{\calX} \|u\|^2.
+	\end{equation}
+\end{prop}
+
 \highlight{(what about the more general case of $\Phi\in\rmT(\calX,\calY)$?)}
 
 \begin{prop}
@@ -1132,9 +1267,37 @@ More generally, if $\Phi_i\in\rmT(\calX_i,\calY_i)$, we have
 
 \subsection{Choi representation}
 
+\begin{defn}
+	Let $\Phi\in\rmT(\calX,\calY)$ be a map between finite-dimensional complex spaces.
+	We define its \emph{Choi representation} as the operator $J(\Phi)\in\Lin(\calY\otimes\calX)$ such that
+	\begin{equation}
+		J(\Phi) = (\Phi\otimes I_{\calX})(e_+ e_+^\dagger)
+		= \sum_{ij} \Phi(E_{ij})\otimes E_{ij},
+	\end{equation}
+	where $e_+\equiv \sqrt{\dim(\calX)}\ket+\equiv \sum_i \ket{i,i}\in\calX\otimes\calX$ is the maximally entangled state.
+\end{defn}
+
+\begin{prop}
+	The matrix elements of $J(\Phi)$ are related to the map and its natural representation via
+	\begin{equation}
+		\mel{i,j}{J(\Phi)}{k,\ell}
+		= \mel{i}{\Phi(E_{j,\ell})}{k}
+		= \mel{i,k}{K(\Phi)}{j,\ell}.
+	\end{equation}
+\end{prop}
+
+Note that $(I_{\calY}\otimes\bra i)J(\Phi)(I_{\calY}\otimes\ket \ell) = \Phi(E_{i,\ell})$.
+This means that we can represent $J(\Phi)$ as a ``matrix of operators'' in $\Lin(\calY)$, that is, as a block matrix in which each block gives the action of $\Phi(E_{i,\ell})$ for some $E_{i,\ell}$.
+
+
+
 \subsection{Stinespring representation}
 
 \subsection{Kraus representation}
+
+\begin{prop}
+	Let $\Phi\in\rmT(\calX,\calY)$ be a map 
+\end{prop}
 
 \begin{prop}
 	Let $\Phi\in\rmT(\calX,\calY)$ be a map. There are collections of operators $\{A_a: a\in\Sigma\},\{B_a: a\in\Sigma\}\subset\Lin(\calX,\calY)$, for some finite alphabet $\Sigma$ with $\lvert\Sigma\rvert=\rank(J(\Phi))$, such that for all $X\in\Lin(\calX)$ we have
@@ -1191,6 +1354,19 @@ More generally, if $\Phi_i\in\rmT(\calX_i,\calY_i)$, we have
 	and some finite alphabets $\Sigma_{u,v}$ with $\lvert\Sigma_{u,v}\rvert=\rank(\Phi(uv^\dagger))$.
 	Upon some relabelling, we can assume $\Sigma_{u,v}=\Sigma$ with $\lvert\Sigma\rvert=\max_{u,v\in\calX}\rank(\Phi(uv^\dagger))$.
 	Observe that 
+\end{proof}
+
+\begin{prop}
+	Let $\Phi\in\rmT(\calX,\calY)$.
+	Suppose there are operators $\{A_a: a\in\Sigma\}\subset\Lin(\calX,\calY)$ such that
+	$\Phi(X)=\sum_{a\in\Sigma}A_a X A_a^\dagger$ for all $X\in\Lin(\calX)$.
+	Then $\Phi$ is completely positive.
+\end{prop}
+\begin{proof}
+	\begin{equation}
+		(\Phi\otimes I_{\calX}) \psi\psi^\dagger
+		= \sum_{a\in\Sigma} sdfsfsdfijdfoisjfmlerkmgrermgs
+	\end{equation}
 \end{proof}
 
 \paragraph{SVD? this paragraph must be reviewed}
