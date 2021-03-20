@@ -623,6 +623,55 @@ The state $\rho$ is extremal in $\mathcal D$ if and only if
 	\item There exists no $\rho'\in\mathcal D$ with $\rho'\neq\rho$ and $\Imag\rho'\neq\Imag\rho$.
 \end{itemize}
 
+\section{Bipartite states}
+
+\begin{defn}[Separable vectors]
+	Let $\calX,\calY$ be complex vector spaces.
+	A vector $u\in\calX\otimes\calY$ is \emph{separable} if there are $u_1\in\calX$ and $u_2\in\calY$ such that $u=u_1\otimes u_2$.
+	If a vector $u\in\calX\otimes \calY$ is \emph{not} separable, then it can be written, via SVD decomposition, as a sum of the form
+	\begin{equation}
+		u = \sum_a u_1(a) \otimes u_2(a),
+	\end{equation}
+	for some collections of orthogonal vectors $\{u_1(a)\}_a\subset\calX$ and $\{u_2(a)\}_a\subset\calY$.
+	% We denote the set of such vectors with $\on{Sep}(\calX:\calY)$.
+
+	The minimal number of elements required to decompose $u$ in such way is its \emph{Schmidt rank}.
+	This coincides with the rank of the matrix corresponding to $\on{unvec}(u)\in\Lin(\calY,\calX)$.
+\end{defn}
+
+\begin{defn}
+	A \emph{positive semidefinite operator} $R\in\Pos(\calX\otimes\calY)$ is said to be \emph{separable} if there are collections of positive semidefinite operators
+	\begin{equation}
+		\{P_a : a \in\Sigma\} \subset\Pos(\calX),
+		\quad
+		\{Q_a : a \in\Sigma\} \subset\Pos(\calY),
+	\end{equation}
+	such that
+	\begin{equation}
+		R = \sum_{a\in\Sigma} P_a \otimes Q_a.
+	\end{equation}
+	Denote the set of such operators with $\on{Sep}(\calX:\calY)$.
+	The corresponding subset of states is denoted with $\on{SepD}(\calX:\calY)$:
+	\begin{equation}
+		\on{SepD}(\calX:\calY) \equiv \on{Sep}(\calX:\calY)\cap \rmD(\calX\otimes\calY).
+	\end{equation}
+\end{defn}
+
+\begin{prop}
+	For any choice of $\calX,\calY$, the set
+	$\on{SepD}(\calX:\calY)$ is convex, and the set
+	$\on{Sep}(\calX:\calY)$ is a convex cone.
+\end{prop}
+
+\begin{prop}
+	Any $\xi\in\on{Sep}(\calX:\calY)$ can be written as
+	\begin{equation}
+		\xi = \sum_a x_a x_a^\dagger\otimes y_a y_a^\dagger
+	\end{equation}
+	for some collections $\{x_a\}_a\subset\calX$ and $\{y_a\}_a\subset\calY$.
+\end{prop}
+
+
 \section{Necessary and sufficient characterizations of entanglement}
 \Cref{def:positive_maps} states that if $\Lambda$ is \ac{CP},
 then for any state $\rho$ we have $(\Lambda \otimes \mathds1)\rho \ge 0$.
@@ -1174,6 +1223,8 @@ More generally, if $\Phi_i\in\rmT(\calX_i,\calY_i)$, we have
 	\end{equation}
 \end{prop}
 
+Any map that admits a unitary representation can be directly seen to be completely positive.
+
 \begin{prop}
 	Given $U\in\rmU(\calX\otimes\calZ,\calY\otimes\calW)$ and $u\in\calZ$, define the map $\Phi\in\rmT(\calX,\calY)$ as
 	\begin{equation}
@@ -1224,6 +1275,26 @@ More generally, if $\Phi_i\in\rmT(\calX_i,\calY_i)$, we have
 \end{prop}
 
 \highlight{(what about the more general case of $\Phi\in\rmT(\calX,\calY)$?)}
+
+The unitary representation also allows to write composition of channels in a natural way:
+\begin{prop}
+	Let $\Phi_i\in\rmT_{\rm CP}(\calX)$ be completely positive operators with unitary representations
+	\begin{equation}
+		\Phi_i(X) = \Tr_{\calW_i}[U_i(X\otimes u_i u_i^\dagger) U_i^\dagger],
+	\end{equation}
+	where $U\in\rmU(\calX\otimes\calZ_i,\calX\otimes\calW_i)$ and $u_i\in\calZ_i$.
+	Then
+	\begin{equation}
+		\Phi_1 \circ \Phi_2 (X)
+		= \Tr_{\calW1\otimes\calW_2}[
+		\tilde U_1 \tilde U_2
+		(X\otimes u_1 u_1^\dagger \otimes u_2 u_2^\dagger)
+		\tilde U_2^\dagger \tilde U_1^\dagger
+		].
+	\end{equation}
+\end{prop}
+
+What does the adjoint map look like in the unitary representation?
 
 \begin{prop}
 	Let $\Phi\in\rmC(\calX,\calY)$, and let $\Phi^\dagger\in\rmT(\calY,\calX)$ denote its adjoint map.
@@ -1382,6 +1453,151 @@ Here $\Sigma$ is a finite register with $\lvert\Sigma\rvert\le \rank(A)$ equal t
 
 \section{Notable examples}
 
+\subsection{Quantum-to-classical channels}
+
+Discussed in~\parencite{horodecki2003entanglement,watrous2018theory}.
+
+\begin{defn}
+	A channel $\Phi\in\rmC(\calX,\calY)$ is said to be \emph{entanglement breaking} if there is $\{\mu(a):a\in\Sigma\}\in\on{POVM}(\calX)$
+	and states $\{Y_a:a\in\Sigma\}\subset\rmD(\calY)$ such that,
+	for all $X\in\Lin(\calX)$,
+	\begin{equation}
+		\Phi(X) = \sum_{a\in\Sigma} \langle \mu(a),X\rangle Y_a.
+	\end{equation}
+\end{defn}
+
+\begin{prop}
+	A map is entanglement breaking \emph{iff} $\Phi\otimes I$ always breaks entanglement. \highlight{(why??? see fucking Horo\&Shur\&Ruskai)}.
+\end{prop}
+
+\begin{defn}
+	A channel $\Phi\in\rmC(\calX,\calY)$ is said to be \emph{quantum-to-classical} if $\Phi=\Phi_{\rm cd}\circ\Phi$,
+	where $\Phi_{\rm cd}\in\rmC(\calY)$ is the \emph{completely dephasing channel}.
+\end{defn}
+
+
+\begin{prop}
+	A channel $\Phi\in\rmC(\calX,\calY)$ is quantum-to-classical \emph{iff}
+	$\Phi(\rho)\in\rmD(\calY)$ is diagonal for all $\rho\in\rmD(\calX)$.
+\end{prop}
+
+\begin{prop}
+	A channel $\Phi\in\rmC(\calX,\calY), \calY\equiv \CC^\Sigma$ is quantum-to-classical \emph{iff}
+	there is a POVM $\mu:\Sigma\to\Pos(\calX)$ such that, for all $X\in\Lin(\calX)$,
+	\begin{equation}
+		\Phi(X) = \sum_{a\in\Sigma} \langle\mu(a),X\rangle E_{a,a}.
+	\end{equation}
+	Moreover, $\mu$ is uniquely determined by $\Phi$.
+	In other words, there is a bijection between quantum-to-classical channels and POVMs.
+	\highlight{(can we replace the $E_{a,a}$ with an arbitrary set of orthogonal operators?)}
+\end{prop}
+
+\subsection{Mixed-unitary channels}
+
+\begin{prop}\label{prop:rank_of_ptrace_equals_schmidt_rank}
+	The partial trace of a pure operator is pure \emph{iff} it is a product operator.
+	In other words, for any $\psi\in\calX_1\otimes\calX_2$, we have
+	$\Tr_{\calX_2}(\psi\psi^\dagger)=\phi\phi^\dagger$ for some $\phi\in\calX_1$ \emph{iff} $\psi=\psi_1\otimes\psi_2$ for some $\psi_i\in\calX_i$.
+\end{prop}
+\begin{proof}
+	If $\psi=\psi_1\otimes\psi_2$ the conclusion is immediate.
+	Let us on the other hand suppose that
+	$\Tr_{\calX_2}(\psi\psi^\dagger)=\phi\phi^\dagger$.
+	Write the SVD decomposition of $\psi$ as
+	\begin{equation}
+		\psi = \sum_{a\in\Sigma} \psi_1(a)\otimes\psi_2(a),
+	\end{equation}
+	for some $\{\psi_i(a): a\in\Sigma\}\subset\calX_i$ such that
+	$\langle \psi_i(a),\psi_i(b)\rangle = c_i(a) \delta_{ab}$.
+	Then
+	\begin{equation}
+		\Tr_{\calX_2}(\psi\psi^\dagger)
+		= \sum_{a\in\Sigma} \|\psi_2(a)\|^2 \PP[\psi_1(a)].
+	\end{equation}
+	Because $\{\psi_1(a):a\in\Sigma\}$ is a collection of \emph{orthogonal} vectors, this is a sum over rank-one orthogonal (non-zero) orthoprojections.
+	It follows that
+	\begin{equation}
+		\rank(\Tr_{\calX_2}(\psi\psi^\dagger)) = \lvert\Sigma\rvert.
+	\end{equation}
+	This implies, in particular, that if the partial trace is pure, then $\psi$ must have a single nonzero singular value, that is, it must be a product state.
+\end{proof}
+
+\begin{prop}
+	Let $\Phi\in\rmT_{\rm CP}(\calX,\calY)$ be a completely positive map with unitary representation
+	\begin{equation}
+		\Phi(X) = \Tr_\calW[U(X\otimes uu^\dagger)U^\dagger],
+	\end{equation}
+	where $U\in\rmU(\calX\otimes\calZ,\calY\otimes\calW)$ and $u\in\calZ$.
+	Then $\Phi$ is a isometric channel, $\Phi(X)=VXV^\dagger$ for some $V\in\rmU(\calX,\calY)$, \emph{iff} ???
+\end{prop}
+\begin{proof}
+	if $\Phi$ is isometric, then for any $x\in\calX$,
+	\begin{equation}
+		\Phi(xx^\dagger) = \Tr_\calW(\PP[U(x\otimes u)])
+		= \PP[V x].
+	\end{equation}
+	Using~\cref{prop:rank_of_ptrace_equals_schmidt_rank}, this implies that $U(x\otimes u)$ must be a product state, that is, there must be $y_x\in\calY$ and $z_x\in\calZ$ such that $U(x\otimes u)=y_x\otimes z_x$.
+	\highlight{(OAISJDOAISJDOAISJDOAISJDOAISJD)}
+\end{proof}
+
+\begin{prop}
+	Let $\Phi\in\rmC(\calX)$ be a channel, and let $\Psi\in\rmT_{\rm CP}(\calX)$ be a \emph{completely positive} map such that
+	$\Phi\circ\Psi=I_{\Lin(\calX)}$.
+	Then there exists a unitary operator $U\in\rmU(\calX)$ such that
+	\begin{equation}
+		\Phi(X) = U^\dagger X U,
+		\qquad
+		\Psi(X) = UXU^\dagger,
+	\end{equation}
+	for all $X\in\Lin(\calX)$.
+\end{prop}
+
+\subsection{Dephasing channel}
+
+This is the channel
+\begin{equation}
+	\Phi(\rho) = \frac{2-p}{2} \rho + \frac{p}{2} Z\rho Z.
+\end{equation}
+Its Kraus operators are thus
+\begin{equation}
+	A_0 = \sqrt{\frac{2-p}{2}} I,
+	\qquad
+	A_1 = \sqrt{\frac{p}{2}} Z.
+\end{equation}
+In vectorised form, these are
+\begin{equation}
+	\on{vec}(A_0) = \sqrt{\frac{2-p}{2}} (e_0\otimes e_0 + e_1\otimes e_1),
+	\quad
+	\on{vec}(A_1) = \sqrt{\frac{p}{2}} (e_0\otimes e_0 - e_1\otimes e_1),
+\end{equation}
+and thus the Choi representation reads
+\begin{equation}
+	J(\Phi) =
+	\left(\frac{2-p}{2}\right) 2\PP[\ket*{\Phi^+}]
+	+ \left(\frac{p}{2}\right) 2\PP[\ket*{\Phi^-}],
+\end{equation}
+where $\sqrt2\ket*{\Phi^\pm}\equiv \ket{00}\pm\ket{11}$.
+As a matrix, this is represented by
+\begin{equation}
+	J(\Phi) \doteq
+	\begin{pmatrix}
+		1 & 0 & 0 & 1- p \\
+		0 & 0 & 0 & 0 \\
+		0 & 0 & 0 & 0 \\
+		1 - p & 0 & 0 & 1
+	\end{pmatrix}.
+\end{equation}
+Its Stinespring representation is obtained via the isometry
+\begin{equation}
+	U \psi = 
+	\sqrt{\frac{2-p}{2}} (\psi\otimes e_0)
+	+ \sqrt{\frac{p}{2}} [(Z\psi)\otimes e_1].
+	% U = \begin{pmatrix}	
+	% \end{pmatrix}
+\end{equation}
+
+\subsection{??}
+
 \begin{itemize}
 	\item Isometric channels: $\Phi(X)=UXU^\dagger$ for some isometry $U$.
 	\item Replacement channels;
@@ -1392,6 +1608,10 @@ Here $\Sigma$ is a finite register with $\lvert\Sigma\rvert\le \rank(A)$ equal t
 	\item Mixed-unitary channels;
 \end{itemize}
 
+\section{Measurements}
+
+Section probably to move to a chapter of its own at some point.
+
 \section{Adjoint channel}
 
 Given a map $\Phi\in\rmT(\calX,\calY)$, we can always define its \emph{adjoint} $\Phi^*$. This is the unique map $\Phi^*\in\rmT(\calY,\calX)$ such that $\langle \Phi^*(Y),X\rangle=\langle Y,\Phi(X)\rangle$ for all $X\in\Lin(\calX)$ and $Y\in\Lin(\calY)$.
@@ -1401,39 +1621,6 @@ The adjoint of a channel is also sometimes referred to as the \emph{Heisenberg-p
 	\langle \mu,\Phi(\rho) \rangle = \langle \Phi^*(\mu),\rho\rangle.
 \end{equation}
 
-\section{Standard notation (some bullshit to remove)}
-
-\begin{equation}
-	[K(\Phi)\on{vec}(\rho)]_{12} = K(\Phi)_{12,34}\rho_{34}
-\end{equation}
-
-\begin{equation}
-	K(\Phi)
-	= K(\Phi)_{12,34} \ketbra{12}{34}
-	= K(\Phi)_{12,34} \ketbra{13}\otimes\ketbra{24}
-	\equiv K(\Phi)_{12,34} E_{13}\otimes E_{24}
-\end{equation}
-
-\begin{equation}
-	K_{12,34} = \mel{12}{K(\Phi)}{34}
-	= \mel{1}{\Phi(E_{34})}{2}
-	\equiv \mel{1}{\Phi(\ketbra{3}{4})}{2}
-\end{equation}
-
-The Choi operator of $\Phi$ is $J(\Phi)\equiv (\Phi\otimes I)(\PP_m)$, where $\ket m\equiv\sum_k \ket{kk}$ is the (unnormalised) maximally entangled state.
-As an operator, we thus have $J(\Phi)\in\rmL(??)$.
-Explicitly,
-\begin{equation}
-	J(\Phi) = (\Phi\otimes I)(\ketbra{12}\otimes\ketbra{12})
-	= \Phi(\ketbra{1}{2})\otimes \ketbra{1}{2}
-\end{equation}
-\begin{equation}
-	J(\Phi)_{12,34}
-	\equiv \mel{12}{J(\Phi)}{34}
-	= \mel{1}{\Phi(\ketbra{2}{4})}{3}
-	= \mel{13}{K(\Phi)}{24}
-	\equiv K(\Phi)_{13,24}.
-\end{equation}
 
 \section{Interesting properties and facts}
 
@@ -1448,32 +1635,6 @@ Explicitly,
 \begin{proof}
 	See Preskill notes.
 \end{proof}
-
-\section{Up-down notation for maps and states}
-
-Another way to write maps is writing ``input indices'' low and ``output indices'' as high. For example:
-\begin{equation}
-	K(\Phi)_{12}^{34}\equiv K(\Phi)_{1|2}^{3|4} \equiv \mel{12}{K(\Phi)}{34}.
-\end{equation}
-In this notation, indices belonging to the same space are ``separated'' by vertical bars.
-Note that this is not a separation between different \emph{parties}, but between different copies of the same space.
-This notation has advantages when dealing with multipartite states.
-
-A similar divider between the two copies of the space is to be used for states:
-$\rho \equiv \rho_{12}\ketbra{1}{2}$ becomes $\rho_{1|2}\ketbra{1}{2}$.
-If $\rho$ is bipartite, we have
-\begin{equation}
-	\rho \equiv \rho_{12,34} \ketbra{12}{34} \equiv \rho_{13|24} E_{13}\otimes E_{24},
-	\qquad
-	\rho_{12,34} \equiv \rho_{13|24}.
-\end{equation}
-
-
-Given a bipartite $\rho$, we then write the action of $\Phi$ on it as
-\begin{equation}
-	\Phi(\rho)_{12|34} =
-	K(\Phi)_{12|34}^{56|78} \rho_{56|78}
-\end{equation}
 
 \section{Norms, distances, etc}
 
@@ -1623,7 +1784,7 @@ To answer this we observe that
 This follows as a special case of~\cref{prop:sum_of_traceswithPos_less_than_trace_norm}.
 
 \begin{prop}
-	Let $A\in\Herm(\calX)$ be an Hermitian operator in a finite-dimensional complex Euclidean space.
+	Let $\calX$ be a finite-dimensional complex space, and let $A\in\Herm(\calX)$.
 	Let $P,Q\in\Pos(\calX)$ such that $P+Q=I$. Then
 	\begin{equation}
 		\lvert \Tr(PA)\rvert
@@ -1664,7 +1825,7 @@ This follows as a special case of~\cref{prop:sum_of_traceswithPos_less_than_trac
 	\begin{equation}
 	\begin{gathered}
 		\left\|\sum_{a\in\Sigma} u(a) P_a\right\|
-		= \left\|\sum_{a\in\Sigma} u(a) A^\dagger(I_{\calX}\otimes E_{aa})A\right\|
+		= \left\|\sum_{a\in\Sigma} u(a) A^\dagger(I_{\calX}\otimes E_{aa})A\right\| \\
 		\le \|A^\dagger\|
 		\left\|\sum_{a\in\Sigma} u(a) (I_{\calX}\otimes E_{aa})\right\|
 		\|A\|
@@ -1711,6 +1872,14 @@ Bob's goal is, given $\Phi_i(\rho)$, to figure out whether $i=0$ or $i=1$.
 Note that $\on{Eff}_d$ is equivalently characterised as the set of Hermitian operators with eigenvalues in the unit interval.
 Note that POVMs are subsets of $\on{Eff}$ that sum to the identity operator.
 
+\begin{prop}\label{prop:expval_of_projections_same_as_orthogonal_vec}
+	Let $\calH$ be a finite-dimensional Hilbert space, and let $\Pi\in\Proj(\calH)$ be an orthoprojection in $\calH$.
+	Then $\langle v,\Pi v\rangle\equiv\langle \Pi\rangle_v=0$ \emph{iff} $\Pi v=0$.
+\end{prop}
+\begin{proof}
+	Observe that $\langle v,\Pi v\rangle=\|\Pi v\|^2$ is the norm of the projection of $v$ onto the support of $\Pi$.
+\end{proof}
+
 \begin{prop}
 	The set of effects, $\on{Eff}(\calH)$, is convex. Its extreme points are the projection operators.
 \end{prop}
@@ -1736,11 +1905,21 @@ Note that POVMs are subsets of $\on{Eff}$ that sum to the identity operator.
 		= \underbrace{\sum_{j=1}^d \lambda_j \PP_j}_{=E} + (1-\lambda_d) 0 = E.
 	\end{gathered}
 	\end{equation}
-	This shows that every $E$ is convex combination of projectors. We then have to show that every projector is an extreme point, that is, cannot be written as a nontrivial convex combination of other projectors.
+	This shows that every $E$ is convex combination of projectors.
+
+	We now have to show that every projector is an extreme point, that is, cannot be written as a nontrivial convex combination of other projectors.
 	For the purpose, observe that for a generic projector $\Pi\in\calP(\calH)$ we have $v\in\on{supp}(\Pi)\Longleftrightarrow \Pi v=v$.
 	Suppose $\Pi=a\Pi_1+(1-a)\Pi_2$ for some $\Pi_1,\Pi_2\in\calP(\calH)$ and $a\in(0,1)$.
 	% Then clearly $\on{supp}(\Pi_1)\cap\on{supp}(\Pi_2)\subseteq\on{supp}(\Pi)$.
-	Then $\ker(\Pi)\subseteq\ker(\Pi_1)\cap\ker(\Pi_2)\subseteq\ker(\Pi_i)$ for $i=1,2$, which implies taking the orthogonal spaces that $\on{supp}(\Pi_i)\subseteq\on{supp}(\Pi)$.
+	Then $\ker(\Pi)\subseteq\ker(\Pi_1)\cap\ker(\Pi_2)\subseteq\ker(\Pi_i)$ for $i=1,2$.
+	Indeed, if $\Pi v=0$, then
+	\begin{equation}
+		\langle \Pi\rangle_v=
+		a \langle \Pi_1\rangle_v + (1-a) \langle \Pi_2\rangle_v = 0.
+	\end{equation}
+	But $\langle \Pi\rangle_w\ge0$ for all $w$, and thus this is only possible if $\langle \Pi_i\rangle_v=0$,
+	\emph{i.e.} $\Pi_i v=0$, as follows from~\cref{prop:expval_of_projections_same_as_orthogonal_vec}.
+	Thus, taking the orthogonal spaces, we get $\on{supp}(\Pi_i)\subseteq\on{supp}(\Pi)$.
 	On the other hand, $\on{supp}(\Pi)\subseteq\on{supp}(\Pi_i)$, because for any $v\in\on{supp}(\Pi)$ we have
 	\begin{equation}
 		1 = \mel{v}{\Pi}{v}
@@ -1928,9 +2107,9 @@ We will use the latter definition for now.
 
 \section{Kochen-Specker theorem}
 
-\begin{defn}[Contextual assignments]
+\begin{defn}[Noncontextual assignments]
 	Let $v:\Herm(\calH)\to\RR$ be a function that is an \emph{algebra homomorphism on compatible observables}, that is, such that $v(A+B)=v(A)+v(B)$ and $v(AB)=v(A)v(B)$ whenever $[A,B]=0$.
-	Let us refer to such a function as a \emph{contextual assignment}.
+	Let us refer to such a function as a \emph{noncontextual assignment}.
 \end{defn}
 
 \begin{prop}
@@ -1944,8 +2123,37 @@ We will use the latter definition for now.
 	We can always write $A=\sum_k\lambda_k \PP_{v_k}$ for some orthonormal basis $\{v_k\}_k\subset\calH$, hence the conclusion from observing that only one element of $\{v(\PP_{v_k})\}$ can be nonvanishing.
 \end{proof}
 
-In~\parencite{cabello1994simple} they prove that such contextual assignments are not possible for $\on{dim}(\calH)\ge3$. The proof proceeds via a grueling exploration of how $v$ must act on different trines of projections.
+Kochen-Specker theorem, as reported \emph{e.g.} in~\parencite{moretti2019fundamental}, states the following:
+\begin{prop}[KS theorem]
+	Let $\calH$ be a finite-dimensional Hilbert space with $\dim(\calH)\ge3$.
+	Consider a function $v:\Herm(\calH)\to\RR$.
+	Then the constraints:
+	\begin{itemize}
+		\item for all $A,B\in\Herm(\calH)$, if $[A,B]=0$ then $v(A+B)=v(A)+v(B)$,
+		\item for all $A,B\in\Herm(\calH)$, if $[A,B]=0$ then $v(AB)=v(A)v(B)$,
+	\end{itemize}
+	are incompatible.
+\end{prop}
+In other words, Kochen-Specker's theorem states that there cannot be functionals of observables that are both additive and multiplicative.
 
+In~\parencite{cabello1994simple} they prove that such noncontextual assignments are not possible for $\on{dim}(\calH)\ge3$. The proof proceeds via a grueling exploration of how $v$ must act on different trines of projections.
+
+\section{Fine's theorem}
+
+Consider~\parencite{fine1982hidden}.
+
+
+Reading from~\parencite{kunjwal2015fine}.
+We say that a given conditional probability distribution (corresponding to measurement outcomes on spatially separated parties yada yada yada) is \emph{factorisable} (with respect to a given LHV model I suppose?) if
+\begin{equation}
+	p(x_1,...,x_n|y_1,...,y_n;\lambda)
+	= \prod_{i=1}^n p(x_i|y_i;\lambda).
+\end{equation}
+There is probably a more rigorous way to formalise this in terms of registers etc.
+We also might refer to these conditional probability distributions as \emph{response functions}.
+We say these are \emph{outcome-indeterministic} when $p\notin\{0,1\}$.
+
+It is worth noting that outcome-determinism implies factorisability, but not \emph{vice-versa}.
 
 \chapter{Information theory}
 
@@ -2305,6 +2513,18 @@ With this definition, we have the commutation relations:
 	$D(\alpha)\ket\ell=\frac{1}{\sqrt{\ell!}}(a^\dagger-\bar\alpha)^\ell \ket\alpha$.
 \end{proof}
 
+\begin{example}
+	\begin{equation}
+		D(\alpha) \ket2
+		= e^{-\mu/2} \sum_{s=0}^\infty
+		\frac{\alpha^{s-2}}{\sqrt{2 s!}}
+		\left(
+		\mu^2 -2s \mu + 2\binom{s}{2}
+		\right) \ket s,
+	\end{equation}
+	where $\mu\equiv\lvert\alpha\rvert^2$ and $\binom{s}{2}$ is taken to be $0$ when $s<2$.
+\end{example}
+
 \begin{prop}
 	\begin{equation}
 		D(\alpha)\PP_0 D^\dagger(\alpha) = \ketbra\alpha \equiv \PP_\alpha.
@@ -2364,7 +2584,7 @@ With this definition, we have the commutation relations:
 \end{example}
 
 \begin{example}
-	Denote with $\calE_t$ the channel describing linear evolution through a beansplitter with transmittivity $t$ followed by a partial trace with respect to the second output mode. We have
+	Denote with $\calE_t$ the channel describing linear evolution through a beamsplitter with transmissivity $t$ followed by a partial trace with respect to the second output mode. We have
 	\begin{equation}
 		\calE_t(\ketbra{j}{j+1})
 		= \sum_{k=0}^j \binom{j}{k} \frac{j+1}{k+1}
@@ -2387,6 +2607,12 @@ With this definition, we have the commutation relations:
 	\end{equation}
 \end{example}
 
+\begin{example}
+	% \begin{equation}
+		$\calE_t(\ketbra{0}{n})
+				= \bar t^n \ketbra{0}{n}.$
+	% \end{equation}
+\end{example}
 
 \section{Thermalised states}
 
@@ -2398,6 +2624,14 @@ With this definition, we have the commutation relations:
 		D(\sqrt\mu e^{i\phi})\rho D^\dagger(\sqrt\mu e^{i\phi}).
 	\end{equation}
 \end{defn}
+
+\begin{prop}
+	\begin{equation}
+		\int_0^\infty d\mu \,\, \frac{e^{-\mu/\bar n}}{\bar n}
+		(e^{-\mu}\mu^j)
+		= \frac{\bar n^j}{(\bar n+1)^{j+1}} j!
+	\end{equation}
+\end{prop}
 
 \begin{prop}\label{prop:thermalisation_applied_to_00}
 	\begin{equation}
@@ -2468,11 +2702,55 @@ With this definition, we have the commutation relations:
 	We reach the conclusion by simply inserting the explicit formula for $C$ in the above expression.
 \end{proof}
 
+\begin{prop}
+	\begin{equation}
+		\Phi_{\bar n}^{\rm th}(\PP_2)
+		= \sum_{j=0}^\infty
+		\frac{\bar n^j}{(\bar n + 1)^{j+1}}
+		\frac{
+			2\bar n^4 + 4j \bar n^2 + j(j-1)
+		}{2 \bar n^2 (\bar n + 1)^2}
+		\,\, \PP j
+	\end{equation}
+\end{prop}
+\begin{proof}
+	We have
+	\begin{equation}
+		\int_0^{2\pi} \frac{d\phi}{2\pi}
+		\hat D(\sqrt\mu e^{i\phi})\ketbra2 \hat D^\dagger(\sqrt\mu e^{i\phi})
+		= e^{-\mu}
+		\sum_{j=0}^\infty \frac{\mu^{j-2}}{2j!}
+		(\mu^2 -2j \mu + j(j-1))^2
+		\,\,\PP_j.
+	\end{equation}
+	Performing the average over $\mu$ we then obtain the result.
+	% \begin{equation}
+	% 	\frac{1}{2j!} \left(
+	% 	\frac{\bar n^j}{(\bar n+1)^{j+1}} j!
+	% 	- 2j \frac{\bar n^{j-1}}{(\bar n+1)^{j}} (j-1)!
+	% 	+ j(j-1) \frac{\bar n^{j-2}}{(\bar n+1)^{j-1}} (j-2)!
+	% 	\right)
+	% \end{equation}
+	% \begin{equation}
+	% \begin{gathered}
+	% 	\sum_{j=0}^\infty
+	% 	\frac{\bar n^j}{(\bar n + 1)^{j+1}}
+	% 	\frac{
+	% 		2\bar n^4 + 4j \bar n^2 + j(j-1)
+	% 	}{2 \bar n^2 (\bar n + 1)^2}
+	% 	\,\, \PP j
+	% \end{gathered}
+	% \end{equation}
+\end{proof}
+
 \begin{prop}\label{prop:thermalisation_applied_to_01}
 	\begin{equation}
 		\Phi^{\rm th}_{\bar n}(\ketbra{0}{1})
 		= \sum_{j=0}^\infty
-		\frac{\bar n^{j}}{(1+\bar n)^{j+2}} \sqrt{j+1}
+		% \frac{\bar n^{j}}{(1+\bar n)^{j+2}} \sqrt{j+1}
+		% \ketbra{j}{j+1}.
+		\frac{\bar n^{j}}{(1+\bar n)^{j+1}}
+		\frac{\sqrt{j+1}}{\bar n + 1}
 		\ketbra{j}{j+1}.
 	\end{equation}
 \end{prop}
@@ -2508,6 +2786,30 @@ With this definition, we have the commutation relations:
 			\frac{\bar n^{j}}{(1+\bar n)^{j+2}} \sqrt{j+1}.
 	\end{gathered}
 	\end{equation}
+\end{proof}
+
+\begin{prop}\label{prop:thermalisation_applied_to_02}
+	\begin{equation}
+		\Phi_{\bar n}^{\rm th}(\ketbra{0}{2})
+		= \sum_{j=0}^\infty
+		\frac{\bar n^j}{(\bar n + 1)^{j+1}}
+		\frac{\sqrt{(j+2)!}}{\sqrt2 (\bar n + 1)^2}
+		\ketbra{j}{j+2}.
+	\end{equation}
+\end{prop}
+\begin{proof}
+	\begin{equation}
+	\begin{gathered}
+		\int_0^{2\pi} \frac{d\phi}{2\pi}
+		\hat D \ketbra{0}{2} \hat D^\dagger
+		= e^{-\mu} \sum_{j=0}^\infty
+		% \frac{\mu^j}{\sqrt{2(j+2)!}}
+		% (\mu^2 - 2 (j+2) \mu + (j+2)(j+1))
+		\mu^j\frac{(\mu^2 - 2 (j+2) \mu + (j+2)(j+1))}{\sqrt{2(j+2)!}}
+		\ketbra{j}{j+2}.
+	\end{gathered}
+	\end{equation}
+	Integrating over $\mu$ we then reach the conclusion.
 \end{proof}
 
 
@@ -2567,7 +2869,7 @@ With this definition, we have the commutation relations:
 \subsection{Attenuation and then thermalisation}
 
 \begin{prop}
-	Let $\Phi_t$ be the channel describing attenuation through a beamsplitter with transmittivity $t$, and $\Phi_{\bar n}^{\rm th}$ be the thermalisation operation. Then
+	Let $\Phi_t$ be the channel describing attenuation through a beamsplitter with transmissivity $t$, and $\Phi_{\bar n}^{\rm th}$ be the thermalisation operation. Then
 	\begin{equation}
 	\Phi^{\rm th}_{\bar n}(\Phi_t(\PP_0))
 	= \Phi^{\rm th}_{\bar n}(\PP_0)
@@ -2577,7 +2879,7 @@ With this definition, we have the commutation relations:
 \end{prop}
 
 \begin{prop}
-	Let $\Phi_t$ the channel corresponding to attenuation through a beamsplitter with transmittivity $t$, and $\Phi_{\bar n}^{\rm th}$ the thermalisation operation. Then
+	Let $\Phi_t$ the channel corresponding to attenuation through a beamsplitter with transmissivity $t$, and $\Phi_{\bar n}^{\rm th}$ the thermalisation operation. Then
 	\begin{equation}
 		\Phi_t(\PP_1)
 		= (1-T) \PP_0 + T \PP_1,
@@ -2609,7 +2911,31 @@ With this definition, we have the commutation relations:
 \end{proof}
 
 \begin{prop}
-	The state $\ket0+\ket1$ evolving through a beamsplitter with transmittivity $t$, looking only at the transmitted output branch, gives
+	\begin{equation}
+	\begin{gathered}
+		\Phi_{\bar n}^{\rm th}(\Phi_t(\PP_2)) =
+		\sum_{j=0}^\infty \PP_j \frac{\bar n^j}{(\bar n + 1)^{j+1}}
+		\left[
+		T^2 c_0
+		+ 2TR c_1
+		+R^2
+		\right]
+	\end{gathered}
+	\end{equation}
+	where
+	\begin{equation}
+	\begin{gathered}
+		c_0 \equiv
+			\frac{2\bar n^4 + 4j \bar n^2 + j(j-1)}{2\bar n^2 (\bar n+1)^2},
+		\qquad
+		c_1 \equiv
+			\frac{\bar n^2 + j}{\bar n(\bar n+1)}.
+	\end{gathered}
+	\end{equation}
+\end{prop}
+
+\begin{prop}
+	The state $\ket0+\ket1$ evolving through a beamsplitter with transmissivity $t$, looking only at the transmitted output branch, gives
 	\begin{equation}
 		\rho_t
 		\equiv
@@ -2622,10 +2948,14 @@ With this definition, we have the commutation relations:
 	\begin{gathered}
 		\langle j|\Phi^{\rm th}_{\bar n}(\rho_t)|j\rangle
 		= \frac{\bar n^j}{(\bar n + 1)^{j+1}}
-		\frac{1}{2\bar n(\bar n+1)}
-		% [(2-T)\bar n(\bar n+1) + T(j+\bar n^2)]
-		[2\bar n(\bar n+1) + T(j-\bar n)],
+		\frac{[2\bar n(\bar n+1) + T(j-\bar n)]}{2\bar n(\bar n+1)},
 	\end{gathered}
+	\end{equation}
+	and
+	\begin{equation}
+		\Tr[X_{j}\langle j|\Phi^{\rm th}_{\bar n}(\rho_t)|j\rangle]
+		= \frac{\bar n^j}{(\bar n+1)^{j+1}} \frac{\sqrt{j+1}}{\bar n+ 1}
+		\Re(t).
 	\end{equation}
 \end{prop}
 \begin{proof}
@@ -2637,8 +2967,9 @@ With this definition, we have the commutation relations:
 		\frac{\bar n^j}{2\bar n(\bar n + 1)^{j+2}}
 		[2\bar n(\bar n+1) + T(j-\bar n)]
 		\PP_j \\
-		+ \frac{t}{2}\sum_{j=0}^\infty
-		\frac{\bar n^j}{(\bar n + 1)^{j+2}} \sqrt{j+1} \,\, X_j,
+		+ \frac{1}{2}\sum_{j=0}^\infty
+		\frac{\bar n^j}{(\bar n + 1)^{j+2}} \sqrt{j+1} \,\,
+		(t\ketbra{j+1}{j} + \bar t \ketbra{j}{j+1}),
 	\end{gathered}
 	\end{equation}
 	where $X_j \equiv \ketbra{j}{j+1} + \ketbra{j+1}{j}$.
@@ -2660,7 +2991,7 @@ With this definition, we have the commutation relations:
 	% 	[2\bar n(\bar n+1) + T(j-\bar n)]
 	% \end{gathered}
 	% \end{equation}
-\end{proof}
+\end{proof}`'
 
 
 Let $\ket\psi$ be written in terms of mode operators as
@@ -2722,7 +3053,7 @@ and then, applying the thermalisation operation to the first mode, we get
 
 
 \begin{prop}
-	Consider a thermal state $\rho^{\rm th}_{\bar n}$, evolving through a beamsplitter with transmittivity $T\equiv |t|^2$, of which we only consider the first output port. We then have
+	Consider a thermal state $\rho^{\rm th}_{\bar n}$, evolving through a beamsplitter with transmissivity $T\equiv |t|^2$, of which we only consider the first output port. We then have
 	\begin{equation}
 	\begin{gathered}
 		\rho^{\rm th}_{\bar n}
@@ -2766,7 +3097,7 @@ and then, applying the thermalisation operation to the first mode, we get
 \end{prop}
 
 \begin{prop}
-	Denote with $\calE_t$ the channel describing attenuation through a beamsplitter with transmittivity $t$. Then
+	Denote with $\calE_t$ the channel describing attenuation through a beamsplitter with transmissivity $t$. Then
 	\begin{equation}
 		\calE_t(\Phi_{\bar n}^{\rm th}(\PP_0))
 		= \sum_{k=0}^\infty \PP_j
@@ -2820,7 +3151,7 @@ and then, applying the thermalisation operation to the first mode, we get
 \end{proof}
 
 % \begin{prop}
-% 	% Denote with $\calE_t$ the channel describing attenuation through a beamsplitter with transmittivity $t$.
+% 	% Denote with $\calE_t$ the channel describing attenuation through a beamsplitter with transmissivity $t$.
 % 	\begin{equation}
 % 		\langle j|
 % 		\Phi_{\bar n}^{\rm th}\left(\PP\left(\frac{1}{\sqrt2}(\ket0+\ket1)\right)\right)
