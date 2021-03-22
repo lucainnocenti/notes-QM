@@ -639,6 +639,14 @@ The state $\rho$ is extremal in $\mathcal D$ if and only if
 	This coincides with the rank of the matrix corresponding to $\on{unvec}(u)\in\Lin(\calY,\calX)$.
 \end{defn}
 
+Consider an arbitrary vector $\psi\in\calX\otimes\calY$ with Schmidt decomposition
+$\psi=x_a\otimes y_a$. We can write this as
+\begin{equation}
+	\psi = (X\otimes Y) e_+ = \on{vec}(XY^T),
+\end{equation}
+where $e_+\equiv\sum_a e_a\otimes e_a$ is the maximally entangled vector in some auxiliary space $\calZ$ with $\dim(\calZ)=\rank(\psi)$, and the matrices $X\in\Lin(\calZ,\calX)$ and $Y\in\Lin(\calZ,\calY)$ are defined by
+$X e_a=x_a$ and $Y e_a=y_a$.
+
 \begin{defn}
 	A \emph{positive semidefinite operator} $R\in\Pos(\calX\otimes\calY)$ is said to be \emph{separable} if there are collections of positive semidefinite operators
 	\begin{equation}
@@ -664,12 +672,28 @@ The state $\rho$ is extremal in $\mathcal D$ if and only if
 \end{prop}
 
 \begin{prop}
-	Any $\xi\in\on{Sep}(\calX:\calY)$ can be written as
+	Any $S\in\on{Sep}(\calX:\calY)$ can be written as
 	\begin{equation}
-		\xi = \sum_a x_a x_a^\dagger\otimes y_a y_a^\dagger
+		S = \sum_a x_a x_a^\dagger\otimes y_a y_a^\dagger
 	\end{equation}
 	for some collections $\{x_a\}_a\subset\calX$ and $\{y_a\}_a\subset\calY$.
 \end{prop}
+
+It follows that for a generic $\psi\in\calX\otimes\calY$ with SVD decomposition
+$\psi=\sum_a u_a\otimes v_a$ we have a decomposition for $\psi\psi^\dagger\in\Pos(\calX\otimes\calY)$ of the form
+\begin{equation}
+	\psi\psi^\dagger = \sum_{a,b} u_a u_b^\dagger \otimes v_a v_b^\dagger.
+\end{equation}
+If $P\in\Pos(\calX\otimes\calY)$ is a generic positive operator, it admits a decomposition of the form $P=\sum_a \psi_a\psi_a^\dagger$ with $\{\psi_a\}_a$ orthogonal.
+Thus, writing $\psi_a=\sum_b u_{ab}\otimes v_{ab}$, we have
+\begin{equation}
+	P = \sum_{abc} u_{ab}u_{ac}^\dagger \otimes v_{ab}v_{ac}^\dagger.
+\end{equation}
+In matrix notation, we have $P=\Psi\Psi^\dagger$, where
+$\Psi\in\Lin(\calZ,\calX\otimes\calY)$ for some $\calZ$ with $\dim(\calZ)=\rank(P)$,
+and the columns of $\Psi$ are the vectors $\psi_a$:
+$\Psi e_a=\psi_a$.
+Moreover, each $\psi_a$ can be written as a matrix, in the form $\psi_a=U_a V_a^T$.
 
 
 \section{Necessary and sufficient characterizations of entanglement}
@@ -902,6 +926,38 @@ A map is said to be CPTP if it is trace-preserving and completely positive. CPTP
 	Any positive $X\in\Pos(\calX)$ is, via its eigendecomposition, a linear combination with positive coefficients of such rank-one operators.
 	Thus $\Phi(X)\ge0$ because a positive linear combination of positive operators is also a positive operator.
 \end{proof}
+
+\section{Operator-vector correspondence}
+
+We have a correspondence between operators $\Lin(\calX,\calY)$ and vectors in $\calY\otimes\calX$, via the mapping
+\begin{equation}
+	\on{vec}:\Lin(\calX,\calY)\ni E_{ab} \mapsto e_a\otimes e_b\in\calY\otimes\calX.
+\end{equation}
+
+\begin{prop}
+	Let $X\in\Lin(\calX,\calY)$. Then
+	\begin{equation}
+		\on{vec}(X) = (X\otimes I_{\calX}) e_+^\calX
+		= (I_{\calY}\otimes X^T) e_+^\calY,
+	\end{equation}
+	where $e_+^\calX\equiv\sum_a e_a\otimes e_a\in\calX\otimes\calX$ is the maximally entangled vector in $\calX\otimes\calX$, and $e_+^\calY$ is similarly defined.
+	To recover $X$ from $\on{vec}(X)$, we can write
+	\begin{equation}
+		\on{unvec}(v) = \sum_{ij} E_{ij} \langle i,j|v\rangle
+	\end{equation}
+	\highlight{(there should be a better way to express this without sums)}
+\end{prop}
+
+\begin{prop}
+	For any $A\in\Lin(\calX,\calY)$, we have
+	\begin{equation}
+		\Tr_\calX[\on{vec}(A)\on{vec}(A)^\dagger] = AA^\dagger.
+	\end{equation}
+\end{prop}
+
+\begin{example}
+	$\on{vec}(yx^\dagger) = y\otimes \bar x$ for any $x\in\calX$ and $y\in\calY$.
+\end{example}
 
 \section{Complete positivity}
 
@@ -1189,6 +1245,28 @@ More generally, if $\Phi_i\in\rmT(\calX_i,\calY_i)$, we have
 	\end{equation}
 \end{example}
 
+\begin{prop}
+	Consider $\Phi\in\rmT(\calX,\calY)$ and $\Psi\in\rmT(\calY,\calZ)$.
+	Then
+	\begin{equation}
+		K(\Psi\circ\Phi)
+		= K(\Psi) K(\Phi).
+	\end{equation}
+\end{prop}
+\begin{proof}
+	Observe that
+	\begin{equation}
+		\Phi(E_{k\ell}) = \sum_{m,n} E_{mn} K(\Phi)_{mn,k\ell}.
+	\end{equation}
+	Thus
+	\begin{equation}
+		K(\Psi\circ\Phi)_{ij,k\ell}
+		= \langle i| (\Psi\circ\Phi) (E_{k\ell}) | j\rangle
+		= \sum_{m,n} K(\Psi)_{ij,mn} K(\Phi)_{mn,k\ell},
+	\end{equation}
+	that is, $K(\Psi\circ\Phi) = K(\Psi)K(\Phi)$.
+\end{proof}
+
 \subsection{Unitary representation}
 
 \begin{prop}\label{prop:CPTP_unitary_representation}
@@ -1212,10 +1290,18 @@ More generally, if $\Phi_i\in\rmT(\calX_i,\calY_i)$, we have
 	\end{equation}
 	Moreover,
 	\begin{equation}
-		\mel{i}{\Phi(E_{k\ell})}{j}
+		K(\Phi)_{ij,k\ell}
+		\equiv \mel{i}{\Phi(E_{k\ell})}{j}
 		= \sum_{amn}
 		U_{ia,km} \bar U_{ja,\ell n} u_m \bar u_n
 	\end{equation}
+	\begin{equation}
+		K(\Phi) =
+		(I\otimes e_{+,\calW}^\dagger)
+		(U\otimes \bar U)
+		(I \otimes u \otimes \bar u).
+	\end{equation}
+	\highlight{(probably some swap to put here)}
 	Thus its Choi reads
 	\begin{equation}
 		\mel{i,j}{J(\Phi)}{k,\ell}
@@ -1275,6 +1361,38 @@ Any map that admits a unitary representation can be directly seen to be complete
 \end{prop}
 
 \highlight{(what about the more general case of $\Phi\in\rmT(\calX,\calY)$?)}
+
+\begin{prop}
+	Let $\Phi\in\rmT(\calX,\calY)$ be a map, and $\{A_a\}_a\subset\Lin(\calX,\calY)$ a collection of operators such that
+	\begin{equation}
+		\Phi(X) = \sum_a A_a X A_a^\dagger, \qquad \forall X\in\Lin(\calX).
+	\end{equation}
+	Then let $V\in\Lin(\calX,\calY\otimes\calW)$ be defined by
+	% \begin{equation}
+		$V \psi = \sum_a (A_a \psi \otimes e_a)$,
+	% \end{equation}
+	Then
+	\begin{equation}
+		\Phi(X) = \Tr_\calW[V X V^\dagger].
+	\end{equation}
+\end{prop}
+\begin{proof}
+	The matrix elements of $V$ read
+	\begin{equation}
+		(e_i^\dagger \otimes e_j^\dagger) V e_k = e_i^\dagger A_j e_k \equiv (A_j)_{i,k}.
+	\end{equation}
+	The adjoint of $V$ acts as
+	\begin{equation}
+		V^\dagger (Y\otimes e_a) = A_a^\dagger Y,
+	\end{equation}
+	and thus
+	\begin{equation}
+		V^\dagger V e_k =
+		\sum_a A_a^\dagger A_a e_k
+		\Longleftrightarrow V^\dagger V = \sum_a A_a^\dagger A_a.
+	\end{equation}
+	Therefore $V$ is an isometry \emph{iff} $\sum_a A_a^\dagger A_a = I_{\calX}$.
+\end{proof}
 
 The unitary representation also allows to write composition of channels in a natural way:
 \begin{prop}
@@ -1360,6 +1478,15 @@ What does the adjoint map look like in the unitary representation?
 Note that $(I_{\calY}\otimes\bra i)J(\Phi)(I_{\calY}\otimes\ket \ell) = \Phi(E_{i,\ell})$.
 This means that we can represent $J(\Phi)$ as a ``matrix of operators'' in $\Lin(\calY)$, that is, as a block matrix in which each block gives the action of $\Phi(E_{i,\ell})$ for some $E_{i,\ell}$.
 
+
+\begin{prop}
+	For any $\Phi\in\rmT(\calX,\calY)$, its Choi is Hermitian,
+	$J(\Phi)\in\Herm(\calY\otimes\calX)$, \emph{iff} $\Phi$ is Hermitian-preserving.
+\end{prop}
+\begin{proof}
+	Remember that $\Phi$ being Hermitian preserving means that $\Phi(X)\in\Herm(\calY)$ for all $X\in\Herm(\calX)$.
+	This is equivalent to $\Phi(X^\dagger)=\Phi(X)^\dagger$ for all $X\in\Lin(\calX)$.
+\end{proof}
 
 
 \subsection{Stinespring representation}
@@ -1453,6 +1580,74 @@ Here $\Sigma$ is a finite register with $\lvert\Sigma\rvert\le \rank(A)$ equal t
 
 \section{Notable examples}
 
+\begin{example}
+	Consider the trace map, $\Phi\in\rmT(\calX,\CC)$, define by $\Phi(X)=\Tr(X)$ for all $X\in\Lin(\calX)$.
+	It is worth noting that $\Lin(\CC)\simeq \CC$, via the isomorphism
+	$\Lin(\CC)\ni f\mapsto f(1)\in\CC$.
+	Therefore the trace map, as any other map whose codomain is one-dimensional, is effectively a functional $\Lin(\calX)\to\CC$.
+
+	The trace map is clearly Hermitian- and trace-preserving, as well as completely positive.
+
+	Its natural and Choi representations are
+	\begin{equation}
+		K(\Tr) = e_+^\dagger,
+		\qquad J(\Tr) = I_{\calX}.
+	\end{equation}
+	For the Kraus representation, given any orthonormal basis $\{x_a\}\subseteq\calX$, we can choose $A_a=x_a^\dagger\in\Lin(\calX,\CC)$:
+	\begin{equation}
+		\sum_a x_a^\dagger X x_a = \Tr(X),
+		\qquad X\in\Lin(\calX).
+	\end{equation}
+
+\end{example}
+
+\begin{example}
+	Consider the \emph{replacement map} $\Phi\in\rmT(\calX,\calY)$ defined by
+	\begin{equation}
+		\Phi(\rho)=\langle X, \rho \rangle Y
+		\equiv \Tr(X^\dagger \rho) Y,
+	\end{equation}
+	for $X\in\Lin(\calX),Y\in\Lin(\calY)$ and $\rho\in\Lin(\calX)$.
+	We have
+	\begin{equation}
+		\Phi(\rho^\dagger) = \overline{\Tr(X\rho)} Y,
+		\qquad
+		\Phi(\rho)^\dagger = \overline{\Tr(X^\dagger\rho)} Y^\dagger.
+	\end{equation}
+	It follows that the replacement map $\Phi$ is \emph{Hermitian preserving} if and only if $X\in\Herm(\calX)$ and $Y\in\Herm(\calY)$.
+	Moreover,
+	\begin{equation}
+		K(\Phi) = \on{vec}(Y)\on{vec}(X)^\dagger,
+		\qquad
+		J(\Phi) = Y\otimes \bar X.
+	\end{equation}
+	From the Choi, we see immediately that $\Phi$ is CP \emph{iff} $X$ and $Y$ are positive semidefinite.
+	Moreover, $\Phi$ is trace-preserving \emph{iff} $X=I_\calX$.
+
+	The Kraus representation is obtained from the eigenvectors of $J(\Phi)$.
+	If $\Phi$ is Hermitian preserving, and thus $X,Y$ are Hermitian,
+	then we can write
+	$Y=\sum_a y_a y_a'^\dagger$ and $X=\sum_a x_a x_a'^\dagger$
+	for some orthogonal collections $\{x_a\}_a,\{x_a'\}_a\subset\calX$ and $\{y_a\}_a,\{y_a'\}_a\subset\calY$.
+	Therefore
+	\begin{equation}
+		J(\Phi) = \sum_{a,b} (y_a\otimes \bar x_b)(y_a'^\dagger\otimes\bar x_b'^\dagger).
+	\end{equation}
+	It follows that there are operators
+	$A_{(ab)} = y_a x_b^\dagger$ and
+	$A'_{(ab)} = y'_a x_b'^\dagger$ such that
+	\begin{equation}
+		\Phi(\rho) = \sum_{ab} A_{(ab)} \rho A_{(ab)}'^\dagger.
+	\end{equation}
+	When $X\in\Pos(\calX)$ and $Y\in\Pos(\calY)$, we can choose $x_a'=x_a$ and $y_a'=y_a$.
+
+	For the Stinespring representation, define the isometries $U\in\rmU($
+	\begin{equation}
+		U \psi = \sum_{ab} sedurftgyuhl
+	\end{equation}
+\end{example}
+
+
 \subsection{Quantum-to-classical channels}
 
 Discussed in~\parencite{horodecki2003entanglement,watrous2018theory}.
@@ -1467,7 +1662,7 @@ Discussed in~\parencite{horodecki2003entanglement,watrous2018theory}.
 \end{defn}
 
 \begin{prop}
-	A map is entanglement breaking \emph{iff} $\Phi\otimes I$ always breaks entanglement. \highlight{(why??? see fucking Horo\&Shur\&Ruskai)}.
+	A map $\Phi\in\rmC(\calX,\calY)$ is entanglement breaking \emph{iff} $(\Phi\otimes I_{\calZ})\Gamma$ is separable for any $\Gamma\in\rmD(\calX\otimes\calZ)$.
 \end{prop}
 
 \begin{defn}
@@ -2625,7 +2820,7 @@ With this definition, we have the commutation relations:
 	\end{equation}
 \end{defn}
 
-\begin{prop}
+\begin{prop}\label{prop:integration_formula_for_thermalisation}
 	\begin{equation}
 		\int_0^\infty d\mu \,\, \frac{e^{-\mu/\bar n}}{\bar n}
 		(e^{-\mu}\mu^j)
@@ -2710,7 +2905,7 @@ With this definition, we have the commutation relations:
 		\frac{
 			2\bar n^4 + 4j \bar n^2 + j(j-1)
 		}{2 \bar n^2 (\bar n + 1)^2}
-		\,\, \PP j
+		\,\, \PP_j
 	\end{equation}
 \end{prop}
 \begin{proof}
@@ -2741,6 +2936,38 @@ With this definition, we have the commutation relations:
 	% 	\,\, \PP j
 	% \end{gathered}
 	% \end{equation}
+\end{proof}
+
+\begin{prop}
+	\begin{equation}
+		\Phi_{\bar n}^{\rm th}(\PP_\ell) = ?
+	\end{equation}
+\end{prop}
+\begin{proof}
+	We can write
+	\begin{equation}
+		\hat D(\alpha) \ket\ell = e^{-\mu/2}
+		\sum_{s=0}^\infty \alpha^{s-\ell}
+		\sum_{k=0}^{\min(s,\ell)} \mu^{\ell-k} c_{s,\ell,k},
+	\end{equation}
+	where
+	\begin{equation}
+		c_{s,\ell,k} \equiv
+		\frac{1}{\sqrt{\ell! s!}} (-1)^{\ell-k}
+		k! \binom{\ell}{k} \binom{s}{k}.
+	\end{equation}
+	Therefore
+	\begin{equation}
+	\begin{gathered}
+		\int_0^{2\pi}\frac{d\phi}{2\pi} \,
+		\hat D\ketbra{\ell}{\ell} \hat D^\dagger =
+		e^{-\mu} \sum_{s=0}^\infty \mu^{s-\ell}
+		\left(
+			\sum_{k=0}^{\min(s,\ell)} \mu^{\ell-k} c_{s,\ell,k}
+		\right)^2
+		\ketbra{s}{s}.
+	\end{gathered}
+	\end{equation}
 \end{proof}
 
 \begin{prop}\label{prop:thermalisation_applied_to_01}
@@ -2793,11 +3020,19 @@ With this definition, we have the commutation relations:
 		\Phi_{\bar n}^{\rm th}(\ketbra{0}{2})
 		= \sum_{j=0}^\infty
 		\frac{\bar n^j}{(\bar n + 1)^{j+1}}
-		\frac{\sqrt{(j+2)!}}{\sqrt2 (\bar n + 1)^2}
+		\binom{j+2}{2}^{1/2}
+		\frac{1}{(\bar n + 1)^2}
 		\ketbra{j}{j+2}.
 	\end{equation}
 \end{prop}
 \begin{proof}
+	Remember that
+	\begin{equation}\scalebox{0.92}{$\displaystyle
+		\hat D\ket0 = e^{-\mu/2} \sum_{s=0}^\infty \frac{\alpha^s}{\sqrt{s!}} \ket s,
+		\qquad
+		\hat D\ket2 = e^{-\mu/2} \sum_{s=0}^\infty \frac{\alpha^{s-2}}{\sqrt2\sqrt{s!}}
+		\left(\mu^2 - 2s \mu + s(s-1)\right) \ket s.
+	$}\end{equation}
 	\begin{equation}
 	\begin{gathered}
 		\int_0^{2\pi} \frac{d\phi}{2\pi}
@@ -2805,11 +3040,52 @@ With this definition, we have the commutation relations:
 		= e^{-\mu} \sum_{j=0}^\infty
 		% \frac{\mu^j}{\sqrt{2(j+2)!}}
 		% (\mu^2 - 2 (j+2) \mu + (j+2)(j+1))
-		\mu^j\frac{(\mu^2 - 2 (j+2) \mu + (j+2)(j+1))}{\sqrt{2(j+2)!}}
+		\mu^j\frac{(\mu^2 - 2 (j+2) \mu + (j+2)(j+1))}{\sqrt{2\,\,j!(j+2)!}}
 		\ketbra{j}{j+2}.
 	\end{gathered}
 	\end{equation}
-	Integrating over $\mu$ we then reach the conclusion.
+	The result is obtained integrating over $\mu$, using~\cref{prop:integration_formula_for_thermalisation}.
+\end{proof}
+
+\begin{prop}\label{prop:thermalisation_applied_to_0ell}
+	\begin{equation}
+		\Phi_{\bar n}^{\rm th}(\ketbra{0}{\ell}) =
+		\sum_{s=0}^\infty
+		\frac{\bar n^s}{(\bar n + 1)^{s+1}}
+		\binom{\ell+s}{s}^{1/2}
+		\frac{1}{(\bar n + 1)^\ell}
+		\,\,\ketbra{s}{s+\ell}.
+	\end{equation}
+\end{prop}
+\begin{proof}
+	We have the general relation
+	\begin{equation}
+	\begin{gathered}
+		\int_0^{2\pi} \frac{d\phi}{2\pi}
+		\hat D \ketbra{0}{\ell} \hat D^\dagger =
+		e^{-\mu} \sum_{s=0}^\infty
+		\sum_{k=0}^\ell \mu^{s+\ell-k} c_{s,\ell,k}
+		\ketbra{s}{s+\ell},
+	\end{gathered}
+	\end{equation}
+	where
+	\begin{equation}
+		c_{s,\ell,k} \equiv
+		\frac{1}{\sqrt{s!\ell!(s+\ell)!}} (-1)^{\ell-k}
+		k! \binom{\ell}{k} \binom{s+\ell}{k}.
+	\end{equation}
+	Integrating over $\mu$ we thus get, using~\cref{prop:integration_formula_for_thermalisation},
+	\begin{equation}
+	\begin{gathered}
+		\Phi_{\bar n}^{\rm th}(\ketbra{0}{\ell}) =
+		\sum_{s=0}^\infty \sum_{k=0}^\ell
+		\frac{\bar n^{s+\ell-k}}{(\bar n + 1)^{s+\ell-k+1}} (s+\ell-k)! c_{s,\ell,k} \ketbra{s}{s+\ell} \\
+		= \sum_{s=0}^\infty
+		\frac{\bar n^s}{(\bar n + 1)^{s+1}}
+		\binom{\ell}{s}^{1/2}
+		\frac{1}{(\bar n + 1)^\ell}.
+	\end{gathered}
+	\end{equation}
 \end{proof}
 
 
