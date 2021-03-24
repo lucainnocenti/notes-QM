@@ -3872,6 +3872,97 @@ Given $\psi\in\calS(\CC^N)$, we wish to characterise
 	\subseteq [0,1].
 \end{equation}
 
+\section{Reservoir or not reservoir}
+
+\textcolor{red}{\emph{Do ``standard applications'' of quantum reservoir computing (QRC) manage to use information more efficiently than approaches which require knowledge of the underlying channel (\emph{i.e.} require to perform process tomography at some point)?}}
+No. To see this, observe that the QRC scheme can, when all is said and done, be described as some measure (POVM) $\{\mu(a)\}_{a=1}^m$ applied to a set of states $\rho_i$. This POVM incorporates knowledge of the full dynamics and whatever measurement is performed on the final reservoir state.
+The reason I think in terms of a POVM, rather than of a channel followed by a measurement, is that this more closely describes the situation we are faced: neither the channel nor the measurement on the reservoir change throughout the protocol, thus there is not much of a point to distinguish them at this stage, and we can reason in terms of the overall effective measurement the setup amounts to.
+
+The ``training data'' the algorithm is fed is a set of the form
+\begin{equation}
+	\calC \equiv \{ (\rho_i, \bs p_i) \}_{i=1}^N,
+\end{equation}
+where $\rho_i$ are the input states in the training dataset, and $\bs p_i\in\RR^m$ the probabilities corresponding to whatever measurement was performed on $\rho_i$.
+The POVM corresponding to the underlying dynamics is assumed to be ``uncontrolled'': unknown at first, but fixed throughout the experiment.
+
+Observe that knowing $\calC$ amounts to a partial reconstruction of the measurement $\{\mu(a)\}_a$, that is, of the reservoir. To see this, note that, as long as the vectors $\bs p_i$ in $\calC$ come from some measurement of $\rho_i$, then $\bs p_i= (\Tr(\mu(a)\rho_i))_{a=1}^m$.
+Therefore, there must be some matrix $M$ such that
+\begin{equation}
+	\tilde p = M \tilde \rho,
+\end{equation}
+where $\tilde\rho\equiv \sum_i \on{vec}(\rho_i)\bs e_i^\dagger$ is the matrix whose $i$-th column is (a vectorised form of) $\rho_i$, and $\tilde p\equiv \sum_i \bs p_i \bs e_i^\dagger$ is the matrix whose $i$-th column is $\bs p_i$.
+Here, the matrix $M$ describes the POVM corresponding to the setup.
+More precisely, its $a$-th row is the (vectorised form of the) $a$-th POVM element $\mu(a)$:
+$M= \sum_a \bs e_i \on{vec}(\mu(a))^\dagger$.
+Knowing $\tilde\rho$ and $\tilde p$ we thus recover $M$ as
+\begin{equation}\label{eq:QRC_POVM_from_trainingdataset}
+	M = \tilde p \tilde\rho^+.
+\end{equation}
+This solution is unique as long as the rank of $\tilde\rho$ is equal to the dimension of the underlying state space. If the number of linearly independent states used in $\calC$ is smaller than this, then $M$ --- and thus $\{\mu(a)\}_a$ --- is only partially determined (in a way that can be characterised precisely).
+
+The gist of this is that, as long as the training dataset is made of states (which we assume to be fully characterised) paired with associated probabilities resulting from \emph{some} measurement, then knowing the training dataset amounts to knowledge of the measurement describing the reservoir dynamics.
+This is akin to how, in the context of complex media, people characterise the transmission matrix of their (uncontrolled but fixed) complex medium, except here we are not restricting to linear optical systems.
+
+\textcolor{red}{\emph{(Generalisation capabilities of a QRC scheme)}}
+Suppose we used our training dataset $\calC$ to estimate the effective POVM of the apparatus using~\cref{eq:QRC_POVM_from_trainingdataset}.
+We thus obtained a description for the POVM $\{\mu(a)\}_{a=1}^m$, via the matrix $M$.
+If the number of training states is not too large, $M$ is only determined modulo a few translations.
+Suppose we are now given a new, previously unseen, state $\rho$.
+Can we predict the resulting probabilities $\bs p$?
+
+The answer is clearly yes when the states in the training dataset are a basis for the corresponding space of Hermitian operators.
+More generally, each POVM operator $\mu(a)$ is only determined modulo the vector space orthogonal to the span of the states $\{\rho_i\}_i$ in the training dataset. This is because each $\mu(a)$ is only determined by the relations
+% \begin{equation}
+	$\langle \mu(a), \rho_i \rangle = (\bs p_i)_a$,
+% \end{equation}
+which are left invariant by translations of the form
+$\mu(a)\to \mu(a) + \sigma$ for any $\sigma\in\on{span}_\RR(\{\rho_i\}_i)_\perp$.
+Further constraints can probably be imposed to enforce these operators to sum to the identity.
+
+Therefore, given $\rho$, the possible probabilities $\bs p$ have the form
+\begin{equation}
+	(\bs p(\rho))_a \in \langle \mu(a), \rho\rangle + \langle \sigma(a),\rho\rangle,
+\end{equation}
+where $\sigma(a)\in\on{span}_\RR(\{\rho_i\}_i)_\perp$.
+It is worth noting that this is really a straightforward result: we are simply saying that the POVM is only determined by the way it acts on the input states used in the training, and thus that we will not be able to predict outcome probabilities for input states that are orthogonal to the training ones.
+The operators $\sigma(a)$ are the ``pieces of the POVM'' which are invisible to us due to a restricted training dataset.
+
+\textcolor{red}{\emph{But why isn't the reservoir more efficient to extract specific properties?}}
+Suppose the goal is to reconstruct a target observable $\calO$.
+This means that we want, from $\calC$, to find a vector $\bs w$ such that, for all input states $\rho$, we have
+$\langle \bs w, \bs p(\rho)\rangle = \Tr(\calO\rho)$,
+where $\bs p(\rho)$ is determined by the apparatus in use.
+But such a $\bs w$ exists \emph{iff} $\on{span}_\RR(\{\mu(a)\}_a)$ contains the span of the eigenstates of $\calO$.
+Moreover, assuming existence of $\bs w$, we need to have information about the way the POVM acts on all input states, that is, we need the $\rho_i$ in $\calC$ to span the full state space, for if that was not the case, then there would be no knowledge about $\bs p(\rho')$ for some $\rho'$, and it wouldn't be possible to find a suitable $\bs w$ to handle such cases.
+
+In other words, this is saying that to extract \emph{any} observable using the QRC scheme, we need the training set $\calC$ to contain a \emph{basis} of states. But when that is the case, as we already argued, we also have full knowledge of the POVM describing the apparatus, and we can thus fully characterise which observables can be retrieved from the measurements, and which linear maps $\bs w$ to use to do it.
+
+\textcolor{red}{\emph{(Cost of QRC scheme vs process tomography)}}
+Quantum process tomography of a channel $\Phi\in\rmC(\calX,\calY)$ requires characterisation of $\langle\sigma_i,\Phi(\rho_j)\rangle\equiv\Tr(\sigma_i\Phi(\rho_j))$ for some bases $\{\sigma_i\}_i\subset\rmD(\calY)$ and $\{\rho_j\}_j\subset\rmD(\calX)$.
+This requires collecting statistics for $\dim(\calX)^2\dim(\calY)^2$ different probabilities.
+
+Reasoning in terms of a POVM $\{\mu(a)\}_{a=1}^M$ rather than a channel is, in this context, completely equivalent, in the sense that ``quantum POVM reconstruction'' of $\{\mu(a)\}_a$ amounts to process tomography of a corresponding entanglement breaking channel.
+Such a reconstruction requires estimation of $M\dim(\calX)^2$ probabilities.
+
+\textcolor{red}{\emph{(Entanglement witnesses with QRC)}}
+One problem associated with experimentally measuring an entanglement witness $\calW$ is how to do it when only \emph{local} measurements are available in a given experimental platform.
+Indeed, a witness is an intrinsically nonlocal operator $\calW\in\Herm(\calX\otimes\calY)$.
+To avoid having to perform projections of the experimental state with entangled states, one can resort to decomposing $\calW$ in terms of a basis of \emph{local} Hermitian operators, which can then be measured sequentially:
+\begin{equation}
+	\calW = \sum_{ij} c_{ij} \sigma_i^\calX\otimes\sigma_j^\calY.
+\end{equation}
+This works, albeit with the downside of having to perform many measurements in several different measurement bases.
+
+In the context of QRC, 
+
+Entanglement witnesses avoiding problem of local measurements?
+Problem amounts to measuring observables.
+
+How to do this stuff with photonics? Reservoir is OAM?
+
+Can we restrict to doing local measurements on reservoir by having it entangled beforehand?
+
+Witnesses \emph{tailored} to a given reservoir?
 
 
 \printbibliography
