@@ -682,7 +682,7 @@ Thus,
 \begin{equation}
 	P = \sum_a (U_a \otimes V_a) \PP_m (U_a\otimes V_a)^\dagger.
 \end{equation}
-\highlight{so what??}
+\highlight{(so what??)}
 
 \begin{prop}
 	Let $\xi\in\on{SepD}(\calX:\calY)$ be a separable state. Then
@@ -700,6 +700,7 @@ Thus,
 	(\emph{Sketch}) The rank of $\xi$ gives the ``effective dimension'' of the underlying space. Its square is then the dimension of the space of Hermitians in this space.
 	Moreover, all separable states are in the convex hull of product states, thus conclusion follows from Caratheodory.
 \end{proof}
+
 \highlight{(can we dispose of the normalisation condition in this proposition? Maybe just make it about $\on{Sep}(\calX:\calY)$?)}
 
 \section{Entanglement}
@@ -723,6 +724,19 @@ This can be specialised on positive unital maps $\Phi\in\rmT(\calX,\calY)$. \hig
 	This is the operator acting as $W(a\otimes b)=b\otimes a$.
 	It is unitary and Hermitian with eigenvalues $\pm1$.
 	(??????)
+\end{example}
+
+\begin{example}
+	Consider the pure maximally entangled state:
+	\begin{equation}
+		\PP_{\rm ME} \equiv \frac{1}{n} \sum_{a,b\in\Sigma} E_{a,b} \otimes E_{a,b}
+		\equiv \frac{1}{n} \sum_{a,b\in\Sigma} \ketbra{a,a}{b,b}.
+	\end{equation}
+	Observe that
+	\begin{equation}
+		(T\otimes I_{\Lin(\calY)}) \PP_{\rm ME} = \frac{1}{n} W,
+	\end{equation}
+	where $W$ is the Swap operation. The swap is not positive, being its eigenvalues $\pm1$, which proves that $\PP_{\rm ME}$ is not separable.
 \end{example}
 
 \begin{example}
@@ -809,6 +823,7 @@ the partial transposition criterion completely characterizes entanglement:
 	its partial transposition is a positive operator: $\rho^{T_1} \ge 0$.
 \end{thm}
 
+
 \section{General structure of multipartite entanglement}
 
 Higher dimensional entanglement without correlations~\autocite{klobus2018higher}.
@@ -856,6 +871,45 @@ Using the above lemma, we can prove the more general statement:
 \section{Entanglement criteria}
 \subsection{Entanglement witnesses}
 
+\begin{defn}
+	Let $\calX,\calY$ be finite-dimensional complex vector spaces.
+	An \emph{entanglement witness} is an operator $W\in\Herm(\calX\otimes\calY)$ such that
+	\begin{enumerate}
+		\item $\Tr(W X_s)\ge0$ for all \emph{separable} $ X_s\in\on{Sep}(\calX:\calY)$;
+		\item $\Tr(W X_e)<0$ for some \emph{entangled} $X_e\in\Pos(\calX\otimes\calY)\setminus\on{Sep}(\calX:\calY)$.
+	\end{enumerate}
+\end{defn}
+More generally, we can think of $W$ as any observable that marks a boundary of the convex set of separable posdef operators $\on{Sep}(\calX:\calY)$.
+The choice of $0$ as boundary, like the choice of entangled states being certified by \emph{negative}, rather than positive, expectation value, is of course completely conventional.
+
+We remark that whether one requires $W$ to have positive or negative expectation value on \emph{states}, rather than just positive semidefinite operators, does not affect the definition.
+However, if the threshold is chosen to be some number other than $0$, than one should take care of defining the threshold only with respect to states.
+
+The geometrical interpretation of witnesses is obtained noticing that $\Tr(WX)=\langle W,X\rangle$ for any Hermitian $H$. Therefore, any such $W$ corresponds to a \emph{direction} in the space of states.
+
+A common choice of witness operator is one of the form
+\begin{equation}
+	W_\psi = \alpha_\psi I - \psi\psi^\dagger,
+\end{equation}
+for some entangled $\psi\in\calS(\calX\otimes\calY)$, with $\alpha_\psi$ the maximum squared overlap between $\ket\psi$ and any separable state.
+The set of separable states is the convex hull of the set of pure product states, and therefore we can write
+\begin{equation}
+	\alpha_\psi = \max_{u\in\calS(\calX),v\in\calS(\calY)}
+	\lvert \langle u\otimes v, \psi\rangle\rvert^2.
+\end{equation}
+This maximum can be expressed in terms of the Schmidt decomposition of $\psi$. More precisely, $\alpha_\psi$ equals the largest squared Schmidt coefficient of $\psi$, that is,
+$\alpha_\psi = \|\on{unvec}(\psi)\|_{\rm op}^2$, where $\on{unvec}(\psi)\in\Lin(\calY,\calX)$ is the linear operator obtained \emph{unvectorising} $\psi$.
+In~\parencite{guhne2020geometry} these types of witnesses are called \emph{fidelity-based entanglement witnesses} \highlight{(can't \emph{any} witness be written in this form for some $\psi$?)}.
+
+\begin{example}
+	Let $\psi\in\calS(\calX\otimes\calX)$ be a maximally entangled state, with $\dim(\calX)=d$. Then the corresponding witness operator is
+	\begin{equation}
+		W_\psi = \frac{I}{d} - \psi\psi^\dagger.
+	\end{equation}
+\end{example}
+
+
+
 \begin{defn}[Noise tolerance, \cite{tth2009practical}]
 	Let $\mathcal W$ be a witness detecting the pure quantum state $\rho$.
 	In a real experiment the realised state will be mixed with some noise, so that the actual state will be of the form
@@ -866,9 +920,6 @@ Using the above lemma, we can prove the more general statement:
 	The \emph{noise tolerance} of the witness $\mathcal W$ is then defined as the largest $p$ such that we still have $\Tr{\mathcal W \rho_{\text{noisy}}}$.
 \end{defn}
 
-\begin{thm}
-	
-\end{thm}
 
 \begin{thm}[\cite{tth2005detection}]
 	For biseparable quantum states $\rho$ of $N$ qubits,
@@ -1196,6 +1247,13 @@ We can also get to this expression observing that, for any $X\in\Lin(\calX)$,
 \end{equation}
 
 \begin{prop}
+	A map $\Phi\in\rmT(\calX,\calY)$ is Hermitian-preserving \emph{iff}
+	\begin{equation}
+		K(\Phi)_{ij,k\ell} = \overline{K(\Phi)}_{ji,\ell k}.
+	\end{equation}
+\end{prop}
+
+\begin{prop}
 	Denote with $e_+\equiv \sum_i \ket{i,i}\in\calY\otimes\calY$ the unnormalised maximally entangled state in $\calY$.
 	For any map $\Phi\in\rmT(\calX,\calY)$ we have
 	\begin{equation}
@@ -1520,15 +1578,63 @@ What does the adjoint map look like in the unitary representation?
 Note that $(I_{\calY}\otimes\bra i)J(\Phi)(I_{\calY}\otimes\ket \ell) = \Phi(E_{i,\ell})$.
 This means that we can represent $J(\Phi)$ as a ``matrix of operators'' in $\Lin(\calY)$, that is, as a block matrix in which each block gives the action of $\Phi(E_{i,\ell})$ for some $E_{i,\ell}$.
 
-
-\begin{prop}
-	For any $\Phi\in\rmT(\calX,\calY)$, its Choi is Hermitian,
-	$J(\Phi)\in\Herm(\calY\otimes\calX)$, \emph{iff} $\Phi$ is Hermitian-preserving.
+The mapping $\rmT(\calX,\calY)\to \Lin(\calY\otimes \calX)$ sending each map to its Choi representation is a bijection. Its inverse can also be written explicitly:
+\begin{prop}\label{prop:map_from_choi}
+	Let $J\in\Lin(\calY\otimes\calX)$ be a linear operator.
+	Define the map $\Phi_J\in\rmT(\calX,\calY)$ by the relation
+	\begin{equation}
+		\Phi_J(X) \equiv \Tr_\calX[(I_\calY\otimes X^T)J].
+	\end{equation}
+	Then $J(\Phi_J) = J$, that is, $\Phi_J$ is the map corresponding to $J$ under the Choi isomorphism.
 \end{prop}
 \begin{proof}
-	Remember that $\Phi$ being Hermitian preserving means that $\Phi(X)\in\Herm(\calY)$ for all $X\in\Herm(\calX)$.
-	This is equivalent to $\Phi(X^\dagger)=\Phi(X)^\dagger$ for all $X\in\Lin(\calX)$.
+	We observe that
+	\begin{equation}
+		J(\Phi_J)
+		= \sum_{ij} \Phi_J(E_{ij})\otimes E_{ij}
+		= \sum_{ij} \Tr_\calX[(I_\calY\otimes E_{ji})J] \otimes E_{ij}
+		= J.
+	\end{equation}
 \end{proof}
+
+\begin{prop}
+	Let $\Phi\in\rmT(\calX,\calY)$ be a map. Then,
+	\begin{enumerate}
+		\item $\Phi$ is Hermitian-preserving \emph{iff} $J(\Phi)\in\Herm(\calY\otimes\calX)$.
+		\item $\Phi$ is trace-preserving \emph{iff}
+	$\Tr_\calY(J(\Phi)) = I_{\calX}$.
+	\end{enumerate}
+\end{prop}
+\begin{proof}$\,$
+	\begin{enumerate}
+		\item Remember that $\Phi$ being Hermitian-preserving means that $\Phi(X)\in\Herm(\calY)$ for all $X\in\Herm(\calX)$.
+		This is equivalent to $\Phi(X^\dagger)=\Phi(X)^\dagger$ for all $X\in\Lin(\calX)$. Thus
+		\begin{equation}
+			J(\Phi)^\dagger =
+			\sum_{ij} \Phi^\dagger(E_{ij})\otimes E_{ij}^\dagger
+			= \sum_{ij} \Phi(E_{ji}) \otimes E_{ji}
+			= J(\Phi).
+		\end{equation}
+		For the other direction, we use~\cref{prop:map_from_choi} to observe that $\Phi$ can be written as a composition of Hermitian-preserving maps:
+		\begin{equation}
+			\Phi = \Tr_\calX \circ R_{J(\Phi)} \circ E_\calY \circ T,
+		\end{equation}
+		where $T$ denotes the transpose map, $E_\calY$ the map $\Lin(\calX)\to\Lin(\calY\otimes\calX)$ sending $A\mapsto I_\calY\otimes A$, and $R_{J(\Phi)}$ is the map multiplying its input to the right with $J(\Phi)$. All of these maps are Hermitian-preserving --- in particular, $R_{J(\Phi)}$ is Hermitian-preserving when $J(\Phi)$ is Hermitian --- and thus so is their composition.
+		\item If $\Phi$ is trace-preserving, then
+		\begin{equation}
+			\Tr_\calY(J(\Phi))
+			= \sum_{ij} \Tr[\Phi(E_{ij})]\otimes E_{ij}
+			= \sum_i E_{ii} = I_\calX
+		\end{equation}
+		For the other direction, assuming $\Tr_\calY(J(\Phi))=I_\calX$, we again use~\cref{prop:map_from_choi} and observe that
+		\begin{equation}
+			\Tr[\Phi(X)]
+			= \Tr[(I_\calY\otimes X^T)J(\Phi)]
+			= \Tr(X^T) = \Tr(X).
+		\end{equation}
+	\end{enumerate}
+\end{proof}
+
 
 
 \subsection{Stinespring representation}
@@ -1642,7 +1748,28 @@ Here $\Sigma$ is a finite register with $\lvert\Sigma\rvert\le \rank(A)$ equal t
 	\end{equation}
 	The Stinespring isometry is the $V\in\rmU(\calX,\calW)$ defined by
 	\begin{equation}
-		V \equiv \sum_a e_a A_a = \sum_a e_a x_a^\dagger
+		V \equiv \sum_a e_a A_a = \sum_a e_a x_a^\dagger.
+	\end{equation}
+	The adjoint is the map $\Tr^\dagger:\CC\to\Lin(\calX)$ such that
+	\begin{equation}
+		\bar\alpha \Tr(X)
+		= \langle \alpha,\Tr(X)\rangle
+		= \langle \Tr^\dagger(\alpha), X\rangle
+		= \Tr[(\Tr^\dagger(\alpha))^\dagger X],
+	\end{equation}
+	for all $X\in\Lin(\calX)$ and $\alpha\in\CC$.
+	Therefore $\Tr^\dagger(\alpha)=\alpha I_\calX$.
+\end{example}
+
+\begin{example}
+	Consider the \emph{partial trace} map:
+	$\Tr_\calY\in\rmT(\calX\otimes\calY,\calX)$, with
+	\begin{equation}
+		\Tr_\calY \equiv I_{\Lin(\calX)}\otimes\Tr.
+	\end{equation}
+	Its adjoint is then
+	\begin{equation}
+		(\Tr_\calY)^\dagger(X) = X\otimes I_\calY.
 	\end{equation}
 \end{example}
 
@@ -1875,19 +2002,88 @@ The adjoint of a channel is also sometimes referred to as the \emph{Heisenberg-p
 
 \section{Norms, distances, etc}
 
+\begin{prop}
+	Let $\Phi\in\rmT(\calX,\calY)$ be a positive, unital map. Then
+	\begin{equation}
+		\|\Phi(X)\| \le \|X\|,
+	\end{equation}
+	for all $X\in\Lin(\calX)$.
+\end{prop}
+\begin{proof}
+	From Watrous.
+	Sketch: operator norm is max of inner product $\langle Y,\Phi(X)\rangle$ over ops $Y$ such that $\|Y\|=1$. To finish.
+\end{proof}
+
 \begin{defn}[Induced trace norm]
 	Let $\Phi\in\rmT(\calX,\calY)$. Its \emph{induced trace norm} is
 	\begin{equation}
-		\|\Phi\|_1 \equiv \max_{X\in\rmL(\calX): \|X\|_1\le 1}\|\Phi(X)\|_1.
+		\|\Phi\|_1 \equiv \max\left\{\|\Phi(X)\|_1 :
+		\,\, X\in\Lin(\calX) \text{ with } \|X\|_1\le 1
+		\right\}.
 	\end{equation}
-	In words, this is the trace norm of $\Phi(X)$ maximised over all possible operators $X$ with trace norm less than $1$. (from Watrous)
+	In words, this is the trace norm of $\Phi(X)$ maximised over all possible operators $X$ with trace norm less than $1$.
 \end{defn}
+
+\begin{prop}
+	Let $\Phi\in\rmT(\calX,\calY)$ be a positive, unital map. Then
+	\begin{equation}
+		\|\Phi\|_1 = \max_{U\in\rmU(\calY)}\|\Phi^\dagger(U)\|.
+	\end{equation}
+\end{prop}
+\begin{proof}
+	We know that, for every $X\in\Lin(\calX)$, the trace norm satisfies
+	\begin{equation}
+		\|X\|_1 = \max\left\{
+		\lvert\langle U,X\rangle\rvert : \,\, U\in\rmU(\calX)
+		\right\}.
+	\end{equation}
+
+\end{proof}
+
+\begin{prop}
+	Let $\Phi\in\rmT(\calX,\calY)$ be a map. Then
+	\begin{equation}
+		\|\Phi\|_1 = \max_{u,v\in\calS(\calX)}\|\Phi(uv^\dagger)\|_1.
+	\end{equation}
+\end{prop}
+\begin{proof}
+	The trace norm is a convex function, and every $X\in\Lin(\calX)$ is a convex combination of rank-one operators $uv^\dagger$.
+	Similarly, every $X\in\Lin(\calX)$ with unit trace-norm is a convex combination of rank-one operators $uv^\dagger$ with $u,v\in\calS(\calX)$.
+\end{proof}
 
 \begin{prop}
 	Let $\Phi\in\rmT(\calX,\calY)$ be a \emph{positive} map. Then
 	\begin{equation}
 		\|\Phi\|_1 = \max_{u\in\calS(\calX)}\Tr[\Phi(uu^*)].
 	\end{equation}
+\end{prop}
+
+\begin{prop}
+	Let $\Phi\in\rmT(\calX,\calY)$ be positive and trace-preserving. Then
+	$\|\Phi\|_1=1$.
+\end{prop}
+
+\begin{prop}
+	Consider the channels
+	$\Phi_0,\Psi_0\in\rmC(\calX,\calY)$ and
+	$\Phi_1,\Psi_1\in\rmC(\calY,\calZ)$.
+	Then
+	\begin{equation}
+		\|\Psi_1\circ\Psi_0 - \Phi_1\circ\Phi_0\|_1
+		\le
+		\|\Psi_0 - \Phi_0\|_1 +
+		\|\Psi_1 - \Phi_1\|_1.
+	\end{equation}
+\end{prop}
+
+\begin{prop}
+	Let $\Phi\in\rmT(\calX,\calY)$. Let
+	$U_0,V_0\in\rmU(\calX)$ and
+	$U_1,V_1\in\rmU(\calY)$ be unitaries. Define $\Psi\in\rmT(\calX,\calY)$ as
+	\begin{equation}
+		\Psi(X) \equiv U_1 \Phi(U_0 X V_0) V_1.
+	\end{equation}
+	Then $\|\Psi\|_1 = \|\Phi\|_1$.
 \end{prop}
 
 \section{Quantum state discrimination (to move?)}
@@ -2555,6 +2751,12 @@ With this definition, we have the commutation relations:
 	where $D(\bs\alpha)\equiv \otimes_{k=1}^n D_k(\alpha_k)$.
 \end{defn}
 
+The characteristic function can be defined more generally as
+\begin{equation}
+	\chi_\rho^s(\bs\xi) = \Tr[\rho \hat D(\bs\xi) e^{\frac{s}{2}|\bs\xi|^2}].
+\end{equation}
+The Wigner then corresponds to some Fourier transform of $\chi_\rho^s$ for $s=0$, or something like that.
+
 \section{Some formulas}
 
 \begin{equation}
@@ -2569,8 +2771,9 @@ With this definition, we have the commutation relations:
 \section{Displacement operators}
 
 \begin{defn}[Displacement operators]
-	$D(\alpha) \equiv \exp(\alpha a^\dagger-\bar\alpha a)$ for $\alpha\in\CC$.
+	$\hat D(\alpha) \equiv \exp(\alpha \hat a^\dagger-\bar\alpha \hat a)$ for $\alpha\in\CC$.
 \end{defn}
+Observe that $\hat D^\dagger(\alpha)=\hat D(-\alpha)$.
 
 \begin{prop}
 	\begin{equation}
@@ -3255,6 +3458,40 @@ With this definition, we have the commutation relations:
 \end{prop}
 
 \begin{prop}
+	\begin{equation}
+		\frac{1}{2}\Phi_{\bar n}^{\rm th}(\Phi_t(\PP[(\ket0+\ket2)])) = ?
+	\end{equation}
+\end{prop}
+\begin{proof}
+	We have
+	\begin{equation}
+		\Phi_t(\PP[\ket0+\ket2]) = 
+		\left(1+R^2\right) \PP_0
+		+ 2TR \, \PP_1
+		+ T^2 \PP_2
+		+ \left(
+			t^2 \ketbra{2}{0} + \bar t^2 \ketbra{0}{2}
+		\right).
+	\end{equation}
+	Thus, for the full state,
+	\begin{equation}\scalebox{0.95}{$\displaystyle
+	\begin{gathered}
+		\frac12\sum_{j=0}^\infty
+		\frac{\bar n^j}{(\bar n + 1)^{j+1}}
+		\left[
+		\left((1+R^2)
+		+ 2TR \frac{j+\bar n^2}{\bar n(\bar n + 1)}
+		+ T^2 \frac{2\bar n^4+4j \bar n^2 + j(j-1)}{2\bar n^2(\bar n + 1)^2}
+		\right) \PP_j
+		\right. \\
+		\left. + \binom{j+2}{2}^{1/2} \frac{1}{(\bar n + 1)^2}
+		(t^2 \ketbra{j+2}{j} + \bar t^2 \ketbra{j}{j+2})
+		\right].
+	\end{gathered}
+	$}\end{equation}
+\end{proof}
+
+\begin{prop}
 	The state $\ket0+\ket1$ evolving through a beamsplitter with transmissivity $t$, looking only at the transmitted output branch, gives
 	\begin{equation}
 		\rho_t
@@ -3311,7 +3548,7 @@ With this definition, we have the commutation relations:
 	% 	[2\bar n(\bar n+1) + T(j-\bar n)]
 	% \end{gathered}
 	% \end{equation}
-\end{proof}`'
+\end{proof}
 
 
 Let $\ket\psi$ be written in terms of mode operators as
@@ -3729,6 +3966,161 @@ A 1-producible state $\rho$ has $D_E(\rho)=1$ and is fully separable.
 	and $V\rho V^\dagger$ is fully separable iff $\rho$ is classical ($k=1$).
 \end{thm}
 
+\chapter{Analytical mechanics}
+
+\paragraph{Euler-Lagrange equations.}
+The equations of motion corresponding to the \emph{Lagrangian function} $L=L(\bs q,\dot{\bs q},t)$ are
+\begin{equation}
+	\frac{d}{dt}\left(\frac{\partial L}{\partial \dot q_i}\right) -
+	\frac{\partial L}{\partial q_i} = 0.
+\end{equation}
+More precisely, given a \emph{chart function} $\sharp_{\bs q}:t\mapsto (\bs q(t),\partial_t \bs q(t),t)$, the Euler-Lagrange equations read
+\begin{equation}
+	((\partial_{\dot q_i}L)\circ\sharp_{\bs q})' - (\partial_{q_i}L)\circ\sharp_{\bs q} = 0.
+\end{equation}
+Physical systems follow trajectories $t\mapsto\bs q(t)$ satisfying this equation.
+
+\paragraph{Principle of least action.}
+Trajectories that satisfy the Euler-Lagrange equations are also extrema of the \emph{action} $\calS\equiv \calS[\bs q]$ defined as
+\begin{equation}
+	\calS[\bs q]
+	= \int_{t_1}^{t_2} L \circ \sharp_{\bs q}
+	= \int_{t_1}^{t_2} dt \,\, L(\bs q(t),\partial_t \bs q(t),t).
+\end{equation}
+More precisely, EL equations can be derived imposing $t\mapsto\bs q(t)$ is an extremum for $\calS$ in the set of trajectories with fixed initial and final points.
+
+\paragraph{Hamiltonian from Lagrangian.}
+Given the Lagrangian function $L=L(\bs q,\dot{\bs q},t)$, the Hamiltonian reads
+\begin{equation}
+	H(\bs p, \bs q, t) \equiv
+	\bs p\cdot\dot{\bs q}(\bs p, \bs q, t)
+	- L(\bs q, \dot{\bs q}(\bs p, \bs q, t), t),
+\end{equation}
+where $\dot{\bs q}(\bs p, \bs q, t)$ is the function defined implicitly via
+\begin{equation}
+	\partial_{\dot{\bs q}}L(\bs q, \dot{\bs q}(\bs p, \bs q, t), t)
+	= \bs p.
+\end{equation}
+In other words, $\dot{\bs q}(\bs p,\bs q, t)$ is the inverse with respect to $\dot{\bs q}$ of the function
+\begin{equation}
+	\bs p(\bs q,\dot{\bs q}, t) = \nabla_{\dot{\bs q}}L(\bs q, \dot{\bs q}, t).
+\end{equation}
+Similarly, the Lagrangian can be written in terms of the Hamiltonian as
+\begin{equation}
+	L(\bs q,\dot{\bs q}, t) =
+	\partial_{\dot{\bs q}}
+\end{equation}
+This construction can be seen to arise from taking the \emph{Legendre transform} of the Lagrangian. In other words, Hamiltonian and Lagrangian are Legendre transforms one of the other.
+When the exact functional dependences are clear, one can briefly write the relation between $H$ and $L$ as $H=p\dot q - L$.
+
+\paragraph{Hamilton equations from least action on Lagrangian.}
+Taking the partial derivative of the Hamiltonian function, we get
+\begin{equation}
+	\partial_{\bs p}H=\dot{\bs q}+\bs p\cdot\partial_{\bs p}\dot{\bs q} - \partial_{\dot{\bs q}}L \cdot \partial_{\bs p}\dot{\bs q},
+\end{equation}
+or more explicitly,
+\begin{equation}
+	\partial_{\bs p}H(\bs p,\bs q, t) =
+	\dot{\bs q}(\bs p, \bs q, t) +
+	\bs p\cdot \partial_{\bs p}\dot{\bs q}(\bs p,\bs q, t) -
+	\partial_{\dot{\bs q}}L(\bs q, \dot{\bs q}(\bs p,\bs q, t), t)
+	\cdot \partial_{\bs p}\dot{\bs q}(\bs p, \bs q, t).
+\end{equation}
+Either way, we find that
+$\partial_{\bs p}H(\bs p, \bs q, t) = \dot{\bs q}(\bs p, \bs q, t)$.
+A similar calculation leads us to
+\begin{equation}
+	\partial_{\bs q}H(\bs p, \bs q, t) =
+	- \partial_{\bs q}L(\bs q, \dot{\bs q}(\bs p, \bs q, t), t).
+\end{equation}
+If we consider these equations \emph{on shell}, and remember that the Euler-Lagrange equations prescribe that
+\begin{equation}
+	(\partial_{\bs q}L)\circ\sharp_{\bs q} =
+	\partial_t((\partial_{\dot{\bs q}}L)\circ\sharp_{\bs q})
+	= \dot{\bs p}.
+\end{equation}
+We conclude that, if $t\mapsto \bs q(t)$ satisfies EL equations, then
+the corresponding phase-space trajectory $t\mapsto (\bs q(t),\bs p(t))$ satisfies the \emph{Hamilton equations}
+\begin{equation}
+	\begin{cases}
+		\dot{\bs q}(t) = \partial_{\bs p}H(\bs p(t),\bs q(t), t), \\
+		\dot{\bs p}(t) = -\partial_{\bs q}H(\bs p(t),\bs q(t), t).
+	\end{cases}
+\end{equation}
+We also have $\partial_t H = -\partial_t L$.
+
+\paragraph{Conservation of the Hamiltonian.}
+Define $\tilde\sharp(t)\equiv (\bs p(t), \bs q(t),t)$, for some trajectory $(\bs p(t), \bs q(t))$ satisfying Hamilton equations.
+Then
+\begin{equation}
+	\partial_t(H\circ\tilde\sharp) =
+	(\partial_t H)\circ\tilde\sharp.
+\end{equation}
+It is worth stressing that on the LHS we have only a function of time, and thus the derivative is a ``total derivative'', whereas on the RHS, $\partial_t H$ is a partial derivative of $H$ with respect to its time argument.
+
+\paragraph{Matrix form of Hamilton equations.}
+We can write Hamilton equations in a more concise and symmetric form by writing the phase-space coordinates as the $2n$-dimensional vector $\bs x\equiv (\bs q,\bs p)$. Hamilton equations then read
+\begin{equation}
+	\dot{\bs x}(t) = \EE \,\nabla_{\bs x}H(\bs x(t), t)
+	\equiv \EE \partial_{\bs x}H(\bs x(t), t),
+\end{equation}
+where
+\begin{equation}
+	\EE \equiv \begin{pmatrix}
+		0 & I_n \\ -I_n & 0
+	\end{pmatrix}
+\end{equation}
+is the $2n\times 2n$ \emph{symplectic matrix}.
+
+\paragraph{Canonical transformations.}
+Consider a phase-space coordinate transformation of the form $\bs x\mapsto \bs y(\bs x)$. If the trajectory $t\mapsto\bs x(t)$ satisfies Hamilton equations, then
+\begin{equation}
+	\dot{\bs y}(t) =
+	(\partial_{\bs x}\bs y)(\bs x(t))
+	\cdot \dot{\bs x}(t).
+\end{equation}
+Define a \emph{transformed Hamiltonian} $\tilde H$ such that
+$\tilde H(\tilde{\bs y}(\tilde{\bs x})) = H(\tilde{\bs x})$.
+Then
+\begin{equation}
+	\dot{\bs y}(t) = J(\bs x(t)) \EE J^T(\bs x(t))
+	\,\, \partial_{\bs y}\tilde H(\tilde{\bs x}(t)),
+\end{equation}
+where $J(\bs x(t))$ is the \emph{Jacobian} of the transformation $\bs x\mapsto \bs y(\bs x)$.
+It follows that the transformed variable follow the Hamilton equations with transformed Hamiltonian $\tilde H$ if and only if the Jacobian of the transformation is \emph{symplectic}, that is, is such that
+\begin{equation}
+	J(\bs x)\EE J^T(\bs x) = \EE.
+\end{equation}
+
+
+\section{Hamiltonian formalism}
+
+Consider an Hamiltonian $H$.
+If the coordinates $q_i$ are \emph{cyclic} then $\dot p_i=0$.
+If $H$ is conserved then $H=H(\bs\alpha)$ is also constant in time, and the remaining equations of motion are
+\begin{equation}
+	\dot q_i = \frac{\partial H}{\partial\alpha_i} = \omega_i(\alpha)
+	\Longrightarrow
+	q_i = \omega_i t + \delta_i.
+\end{equation}
+
+The Euler-Lagrange equations are invariant when
+\begin{enumerate}
+	\item a point transformation occurs: $Q=Q(q,t)$ with $L[q,t]=L'[Q,t]$;
+	\item a total derivative is summed to the Lagrangian: $L'=L+\frac{dF[q,t]}{dt}$.
+\end{enumerate}
+
+\paragraph{Point transformations for a Hamiltonian.}
+These are phase-space transformations of the form
+\begin{equation}
+	Q_i = Q_i(q,p, t),\qquad
+	P_i = P_i(q,p,t),
+\end{equation}
+such that the Hamilton equations are still satisfied with some modified Hamiltonian function (I think?).
+
+\paragraph{Canonical transformations.}
+A transformation 
+
 \chapter{Making sense of things}
 
 \section{What does it mean to \emph{observe}?}
@@ -3915,6 +4307,14 @@ Given $\psi\in\calS(\CC^N)$, we wish to characterise
 	\{ \lvert\langle \phi,\psi\rangle\rvert^2 : \,\,\phi\in\calS(\CC^N) \}
 	\subseteq [0,1].
 \end{equation}
+
+\section{Linear optics}
+
+The general interaction Hamiltonian in a \emph{linear optical} setup has the form
+\begin{equation}
+	H = \sum_{jk} A_{jk} a_j^\dagger a_k.
+\end{equation}
+
 
 \section{QRC}
 
