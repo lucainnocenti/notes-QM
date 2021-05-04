@@ -94,6 +94,32 @@
 	name=Example
 ]{example}
 
+% =============== exercise =======================
+\declaretheoremstyle[
+	headfont=\normalfont\bfseries,
+	notefont=\mdseries, notebraces={(}{)},
+	bodyfont=\normalfont,
+	postheadspace=0.5em,
+	mdframed={
+        default,
+		skipabove		= 5pt,
+		skipbelow		= \topsep,
+		leftmargin		= 0,
+		rightmargin		= 0,
+		innerleftmargin	= 4pt,
+		innerrightmargin= 4pt,
+		%hidealllines	= true,
+		backgroundcolor	= black!5,
+		linewidth		= 1,
+		linecolor		= gray!40,
+		roundcorner		= 2pt,
+	}
+]{exercisestyle}
+\declaretheorem[
+	style=exercisestyle,
+	name=Exercise
+]{exercise}
+
 % =============== theorem =======================
 \declaretheoremstyle[
 	headfont=\normalfont\bfseries,

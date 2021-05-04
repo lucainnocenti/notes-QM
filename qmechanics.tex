@@ -170,7 +170,9 @@
 \newcommand{\nice}[1]{{\color{green!50!black} #1}}
 \newcommand{\bad}[1]{{\color{red!60!black} #1}}
 
-\newcommand{\heading}[1]{\textbf{\color{orange}\textit{(#1)}}}
+% \newcommand{\parTitle}[1]{\noindent{\color{Mahogany}(\emph{#1})}}
+\newcommand{\heading}[1]{{\color{Mahogany}\emph{(#1)}}}
+
 
 \DeclareMathOperator{\Ker}{Ker}
 \DeclareMathOperator{\Imag}{Imag}
@@ -3062,7 +3064,8 @@ Observe that $\hat D^\dagger(\alpha)=\hat D(-\alpha)$.
 	Given a state $\rho$, we define the corresponding \emph{thermalised state with average occupation number} $\bar n$ as
 	\begin{equation}
 		\Phi_{\bar n}^{\rm th}(\rho)
-		\equiv \int d\mu\int_0^{2\pi} \frac{d\phi}{2\pi} \frac{e^{-\mu/\bar n}}{\bar n}
+		\equiv \int d\mu \frac{e^{-\mu/\bar n}}{\bar n}
+		\int_0^{2\pi} \frac{d\phi}{2\pi}
 		D(\sqrt\mu e^{i\phi})\rho D^\dagger(\sqrt\mu e^{i\phi}).
 	\end{equation}
 \end{defn}
@@ -3214,6 +3217,48 @@ Observe that $\hat D^\dagger(\alpha)=\hat D(-\alpha)$.
 		\right)^2
 		\ketbra{s}{s}.
 	\end{gathered}
+	\end{equation}
+\end{proof}
+
+\begin{prop}
+	\begin{equation}
+		\Phi_{\bar n}^{\rm th}(\ketbra{j}{k}) = ?
+	\end{equation}
+\end{prop}
+\begin{proof}
+	Let us write the action of $\hat D\equiv \hat D(\alpha)$ on $\ket\ell$ as
+	\begin{equation}
+		\hat D\ket \ell = e^{-\mu/2}\sum_{s=0}^\infty
+		\alpha^{s-\ell} c_{s,\ell,\mu} \ket s,
+	\end{equation}
+	where
+	\begin{equation}
+		c_{s,\ell,\mu} \equiv \frac{1}{\sqrt{\ell! s!}}
+		\sum_{k=0}^{\min(s,\ell)} (-\mu)^{\ell-k}
+		k! \binom{\ell}{k} \binom{s}{k}.
+	\end{equation}
+	This expression has the advantage of isolating the phase dependence in the $\alpha^{s-\ell}$ terms. We can then readily compute the phase average we need:
+	\begin{equation}
+		\int_0^{2\pi} \frac{d\phi}{2\pi}
+		\hat D\ketbra{j}{k} \hat D^\dagger =
+		e^{-\mu} \sum_{s=0}^\infty \mu^{s-j}
+		c_{s,j,\mu} c_{s+k-j,k,\mu}
+		\ketbra{s}{s+(k-j)}.
+	\end{equation}
+	To isolate the $\mu$ dependence, write the coefficients as
+	\begin{equation}
+		c_{s,\ell,\mu} = \sum_{k=0}^{\min(s,\ell)} \mu^{\ell-k} C_{s,\ell,k},
+		\qquad
+		C_{s,\ell,k} \equiv (-1)^{\ell -k}
+		\frac{k!}{\sqrt{\ell!s!}} \binom{\ell}{k} \binom{s}{k}.
+	\end{equation}
+	We then have
+	\begin{equation}
+		\ketbra{j}{k} \to 
+		e^{-\mu} \sum_{s=0}^\infty
+		\sum_{m=0}^{\min(s,j)} \sum_{n=0}^{\min(s+k-j,k)}
+		\mu^{s+k - m - n} C_{s,j,m} C_{s+k-j,k,n}
+		\ketbra{s}{s+k-j}.
 	\end{equation}
 \end{proof}
 
@@ -4072,7 +4117,31 @@ where
 \end{equation}
 is the $2n\times 2n$ \emph{symplectic matrix}.
 
-\paragraph{Canonical transformations.}
+\begin{prop}[Liouville's theorem]
+	The phase-space distribution function is constant along trajectories of the system.
+	Another way to state this is to say that infinitesimal phase-space volumes remain constant in time.
+\end{prop}
+\begin{proof}
+	Consider the set of trajectories in phase-space corresponding to a given Hamiltonian $H$. Upon an infinitesimal-time transformation, we have
+	\begin{equation}
+		\bs q \to \bs q + dt \partial_{\bs p}H,
+		\qquad
+		\bs p \to \bs p - dt \partial_{\bs q}H.
+	\end{equation}
+	Consider now two different trajectories, starting at $\bs x\equiv(\bs q,\bs p)$ and $\bs x'\equiv(\bs q',\bs p')$.
+	We then have
+	\begin{equation}
+	\begin{gathered}
+		d\bs q(t) \equiv \bs q'(t) - \bs q(t)
+		\to d\bs q(t) + d\bs q(t)dt\partial_{\bs q}\partial_{\bs p}H(\bs x(t)), \\
+		d\bs p(t) \to d\bs p(t)[1 - dt \partial_{\bs p}\partial_{\bs q}H(\bs x(t))].
+	\end{gathered}
+	\end{equation}
+	We conclude that $d\bs q(t)d\bs p(t) \to d\bs q(t)d\bs p(t) + \calO(dt^2)$, that is, infinitesimal phase-space volumes are constant along Hamiltonian trajectories.
+\end{proof}
+
+\section{Canonical transformations}
+
 Consider a phase-space coordinate transformation of the form $\bs x\mapsto \bs y(\bs x)$. If the trajectory $t\mapsto\bs x(t)$ satisfies Hamilton equations, then
 \begin{equation}
 	\dot{\bs y}(t) =
@@ -4081,10 +4150,11 @@ Consider a phase-space coordinate transformation of the form $\bs x\mapsto \bs y
 \end{equation}
 Define a \emph{transformed Hamiltonian} $\tilde H$ such that
 $\tilde H(\tilde{\bs y}(\tilde{\bs x})) = H(\tilde{\bs x})$.
+Here we are using the shorthand notation $\tilde{\bs x}\equiv(\bs x,t)$.
 Then
 \begin{equation}
 	\dot{\bs y}(t) = J(\bs x(t)) \EE J^T(\bs x(t))
-	\,\, \partial_{\bs y}\tilde H(\tilde{\bs x}(t)),
+	\,\, \partial_{\bs y}\tilde H(\tilde{\bs y}(\tilde{\bs x}(t))),
 \end{equation}
 where $J(\bs x(t))$ is the \emph{Jacobian} of the transformation $\bs x\mapsto \bs y(\bs x)$.
 It follows that the transformed variable follow the Hamilton equations with transformed Hamiltonian $\tilde H$ if and only if the Jacobian of the transformation is \emph{symplectic}, that is, is such that
@@ -4092,6 +4162,43 @@ It follows that the transformed variable follow the Hamilton equations with tran
 	J(\bs x)\EE J^T(\bs x) = \EE.
 \end{equation}
 
+\begin{example}
+	Consider a change of coordinates of the form $q\mapsto Q(q)$.
+	What is the corresponding function $(q,p)\mapsto P(q,p)$ making the transformation canonical.
+	For the transformation to be canonical we require the Jacobian to be symplectic. For $2\times2$ matrices, this is equivalent to the matrix having unit determinant. The Jacobian reads
+	\begin{equation}
+		J(q,p) = \begin{pmatrix}
+			\partial_q Q & \partial_p Q \\
+			\partial_q P & \partial_p P
+		\end{pmatrix} =
+		\begin{pmatrix}
+			Q' & 0 \\
+			\partial_q P & \partial_p P
+		\end{pmatrix}.
+	\end{equation}
+	it follows that the transformation is canonical \emph{iff} $\partial_p P=1/\partial_q Q$, that is, $P(q,p) = p / Q'(q)$.
+
+	For example, if $Q(q)=q^2$, then we must have $P(q,p) = \frac{p}{2q}$.
+\end{example}
+
+\paragraph{Infinitesimal canonical transformations.}
+We can also consider change of coordinates parametrised by some real parameter $\alpha$:
+\begin{equation}
+\begin{aligned}
+	\bs Q(\bs q,\bs p) &= \bs q + \alpha \bs F(\bs q, \bs p), \\
+	\bs P(\bs q,\bs p) &= \bs p + \alpha \bs E(\bs q, \bs p).
+\end{aligned}
+\end{equation}
+For these to be canonical, the Jacobian $J(\bs q, \bs p,\alpha)$ of the transformation must be symplectic. We have
+\begin{equation}
+	J(\bs q, \bs p, \alpha) =
+	\begin{pmatrix}
+		I + \alpha \partial_{\bs q}\bs F & 
+		\alpha \partial_{\bs p}\bs F \\
+		\alpha \partial_{\bs q}\bs E &
+		I + \alpha \partial_{\bs p}\bs E
+	\end{pmatrix}.
+\end{equation}
 
 \section{Hamiltonian formalism}
 
@@ -4441,6 +4548,200 @@ Probably with a measurement-based-like approach.
 In the context of photonics, this still involves having the photons interact with each other again after they were entangled.
 
 Witnesses \emph{tailored} to a given reservoir?
+
+\section{Shadow tomography}
+
+These are schemes to efficiently perform tomography, or more generally extract properties of a given unknown state. The main feature is that these schemes do not require to assess expectation values, but rather operate directly on the observed configurations sampled in different measurement bases~\parencite{aaronson2017shadow,huang2020predicting}.
+Among the main results, as reported in~\parencite{huang2020predicting}, is that one can reliably estimate $M$ observables of a state $\rho$, up to additive error $\epsilon$, from $\calO( \log(M)/\epsilon^2)$ measurements.
+Most notably, the dimension of the state does not affect the required number of observations.
+
+% Discorso sul fare shadow tomography nel caso di mappe. Il calcolo viene usando mappe random e l'aggiunta per ``invertire'' il risultato ottenuto.
+
+\subsection{Review of scheme \textit{a la} Huang}
+We are given an unknown $N$-qubit system $\rho$ that we aim to characterise. The goal of shadow tomography is to infer $\rho$ from repeated measurements on independent copies of $\rho$.
+Crucially, the protocol does not require estimating the \textit{outcome probabilities} corresponding to each measurements. On the contrary, a ``measurement'' means here to observe a single outcome in each measurement basis. That is the information used to reconstruct the state.
+
+Each measurement is performed in the computational basis after evolving $\rho$ through a unitary $U$ drawn from some distribution $\calP(U)$.
+In other words, each measurement is characterised by a unitary $U$; the measurement outcome is some $\ket b$ sampled according to the distribution given by the diagonal elements of $U\rho U^\dagger$, meaning that the probability that $\ket b$ is the measurement outcome of the iteration is $(U\rho U^\dagger)_{bb}\equiv \mel{b}{U\rho U^\dagger}{b}$.
+
+More precisely, rather than only storing the sequence of outcomes $\ket b$ obtained at each iteration, the protocol requires to store the so-called \textit{classical snapshots} $\hat\sigma\equiv U^\dagger \ketbra b U$ corresponding to the observed $\ket b$.
+We then ask: \textit{on average, what do classical snapshots look like?} The answer is encoded in the channel
+\begin{equation}
+    \calM(\rho)
+    = \int dU\,
+    \sum_b P(b|U) U^\dagger \ketbra b U,
+\end{equation}
+where the integration over the unitaries is taken with respect to some probability measure $\calP(U)$, and $P(b|U)\equiv \mel{b}{U\rho U^\dagger}{b}$. We can also write this as $\calM(\rho)=\EE[\hat\sigma]$, observing that both the sum over $U$ and that over $b$ can be understood as averages over some distribution.
+The central idea of the scheme is then to
+\begin{itemize}
+    \item observe that $\calM$ is a \textit{linear} quantum channel, which is invertible if the unitary ensemble is chosen appropriately;
+    \item obtain an estimate of $\hat\sigma$ by repeating the experiment $M$ times, and thus obtain an estimate for $\rho\approx \calM^{-1}(\EE[\hat\sigma])$.
+    The linearity of $\calM^{-1}$ implies that $\hat\rho\equiv \calM^{-1}(\hat\sigma)$ is an unbiased estimator for $\rho$.
+\end{itemize}
+It is worth stressing that the scheme operates under the assumption that we know what ensemble of unitaries is being used. This means that the map $\calM$ is also known, and thus its inverse $\calM^{-1}$ can be calculated. These calculations are done \textit{before} any experiment is performed.
+In practice, the reconstruction of $\rho$ is done by estimating $\hat\sigma$ via repeated measurements and then applying $\calM^{-1}$ to it.
+
+It is also worth noting that even if $\calM$ is a quantum channel and is invertible as a quantum map, that does not mean that its inverse $\calM^{-1}$ is also a quantum channel.
+Indeed, this is in general not the case, as the only quantum channels whose inverse is also a quantum channel are the unitary ones~\parencite{watrous2018theory}.
+
+One does not need to only focus on reconstructing the state with this approach. The goal can be any linear or non-linear function of the state.
+In~\parencite{hu2021hamiltoniandriven} they repot as an example that an expectation value $\Tr[\calO(\rho\otimes\rho)]$ can be estimated as
+\begin{equation}
+\begin{gathered}
+    \Tr[\calO(\rho\otimes\rho)]
+    =\Tr[\calO(\EE[\hat\rho]\otimes\EE[\hat\rho])] \\
+    \simeq
+    \frac{1}{M(M-1)}
+    \sum_{i\neq j}\Tr[\calO(\hat\rho_i\otimes\hat\rho_j)].
+\end{gathered}
+\end{equation}
+\highlight{(I don't fully understand this though: why are the $i=j$ terms excluded?)}
+
+\subsection{A different way to understand shadow tomography}
+
+\heading{Notation}
+A first observation is that the formalism with the channel $\calM$ can be reformulated in the language of POVMs.
+To fix notation: the state to be reconstructed will be denoted with $\rho\in\rmD(\calX)$, $\calX$ being the underlying Hilbert space; the unitaries applied to it are $U\in\rmU(\calX,\calX)$, with $\rmU(\calX,\calY)$ denoting the set of isometries $\calX\to\calY$; the set of possible outcomes in each basis are $b\in\Sigma$ for some finite register $\Sigma$.
+A \emph{POVM} is defined as a collection $\mu\equiv\{\mu(a): a\in\Sigma\}\subset\Pos(\calX)$ of positive operators such that $\sum_{a\in\Sigma}\mu(a)=I_{\calX}$.
+Let us denote with $\on{POVM}(\calX)$ the set of POVMs on $\calX$.
+
+\heading{The goal}
+The overarching goal is to build an \emph{estimator} $\hat\rho$ for the quantum state. This estimator is to be understood as our best guess for the underlying unknown state that resulted in an observed measurement.
+Given such an estimator, we then define in the naive way estimators for the expectation value of target observables and similar quantities.
+For example, if we want to estimate the expectation value $\Tr(\rho O)$ for some observable $O\in\Herm(\calX)$, we will then use the estimator $\hat o\equiv\Tr(\hat\rho O)$.
+Moreover, importantly, we ideally want an estimator that allows to reconstruct some number $M$ of observables with $\calO(\log M)$ resources, and that does not depend on the dimension of the measured state itself.
+It is worth stressing that this estimator is to be defined on \emph{individual measurement outcomes}. In other words, we want to be able to have a guess for the underlying state \emph{before being able to collect the measurement statistics associated with the measurement}.
+
+\heading{Requirements on the estimator}
+It follows that the estimator must depend on (1) the measurement that is being performed, and (2) the observed outcome of said measurement.
+To not lose in generality, we make no assumption on the performed measurement, considering a generic POVM. Therefore, the estimator must be a map that, given a choice of POVM and of measurement outcome, returns a state:
+\begin{equation}
+	\hat\rho: \on{POVM}(\calX)\times \Sigma\ni (\mu,b)
+	\mapsto \hat\rho_\mu(b) \in \rmD(\calX).
+\end{equation}
+We write the $\mu$ dependence via subscript only for the purpose of notational clarity.
+The most natural requirement for such an estimator is for it to be \emph{unbiased}. This means that we want, for any $\mu\in\on{POVM}(\calX)$ and state $\rho\in\rmD(\calX)$, the following:
+\begin{equation}\label{shadow:eq:unbiasedness_requirement}
+	\EE_\rho[\hat\rho_\mu] \equiv
+	\underset{b\sim p(\mu,\rho)}{\EE}[\hat\rho_\mu(b)] = \rho,
+\end{equation}
+where $p(\mu,\rho)$ is the probability distribution associated with measuring the state $\rho$ with the POVM $\mu$:
+$p(\mu,\rho) = (\Tr(\mu(b)\rho))_{b\in\Sigma}$.
+
+\heading{Consequences of unbiasedness requirement}
+Making~\cref{shadow:eq:unbiasedness_requirement} explicit, we get
+\begin{equation}\label{shadow:eq:explicit_unbiasedness_condition}
+	\sum_{b\in\Sigma}
+	\Tr(\mu(b) \rho) \hat\rho_\mu(b)
+	\equiv \sum_{b\in\Sigma}
+	\langle\mu(b),\rho\rangle\hat\rho_\mu(b) = \rho,
+\end{equation}
+where we highlighted the (Hilbert-Schmidt) inner product structure in the space of operators: $\langle A,B\rangle\equiv\Tr(A^\dagger B)$ for any pair of linear operators $A,B$.
+We now recognise that~\cref{shadow:eq:explicit_unbiasedness_condition}, if we think of the Hermitian operators as vectors in the underlying Hilbert space $\Herm(\calX)$, amounts to finding a decomposition of the form
+\begin{equation}
+	\sum_i \langle \bs u_i, \bs v\rangle \bs w_i = \bs v,
+\end{equation}
+where we identified $\bs v\simeq\rho$, $\bs u_i\simeq \mu(b)$, and $\bs w_i\simeq \hat\rho_\mu(b)$.
+As we show in the exercise below, the solution for $\hat\rho_\mu$ is
+\begin{equation}
+	\hat\rho_\mu(a) = \sum_b \mu(b) (g^{-1})_{ba},
+\end{equation}
+where $g\equiv g_\mu$ is the matrix $g_{ab}\equiv\langle\mu(a),\mu(b)\rangle$.
+In the language of~\cite{huang2020predicting}, $\hat\rho_\mu(a)$ is the \emph{classical shadow} associated with the measurement outcome $a$ (given the knowledge that the underlying measurement is $\mu$).
+
+\begin{exercise}
+	Let $\{\bs u_i\}_{i=1}^n\subset\RR^n$ be a linearly independent set. Suppose we want to find $\bs w_i\in\RR^n$ such that, for all $\bs v\in\RR^n$, we have the decomposition
+	\begin{equation}\label{shadow:eq:dual_basis_condition}
+		\sum_i \langle \bs u_i, \bs v\rangle \bs w_i = \bs v.
+	\end{equation}
+	% This is the decomposition of a vector $\bs v$ in terms of a set of vectors $\{\bs w_i\}_i$, with coefficients $\langle \bs u_i,\bs v\rangle$.
+	% Our task is then, given $\{\bs u_i\}_i$, to find a set $\{\bs w_i\}_i$ such that this relation is satisfies for all $\bs v$.
+	% In the case of $\{\bs u_i\}_i$ being \emph{linearly independent},
+	This amounts to a linear system with a unique solution: $\bs w_i$ must be chosen as the \emph{dual basis} of $\{\bs u_i\}_i$.
+	More explicitly,~\cref{shadow:eq:dual_basis_condition} amounts in matrix notation to the linear system
+	\begin{equation}
+		W U^\dagger \bs v = \bs v,
+	\end{equation}
+	where $W\equiv\sum_i \bs w_i \bs e_i^\dagger$ and $U\equiv \sum_i \bs u_i \bs e_i^\dagger$ are the matrices whose $i$-th column is $\bs w_i$ and $\bs u_i$, respectively.
+	Note that $U$ is invertible \emph{iff} $\{\bs u_i\}_i$ are linearly independent, and therefore the solution to the problem is trivially $W=(U^\dagger)^{-1}$.
+	We can also observe that, leveraging the pseudo-inverse and observing that $U^+=U^{-1}$ for $U$ invertible, we can write
+	\begin{equation}
+		W = U (U^\dagger U)^{-1},
+	\end{equation}
+	where $U^\dagger U$ is the matrix of inner products: $(U^\dagger U)_{ij}=\langle \bs u_i, \bs u_j\rangle$.
+	Note that, in different, more geometrically minded contexts, $U^\dagger U$ is referred to as a \emph{metric tensor} for the coordinate change.
+\end{exercise}
+
+\heading{Estimators for observables}
+Suppose now that the task is to estimate the expectation value of some observable $O\in\Herm(\calX)$.
+A natural way to build a corresponding estimator is to leverage our $\hat\rho_\mu$, defining $\hat o_\mu(a)\equiv \Tr[O \hat\rho_\mu(a)]$.
+The natural question to ask is then: how many samples/resources are needed to accurately estimate the true value of the quantity?
+The answers to this question hinge on the \emph{variance} of the estimator.
+For such variance, we find
+\begin{equation}
+	\Var_\rho[\hat o_\mu] \equiv
+	\EE_\rho[\hat o_\mu^2] - \EE_\rho[\hat o_\mu]^2 =
+	\sum_{a\in \Sigma} p(a|\mu,\rho) (\Tr[O \hat\rho_\mu(a)])^2
+	- (\Tr[O\rho])^2,
+\end{equation}
+where we observed that $\hat o_\mu$ is also unbiased, and thus $\EE_\rho[\hat o_\mu]=\Tr[O\rho]$, and defined
+$p(a|\mu,\rho)\equiv \Tr[\mu(a) \rho]$.
+We then write
+\begin{equation}
+	\sum_{a\in \Sigma} p(a|\mu,\rho) (\Tr[O \hat\rho_\mu(a)])^2 =
+	\Tr\left[
+		\left( \sum_{a\in\Sigma} \mu(a) (\Tr[O \hat\rho_\mu(a)])^2 \right)
+	\rho\right].
+\end{equation}
+Defining the operator
+\begin{equation}
+	A_\mu \equiv \sum_{a\in\Sigma} \mu(a)
+	(\Tr[O\hat\rho_\mu(a)])^2,
+\end{equation}
+we thus arrive to the expression
+\begin{equation}
+	\Var_\rho[\hat o_\mu] =
+	\Tr(A_\mu \rho) - (\Tr(O\rho))^2.
+\end{equation}
+A rough \emph{state-independent} upper bound for this variance is
+\begin{equation}
+	\Var_\rho[\hat o_\mu] \le
+	\Tr(A_\mu \rho) \le \|A_\mu\|_{\rm op},
+\end{equation}
+where $\|A_\mu\|_{\rm op}$ is the operatorial norm of $A_\mu$, which equals its largest eigenvalue (note that $A_\mu$ is positive semidefinite).
+
+\heading{Fisher information?}
+We can also obtain a \emph{lower}-bound for the variance of the estimator, via the \emph{Fisher information}: the Cramer-Rao bound tells us (I think?) that
+\begin{equation}
+	\Var_\rho[\hat o_\mu] \ge \frac{1}{I(\rho)},
+\end{equation}
+where $I(\rho)$ is the Fisher information.
+\highlight{I'm not sure about this actually; I guess we need to consider sets of $N$ samples and put the corresponding Fisher $I_N$ here?}
+
+\heading{Translation of variance bounds into number of required samples}
+
+
+\subsection{Huang et al.'s results in the new formalism}
+
+We can describe the class of schemes considered in~\parencite{huang2020predicting} as measuring POVMs of the form
+\begin{equation}
+    \mu(b,U) \equiv U\ketbra b U^\dagger.
+\end{equation}
+Note that $\{\mu(b,U)\}_{b,U}$ is a POVM for any choice of ensemble for the unitaries.
+We then define a \textit{random variable} on top of the probability distribution generated by such POVMs.
+This will be a function $\hat f$ such that
+$\hat f(b,U)\in\Herm(\calX)$ for any outcome $b\in\Sigma$ and unitary $U$.
+More specifically, their scheme uses
+\begin{equation}
+    \hat f(b,U) \equiv \PP[U^\dagger \ket b],
+\end{equation}
+where $\PP[\ket\psi]\equiv\ketbra\psi$.
+
+The expectation value of this $\hat f$ over the probability distribution corresponding to a state $\rho$ is what they denote with $\calM(\rho)$.
+
+\heading{Understanding Huang scenario as special case of framework defined above}
+\highlight{to do}
+
 
 
 \printbibliography
