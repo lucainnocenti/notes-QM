@@ -309,52 +309,9 @@ Integrability of time-dependent Hamiltonian~\autocite{sinitsyn2018integrable}.
 
 \chapter{States}
 
-% \section{States}
-\begin{defn}[State]
-	Let $\calH$ be a complex Hilbert space, $\calB(\calH)$ the set of bounded operators on $\calH$,
-	and $\calB_1(\calH)\subset\calB(\calH)$ the set of \emph{trace-class} operators on $\calH$,
-	and $\calS(\calH)\subset\calB_1(\calH)$ be the set of positive trace-class operators with \textbf{unit trace}.
-	The elements $\rho\in\calS(\calH)$ are called \textbf{states}.
-	In other words, a state $\rho$ is a bounded, trace-class operator such that
-	$\Tr(\rho)=1$ and $\rho\ge0$.
-\end{defn}
+\section{State space geometry}
 
-\begin{prop}
-	The space of trace-class operators $\calB_1(\calH)$ is a two-sided $*$-ideal of $\calB(\calH)$, and the set of states $\calS(\calH)$ is a convex, bounded subset of $\calB_1(\calH)$.
-\end{prop}
-
-\begin{defn}
-	A state $\rho$ is \emph{pure} if $\rho^2=\rho$.
-\end{defn}
-
-\begin{defn}[Separable states]
-	Let $\rho$ be a density matrix for a bipartite system $\mathcal H^A \otimes \mathcal H^B$.
-	We say that $\rho$ is a \emph{product state} if there exist states $\rho^A$ and $\rho^B$ such that
-	\begin{equation}
-		\rho = \rho^A \otimes \rho^B.
-	\end{equation}
-	The state is called \emph{separable} if it can be written as a convex sum of product states, that is, if there are weights $p_i\in\RR, \sum_i p_i=1$, and product states $\rho_i^A \otimes \rho_i^B$, such that
-	\begin{equation}
-		\rho = \sum_i p_i \rho_i^A \otimes \rho_i^B.
-	\end{equation}
-	Otherwise, the state is said to be \emph{entangled}.
-\end{defn}
-Note that here $\rho_i^A$ and $\rho_i^B$ need not be pure here.
-
-\begin{defn}[Separable and entangled multipartite states]
-	An $N$-partite state is said to be \emph{fully separable} if its density matrix $\rho$ can be written as a convex sum of product states:
-	\begin{equation}
-		\rho = \sum_k p_k \rho_k^{(1)} \otimes \rho_k^{(2)} \otimes \cdots \otimes \rho_k^{(N)},
-		\quad \text{with} \quad
-		\sum_k p_k = 1
-		\quad \text{and}\quad
-		p_k > 0.
-	\end{equation}
-	Otherwise, the state is \emph{entangled}.
-	A state is said to be \emph{genuine multipartite entangled} if all the subsystems are entangled with each other, not only some of them.
-	This means in particular that there must be no way to write the state as tensor product of two different states, acting on some pair of subsystems.
-\end{defn}
-Note that in the above the single density matrices $\rho_k^{(j)}$ are in general mixed states (that is, not necessarily pure).
+The main reference is~\parencite{bengtsson2016a}.
 
 \begin{prop}
 	Given a complete basis of Hermitian, traceless, orthogonal, operators, with normalisation $\Tr(\Lambda_i\Lambda_j)=d\delta_{ij}$, any state $\rho$ can be represented in terms of its expectation values over this basis as
@@ -390,6 +347,50 @@ Note that in the above the single density matrices $\rho_k^{(j)}$ are in general
 		= \calL(\CC^\Sigma).
 	\end{equation}
 \end{prop}
+
+\section{State tomography methods}
+
+\textcite{gross2010quantum} propose a tomography protocol to retrieve an $n$-qubit state using Pauli measurements with only $O(rd \log^2 d)$ measurement settings, with $d=2^n$ and $r$ the rank of state.
+A follow-up of this work by the same authors is~\parencite{flammia2012quantum}.
+
+\textcite{blumekohout2010hedged} propose and analyse the ``\emph{hedged maximum likelihood estimation}'' state tomography method.
+\begin{itemize}
+	\item \heading{Goal} The goal of the algorithm is to find an estimator $\hat\rho$ which is as close as possible to the true (unknown) state $\rho$, according to some metric $d(\rho,\hat\rho)$.
+	\item \heading{Previous state of the art} The most common tomography scheme was maximum likelihood estimation. This has the shortcoming of being unstable when there are zero eigenvalues --- this so-called ``zero eigenvalue problem'' can be ``disastrous in practice''.
+	\item\heading{Problem with standard MLE} Standard MLE works as follows: if sampling from a probability distribution $\bs p$ we find $n_k$ ``k''s, the likelihood $\calL(\bs p)=\prod_k p_k^{n_k}$ is maximised by the estimators
+	$\hat p_k = n_k/N$. This is problematic because if we find some $n_k=0$ the guess becomes $\hat p_k=0$, which might not be the case when $p_k$ is simply small enough that the limited sample has not picked up that $k$.
+	In the quantum case, the standard approach is, given a POVM $\{\mu_i\}$, to find $\hat\rho$ by inverting the linear system
+	\begin{equation}
+		\Tr[\hat\rho \mu_i] = \frac{n_i}{N},
+	\end{equation}
+	where $n_a$ is the number of $a$ outcomes.
+	Inverting the linear system is problematic: for one, it often leads to non-positive --- and thus non-physical --- operators $\hat\rho$.
+	An alternative method is MLE, where one instead defines $\hat\rho$ as the operator maximising the likelihood $\calL(\rho)\equiv\Pr(\{n_i\}|\hat\rho)$.
+	With this method one can restrict the optimisation to only positive $\rho$. This method has, however, other shortcomings, and in particular the ``zero eigenvalue problem''.
+	\item\heading{The novel idea} They propose using an ``hedged estimator''. These are estimators which, they claim, better handle the cases where zero events are observed for some outcome.
+\end{itemize}
+
+\textcite{blumekohout2010optimal} propose a \emph{Bayesian mean estimation} tomography method, which they claim handles the zero eigenvalue problem.
+They nicely review standard and MLE tomography methods, and highlight their similarities and common shortcomings. In particular, their both sharing the zero eigenvalue problem.
+They propose, as an alternative, \emph{Bayesian mean estimation} methods.
+\begin{itemize}
+	\item \heading{BME scheme} BME schemes work by (1) use the data to generate the likelihood function $\calL(\rho) =p(\calM|\rho)$. Here, $\calM$ is the observed data, and $\rho$ is the ``proposed state''. (2) Choose a prior distribution over the states, $\pi_0(\rho)\mathrm d\rho$. (3) Multiply the prior by the likelihood and normalise to get the \emph{posterior distribution}.
+	(4) The new candidate state is the mean of the posterior:
+	\begin{equation}
+		\hat\rho_{\rm BME}
+		= \int \mathrm d\rho \,\rho \pi_f(\rho)
+		= \int \mathrm d\rho \,\rho \calL(\rho)\pi_0(\rho).
+	\end{equation}
+	\item The author also includes, towards the end of the paper, a few interesting observations about the relations between MLE and BME methods, and Aaronson's PAC and Gross' compressed tomography approaches.
+\end{itemize}
+
+\textcite{mahler2013adaptive} present a quantum state tomography scheme with expected infidelity scaling $O(1/N)$, with $N$ the number of samples required to estimate the true state within a target accuracy.
+\begin{itemize}
+	\item They observe that, if one measures in the basis in which $\rho$ is diagonal, then infidelity scales as $O(1/N)$.
+	Their idea is therefore to perform a preliminary standard tomography procedure to estimate the state, and therefore its diagonal basis, and then follow this with the known-basis tomography schemes.
+\end{itemize}
+
+\parencite{aaronson2007learnability,flammia2012quantum}
 
 
 \section{Entropy and stuff}
@@ -548,58 +549,6 @@ A few propositions that will turn useful later on:
 	\end{equation}
 \end{prop}
 
-\section{Convexity and other stuff}
-The natural structure of the set $H_N$ of Hermitian $N\times N$ matrices is that of a real Hilbert space of dimension $N^2$ with the scalar product
-$(X, Y) \equiv \Tr(XY^\dagger) = \Tr(XY)$.
-The set $\mathcal D$ of density matrices is a subspace of $H_N$ defined as
-\begin{equation}
-	\mathcal D = \mathcal D_N = \{ \rho \in H_N \,:\,\, \rho \ge 0, \,\Tr\rho=1 \}.
-\end{equation}
-A density matrix $\rho$ has a spectral representation in terms of a complete set of orthonormal eigenvectors $\ket i \in \mathbb C^N$ with eigenvalues $\lambda_i \ge 0$:
-\begin{equation}
-	\rho = \sum_{i=1}^N \lambda_i \ketbra{i}{i},
-	\qquad
-	\braket{i}{j} = \delta_{ij},
-	\qquad
-	\sum_{i=1}^N \ketbra{i}{i} = \mathds1.
-\end{equation}
-The spectral representation is one particular ensemble representation of $\rho$.
-The \emph{rank} $\Imag\rho$ of a density matrix $\rho$ is the number of eigenvalues $\lambda_i > 0$.
-The \emph{kernel} (or null space) of $\rho$ is the set $\Ker(\rho)$ of states $\ket\psi$ such that $\rho\ket\psi = 0$.
-Defining the operators $P$ and $Q$ as
-\begin{equation}
-	P \equiv \sum_{\mathclap{i\,:\,\lambda_i > 0}}\,\, \ketbra{i}{i}
-	\qquad\text{and}\qquad
-	Q \equiv 1 - P = \sum_{\mathclap{i\,:\,\lambda_i=0}}\,\, \ketbra{i}{i},
-\end{equation}
-we can see that they are Hermitian and project orthogonally onto the two complementary orthogonal subspaces $\Imag\rho$ and $\Ker\rho$.
-
-A general Hermitian matrix $A$ is said to be \emph{positive}, or positive semidefinite,
-if all of its eigenvalues are non-negative.
-When this is the case, we write that $A\ge0$.
-An equivalent way to state the positivity condition is to say that
-$\mel{\psi}{A}{\psi} \ge 0$ for all $\ket\psi\in \mathbb C^N$.
-The above condition, together with the spectral representation of a state $\rho$,
-directly imply that $\mel{\psi}{\rho}{\psi} = 0 \Longleftrightarrow \rho\ket\psi=0$.
-
-The fact that the positivity conditions $\mel\psi\rho\psi$ are linear in $\rho$ implies that $\mathcal D$ is a convex set, so that if $\rho$ is a proper convex combination of $\rho_1, \rho_2\in \mathcal D$, it is itself in $\mathcal D$.
-Moreover, if $\rho=p \rho_1 + (1-p)\rho_2$ with $0<p<1$, then
-$\Ker\rho = \Ker\rho_1 \cap \Ker\rho_2$.
-
-A compact (closed and bounded) convex set is determined by its extremal points,
-those points that are not convex combinations of other points in the set.
-The extremal points of $\mathcal D$ are the pure states of the form
-$\rho=\ketbra\psi$ with $\ket\psi\in\mathbb C^N$ and $\braket\psi=1$.
-Thus, the spectral representation is an expansion of $\rho$ as a convex combination of $m$ extremal points in $\mathcal D$, where $m$ is the rank of $\rho$.
-
-There are several equivalent ways to formulate the extremality condition of $\rho \in\mathcal D$.
-The state $\rho$ is extremal in $\mathcal D$ if and only if
-\begin{itemize}
-	\item $\rho = \ketbra\psi$ with $\braket\psi=1$.
-	\item The exists no $A\neq 0$ with $\Tr A=0$ and $PAP=A$.
-	\item $PAP=A$ with $A$ Hermitian implies that $A=\rho$.
-	\item There exists no $\rho'\in\mathcal D$ with $\rho'\neq\rho$ and $\Imag\rho'\neq\Imag\rho$.
-\end{itemize}
 
 \section{Bipartite states}
 
@@ -2629,18 +2578,24 @@ The definition can be equivalently expressed as requiring that
 	\left\lvert \frac{1}{n}\log p(\bs a) + H(p) \right\rvert < \epsilon
 \end{equation}
 
-\chapter{CV formalism}
+\chapter{Continuous variables}
 \minitoc
 
 \section{Literature on nonclassicality etc}
 
 \heading{Nonclassicality via the $P$-representation}
-\textcite{wunsche2004about} points out problems in the singularity and behaviour of $P$-functions for bimodal thermal states.
-\textcite{richter2002nonclassicality} derive nonclassicality criteria via the (double) Fourier transform of $P$. More specifically, they show, leveraging Bochner's theorem, that $P$ is a probability measure \emph{iff} its Fourier transform is ``of positive type''.
-\textcite{korbicz2005hilbert} derive criteria for the negativity of the $P$-function, and relate these to Hilbert's 17th problem.
-They build upon the result of~\parencite{richter2002nonclassicality}, and derive what they claim to be essentially \emph{nonclassicality witnesses} for the $P$ function.
-They end up with the following criterion: \emph{a state $\rho$ with $P$-representation $P$ is nonclassical iff, for every polynomial $v\in\RR[x,y]$, $\int d^2\alpha P v^2\ge0$}.
-They note how their approach is inherently geometrical: their criterion amounts to a characterisation of the classical set via its supporting hyperplanes.
+\begin{itemize}
+	\item \textcite{richter2002nonclassicality} derive nonclassicality criteria via the (double) Fourier transform of $P$. More specifically, they show, leveraging Bochner's theorem, that $P$ is a probability measure \emph{iff} its Fourier transform is ``of positive type''.
+	They then provide a hierarchy of conditions that are equivalent to $P$-nonclassicality.
+	\item \textcite{wunsche2004about} points out problems in the singularity and behaviour of $P$-functions for bimodal thermal states.
+	\item \textcite{korbicz2005hilbert} derive criteria for the negativity of the $P$-function, and relate these to Hilbert's 17th problem.
+	They build upon the result of~\parencite{richter2002nonclassicality}, and derive what they claim to be essentially \emph{nonclassicality witnesses} for the $P$ function.
+	They end up with the following criterion: \emph{a state $\rho$ with $P$-representation $P$ is nonclassical iff, for every polynomial $v\in\RR[x,y]$, $\int d^2\alpha P v^2\ge0$}.
+	They note how their approach is inherently geometrical: their criterion amounts to a characterisation of the classical set via its supporting hyperplanes.
+	\item \textcite{miranowicz2015statistical} apply different nonclassicality measures to several classes of states. They also give a nice review of measures of nonclassicality.
+	\item \textcite{albarelli2016nonlinearity} show the relations between entropic nonlinearity and ground state nonclassicality, using Wigner and $P$ functions.
+\end{itemize}
+
 
 \heading{Wigner distributions and quantum advantage}
 \textcite{galvao2005discrete} characterise a class of discrete Wigner functions, and relate this to stabiliser states.
@@ -4573,41 +4528,49 @@ In the context of photonics, this still involves having the photons interact wit
 
 Witnesses \emph{tailored} to a given reservoir?
 
-\section{Shadow tomography}
+\section{Shadow tomography \emph{a la} Huang et al.}
 
-These are schemes to efficiently perform tomography, or more generally extract properties of a given unknown state. The main feature is that these schemes do not require to assess expectation values, but rather operate directly on the observed configurations sampled in different measurement bases~\parencite{aaronson2017shadow,huang2020predicting}.
-Among the main results, as reported in~\parencite{huang2020predicting}, is that one can reliably estimate $M$ observables of a state $\rho$, up to additive error $\epsilon$, from $\calO( \log(M)/\epsilon^2)$ measurements.
+These are schemes to assess efficiently a number of (often, but not necessarily, linear) functions of a state $\rho$, using a relatively small number of measurements.
+It is worth stressing that these schemes do not require to assess expectation values, but rather operate directly on the observed configurations sampled in different measurement bases~\parencite{aaronson2017shadow,huang2020predicting}.
+One of the main results, as reported in~\parencite{huang2020predicting}, is that one can reliably estimate $M$ observables of a state $\rho$, up to additive error $\epsilon$, from $\calO( \|\cdot\|_{\rm sh}\log(M)/\epsilon^2)$ measurements, where here $\|\cdot\|_{\rm sh}$ denotes a constant factor that depends on which observables one is trying to estimate.
 Most notably, the dimension of the state does not affect the required number of observations.
 
 % Discorso sul fare shadow tomography nel caso di mappe. Il calcolo viene usando mappe random e l'aggiunta per ``invertire'' il risultato ottenuto.
 
-\subsection{Review of scheme \textit{a la} Huang}
-We are given an unknown $N$-qubit system $\rho$ that we aim to characterise. The goal of shadow tomography is to infer $\rho$ from repeated measurements on independent copies of $\rho$.
+\subsection{Review of scheme \textit{a la} Huang \emph{et al.}}
+
+\heading{Goal}
+We are given an unknown $N$-qubit system $\rho$ that we aim to characterise. The goal of shadow tomography is to infer accurately a number of observables (or other functions of) $\rho$ from a relatively small number of measurements on independent copies of $\rho$.
 Crucially, the protocol does not require estimating the \textit{outcome probabilities} corresponding to each measurements. On the contrary, a ``measurement'' means here to observe a single outcome in each measurement basis. That is the information used to reconstruct the state.
 
+\heading{Measurement setup}
 Each measurement is performed in the computational basis after evolving $\rho$ through a unitary $U$ drawn from some distribution $\calP(U)$.
-In other words, each measurement is characterised by a unitary $U$; the measurement outcome is some $\ket b$ sampled according to the distribution given by the diagonal elements of $U\rho U^\dagger$, meaning that the probability that $\ket b$ is the measurement outcome of the iteration is $(U\rho U^\dagger)_{bb}\equiv \mel{b}{U\rho U^\dagger}{b}$.
+In other words, each measurement is characterised by a unitary $U$; the measurement outcome is some $\ket b$ sampled according to the distribution corresponding to the diagonal elements of $U\rho U^\dagger$, meaning that the probability that $\ket b$ is the measurement outcome, when the unitary $U$ was used, is $(U\rho U^\dagger)_{bb}\equiv \mel{b}{U\rho U^\dagger}{b}$.
 
-More precisely, rather than only storing the sequence of outcomes $\ket b$ obtained at each iteration, the protocol requires to store the so-called \textit{classical snapshots} $\hat\sigma\equiv U^\dagger \ketbra b U$ corresponding to the observed $\ket b$.
+\heading{Introduction of map describing the estimation protocol}
+More precisely, rather than only storing the sequence of outcomes $\ket b$ obtained at each iteration, the protocol involves storing the so-called \textit{classical snapshots} $\hat\sigma\equiv U^\dagger \ketbra b U$ corresponding to the observed $\ket b$.
 We then ask: \textit{on average, what do classical snapshots look like?} The answer is encoded in the channel
 \begin{equation}
     \calM(\rho)
-    = \int dU\,
-    \sum_b P(b|U) U^\dagger \ketbra b U,
+    = \int d\calP(U)\,
+    \sum_b P_\rho(b|U) U^\dagger \ketbra b U,
 \end{equation}
-where the integration over the unitaries is taken with respect to some probability measure $\calP(U)$, and $P(b|U)\equiv \mel{b}{U\rho U^\dagger}{b}$. We can also write this as $\calM(\rho)=\EE[\hat\sigma]$, observing that both the sum over $U$ and that over $b$ can be understood as averages over some distribution.
+where the integration over the unitaries is taken with respect to some probability measure $\calP(U)$, and $P_\rho(b|U)\equiv \mel{b}{U\rho U^\dagger}{b}$. We can also write this as $\calM(\rho)=\EE[\hat\sigma]$, observing that both the sum over $U$ and that over $b$ can be understood as averages over some distribution.
 The central idea of the scheme is then to
 \begin{itemize}
-    \item observe that $\calM$ is a \textit{linear} quantum channel, which is invertible if the unitary ensemble is chosen appropriately;
+    \item observe that $\calM$ is a quantum channel, and thus in particular \emph{a linear map}, which is invertible if the unitary ensemble is chosen appropriately;
     \item obtain an estimate of $\hat\sigma$ by repeating the experiment $M$ times, and thus obtain an estimate for $\rho\approx \calM^{-1}(\EE[\hat\sigma])$.
     The linearity of $\calM^{-1}$ implies that $\hat\rho\equiv \calM^{-1}(\hat\sigma)$ is an unbiased estimator for $\rho$.
 \end{itemize}
+
+\heading{Inverting $\calM$}
 It is worth stressing that the scheme operates under the assumption that we know what ensemble of unitaries is being used. This means that the map $\calM$ is also known, and thus its inverse $\calM^{-1}$ can be calculated. These calculations are done \textit{before} any experiment is performed.
 In practice, the reconstruction of $\rho$ is done by estimating $\hat\sigma$ via repeated measurements and then applying $\calM^{-1}$ to it.
 
 It is also worth noting that even if $\calM$ is a quantum channel and is invertible as a quantum map, that does not mean that its inverse $\calM^{-1}$ is also a quantum channel.
-Indeed, this is in general not the case, as the only quantum channels whose inverse is also a quantum channel are the unitary ones~\parencite{watrous2018theory}.
+Indeed, this is in general not the case, as unitary channels are the only quantum channels whose inverse is also a quantum channel~\parencite{watrous2018theory}.
 
+\heading{Retrieval of nonlinear functionals}
 One does not need to only focus on reconstructing the state with this approach. The goal can be any linear or non-linear function of the state.
 In~\parencite{hu2021hamiltoniandriven} they repot as an example that an expectation value $\Tr[\calO(\rho\otimes\rho)]$ can be estimated as
 \begin{equation}
@@ -4619,13 +4582,13 @@ In~\parencite{hu2021hamiltoniandriven} they repot as an example that an expectat
     \sum_{i\neq j}\Tr[\calO(\hat\rho_i\otimes\hat\rho_j)].
 \end{gathered}
 \end{equation}
-\highlight{(I don't fully understand this though: why are the $i=j$ terms excluded?)}
+\highlight{(I don't fully understand this though: \emph{e.g.} why are the $i=j$ terms excluded?)}
 
 \subsection{A different way to understand shadow tomography}
 
 \heading{Notation}
 A first observation is that the formalism with the channel $\calM$ can be reformulated in the language of POVMs.
-To fix notation: the state to be reconstructed will be denoted with $\rho\in\rmD(\calX)$, $\calX$ being the underlying Hilbert space; the unitaries applied to it are $U\in\rmU(\calX,\calX)$, with $\rmU(\calX,\calY)$ denoting the set of isometries $\calX\to\calY$; the set of possible outcomes in each basis are $b\in\Sigma$ for some finite register $\Sigma$.
+To fix notation: the state to be reconstructed will be denoted with $\rho\in\rmD(\calX)$, $\calX$ being the underlying (generally finite-dimensional) Hilbert space; the unitaries applied to it are $U\in\rmU(\calX,\calX)$, with $\rmU(\calX,\calY)$ denoting the set of isometries $\calX\to\calY$; the set of possible outcomes in each basis are $b\in\Sigma$ for some finite register $\Sigma$.
 A \emph{POVM} is defined as a collection $\mu\equiv\{\mu(a): a\in\Sigma\}\subset\Pos(\calX)$ of positive operators such that $\sum_{a\in\Sigma}\mu(a)=I_{\calX}$.
 Let us denote with $\on{POVM}(\calX)$ the set of POVMs on $\calX$.
 
@@ -4662,7 +4625,7 @@ Making~\cref{shadow:eq:unbiasedness_requirement} explicit, we get
 \end{equation}
 where we highlighted the (Hilbert-Schmidt) inner product structure in the space of operators: $\langle A,B\rangle\equiv\Tr(A^\dagger B)$ for any pair of linear operators $A,B$.
 We now recognise that~\cref{shadow:eq:explicit_unbiasedness_condition}, if we think of the Hermitian operators as vectors in the underlying Hilbert space $\Herm(\calX)$, amounts to finding a decomposition of the form
-\begin{equation}
+\begin{equation}\label{shadow:eq:dual_frame}
 	\sum_i \langle \bs u_i, \bs v\rangle \bs w_i = \bs v,
 \end{equation}
 where we identified $\bs v\simeq\rho$, $\bs u_i\simeq \mu(b)$, and $\bs w_i\simeq \hat\rho_\mu(b)$.
@@ -4695,6 +4658,35 @@ In the language of~\cite{huang2020predicting}, $\hat\rho_\mu(a)$ is the \emph{cl
 	where $U^\dagger U$ is the matrix of inner products: $(U^\dagger U)_{ij}=\langle \bs u_i, \bs u_j\rangle$.
 	Note that, in different, more geometrically minded contexts, $U^\dagger U$ is referred to as a \emph{metric tensor} for the coordinate change.
 \end{exercise}
+
+\heading{General formalism: continuous frames}
+The above formalism assumes a POVM with only a finite number of possible outcomes. Even more restrictive, it assumes that the components of the POVM are \emph{linearly independent}.
+However, this restrictions can be lifted entirely via the machinery of \emph{frame theory}~\parencite{christensen2003introduction}.
+Given a separable Hilbert space $\calH$, and a measure space $(X,\mu)$, we say that a family of vectors $\{f_x\}_{x\in X}$ is a \emph{continuous frame} if there are positive constants $A,B>0$ such that
+\begin{equation}
+	A\|f\|^2 \le \int_X d\mu(x)\, \lvert \langle f_x,f\rangle\rvert^2 f_x \le B \|f\|^2,
+	\quad \forall f\in\calH.
+\end{equation}
+Intuitively, a frame is a generalisation of a basis: a collection of vectors which allows to decompose --- albeit possibly non-uniquely --- arbitrary elements of the underlying vector space.
+One can show that if $\{f_x\}_{x\in X}$ is a frame, then any $f\in\calH$ can be decomposed as
+\begin{equation}
+	f = \int_X d\mu(x)\, \langle S^{-1}(f_x), f\rangle f_x
+	=\int_X d\mu(x)\, \langle f_x, f\rangle S^{-1}(f_x),
+\end{equation}
+where $S:\calH\to\calH$ is the linear, bounded operator defined by
+\begin{equation}
+	S(f) \equiv \int_X d\mu(x)\, \langle f_x,f\rangle f_x.
+\end{equation}
+The vectors $\{S^{-1}(f_x)\}_x$, forming the so-called \emph{dual frame} of $\{f_x\}$, are biorthogonal to $\{f_x\}_x$. Intuitively, these correspond to the dual vectors we found in the previous section.
+
+It is worth stressing that the discrete a finite-dimensional case discussed previously can be understood as a special case of the formalism with continuous frames, in the special case where $\calH$ is finite-dimensional and a discrete measure is used.
+Furthermore, we will show in the following that the formalism used in~\parencite{huang2020predicting} amounts precisely to computing the estimators using the above machinery to compute the dual frame. The formalisms can be seen to be equivalent via the identifications
+\begin{equation}
+	f \to \rho, \qquad
+	(b,U)\to x, \qquad
+	\mu(b,U)\to f_x, \qquad
+	S\to \calM.
+\end{equation}
 
 \heading{Estimators for observables}
 Suppose now that the task is to estimate the expectation value of some observable $O\in\Herm(\calX)$.
@@ -4740,31 +4732,53 @@ We can also obtain a \emph{lower}-bound for the variance of the estimator, via t
 	\Var_\rho[\hat o_\mu] \ge \frac{1}{I(\rho)},
 \end{equation}
 where $I(\rho)$ is the Fisher information.
-\highlight{I'm not sure about this actually; I guess we need to consider sets of $N$ samples and put the corresponding Fisher $I_N$ here?}
 
 \heading{Translation of variance bounds into number of required samples}
 
 
 \subsection{Huang et al.'s results in the new formalism}
 
-We can describe the class of schemes considered in~\parencite{huang2020predicting} as measuring POVMs of the form
+We can recast the results of~\parencite{huang2020predicting} in our formalism as follows.
+The POVM they consider is the following:
 \begin{equation}
-    \mu(b,U) \equiv U\ketbra b U^\dagger.
+    \mu(b,U) \equiv \calP(U)\, U^\dagger\ketbra b U.
 \end{equation}
 Note that $\{\mu(b,U)\}_{b,U}$ is a POVM for any choice of ensemble for the unitaries.
-We then define a \textit{random variable} on top of the probability distribution generated by such POVMs.
-This will be a function $\hat f$ such that
-$\hat f(b,U)\in\Herm(\calX)$ for any outcome $b\in\Sigma$ and unitary $U$.
-More specifically, their scheme uses
+Here, $(b,U)$ take on the role of what the single index $b$ was in the previous sections. In other words, this is now a POVM with a possibly infinite number of terms, corresponding to the possibly infinite number of possible unitaries $U$ to draw from.
+
+\heading{Building  the estimator via direct analysis}
+\highlight{(this paragraph is probably obsolete given the frame theory formalism)}
+Our task is again to define an unbiased estimator for $\rho$ corresponding to this measurement setup.
+This will be a function $(b,U)\mapsto \hat\rho(b,U)$ such that
+$\hat\rho(b,U)\in\Herm(\calX)$ for any outcome $b\in\Sigma$ and unitary $U$ (drawn from some suitable probability distribution).
+The unbiasedness requirement reads in this case
 \begin{equation}
-    \hat f(b,U) \equiv \PP[U^\dagger \ket b],
+	\EE_{x\sim\rho}[\hat\rho(x)] \equiv
+	\int dU  \sum_b \Tr[\mu(b,U)\rho] \,\hat\rho(b,U)
+	= \int d\calP(U)  \sum_b \langle b|U\rho U^\dagger| b\rangle \,\hat\rho(b,U)
+	= \rho,
 \end{equation}
-where $\PP[\ket\psi]\equiv\ketbra\psi$.
+which we write concisely as $\rho =\mathbb E_{b,U\sim\rho}[\hat\rho(b,U)]$.
+For the sake of clarity, let us now simplify the notation denoting $(b,U)\sim x$. We are then looking for a function $x\mapsto \hat\rho(x)$ such that
+\begin{equation}
+	\int dx \, p(x|\rho) \hat\rho(x) = \rho,
+	\qquad p(x|\rho) \equiv \Tr(\mu(x)\rho).
+\end{equation}
+To solve this task, consider a function $x\mapsto\hat\sigma(x)$, define the linear mapping $\calM(\rho)=\EE_{x\sim\rho}[\hat\sigma(x)]$, and suppose $\hat\sigma$ is such that $\calM$ is invertible.
+Note that the linearity of $\calM$ is consequence of the probabilities in quantum mechanics always being linear with respect to the density matrix $\rho$.
+Then if we define $\hat\rho(x) \equiv \calM^{-1}(\hat\sigma(x))$, we get
+\begin{equation}
+	\EE[\hat\rho(x)] =
+	\calM^{-1}(\EE_{x\sim\rho}[\hat\sigma(x)]) = \rho.
+\end{equation}
+We thus get an unbiased estimator $\hat\rho(x)$ for any suitable choice of $\hat\sigma$.
 
-The expectation value of this $\hat f$ over the probability distribution corresponding to a state $\rho$ is what they denote with $\calM(\rho)$.
+% In particular,~\parencite{huang2020predicting} use $\hat\sigma(x)=\mu(x)$.
 
-\heading{Understanding Huang scenario as special case of framework defined above}
-\highlight{to do}
+% The expectation value of this $\hat f$ over the probability distribution corresponding to a state $\rho$ is what they denote with $\calM(\rho)$.
+
+% \heading{Understanding Huang scenario as special case of framework defined above}
+% \highlight{to do}
 
 
 
